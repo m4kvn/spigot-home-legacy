@@ -7,7 +7,7 @@ class HomeSetCommand(plugin: Homes) {
     val homeManager = plugin.homeManager
 
     fun execute(player: Player): Boolean {
-        homeManager.getPlayerHomes(player.uniqueId).defaultHome.location = player.location
+        homeManager.getPlayerHomes(player.uniqueId).defaultHome.setLocation(player.location)
         player.sendMessage("ホームを設定しました")
         return true
     }

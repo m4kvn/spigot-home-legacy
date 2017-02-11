@@ -30,10 +30,10 @@ class HomeCommand(plugin: Homes) : CommandExecutor {
         val playerHomes = homeManager.getPlayerHomes(player.uniqueId)
         val defaultHome = playerHomes.defaultHome
 
-        if (defaultHome.location == null) {
+        if (defaultHome.locationData == null) {
             player.sendMessage("ホームが設定されていません")
         } else {
-            player.teleport(defaultHome.location)
+            player.teleport(defaultHome.locationData?.toLocation())
         }
 
         return true
