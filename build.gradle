@@ -29,6 +29,10 @@ repositories {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
+    maven {
+        name = "exposed-repo"
+        url = "https://dl.bintray.com/kotlin/exposed/"
+    }
 }
 
 configurations {
@@ -40,6 +44,12 @@ dependencies {
     compile 'org.spigotmc:spigot-api:1.10.2-R0.1-SNAPSHOT'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     embed "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile 'com.h2database:h2:1.4.191'
+    embed 'com.h2database:h2:1.4.191'
+    compile 'org.jetbrains.exposed:exposed:0.7.5'
+    embed 'org.jetbrains.exposed:exposed:0.7.5'
+    compile 'org.slf4j:slf4j-log4j12:1.7.21'
+    embed 'org.slf4j:slf4j-log4j12:1.7.21'
 }
 
 jar {
