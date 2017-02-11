@@ -5,3 +5,7 @@ prefix: Homes
 authors: [MasahiroSaito]
 description: This plugin allows each player to set their home point.
 website: https://github.com/MasahiroSaito/Homes
+commands:
+  home:
+    description: Main Command of Spigot Plugin Homes
+    usage: /home (set)
