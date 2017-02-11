@@ -7,12 +7,12 @@ class Homes : JavaPlugin() {
     lateinit var homeManager: HomeManager
 
     override fun onEnable() {
-        homeManager = HomeManager()
+        homeManager = HomeManager(this)
 
         getCommand("home").executor = HomeCommand(this)
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
+        homeManager.save()
     }
 }
