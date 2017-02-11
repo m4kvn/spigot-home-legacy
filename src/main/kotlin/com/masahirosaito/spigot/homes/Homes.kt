@@ -1,12 +1,15 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.commands.HomeCommand
 import org.bukkit.plugin.java.JavaPlugin
 
 class Homes : JavaPlugin() {
+    lateinit var homeManager: HomeManager
 
     override fun onEnable() {
-        // Plugin startup logic
+        homeManager = HomeManager()
 
+        getCommand("home").executor = HomeCommand(this)
     }
 
     override fun onDisable() {
