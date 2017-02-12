@@ -2,11 +2,13 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.database.PlayerHomesObject
 import com.masahirosaito.spigot.homes.homedatas.PlayerHomes
+import org.bukkit.ChatColor
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
-class HomeManager(val plugin: Homes) {
+class HomeManager(plugin: Homes) {
+    private val messenger = plugin.messenger
     private val homes = mutableMapOf<UUID, PlayerHomes>()
 
     init {
@@ -23,7 +25,8 @@ class HomeManager(val plugin: Homes) {
     fun getPlayerHomes(uuid: UUID) = homes[uuid] ?: PlayerHomes().apply { putHome(uuid, this) }
 
     fun save() {
-        val sb = StringBuilder("\n").appendln("--- Save PlayerHomes ---")
+        val sb = StringBuilder("\n")
+                .appendln("${ChatColor.BLUE}---------- Save PlayerHomes ----------${ChatColor.RESET}")
         transaction {
             val uuidList = PlayerHomesObject.selectAll().map { it[PlayerHomesObject.playerUid] }
 
@@ -33,34 +36,37 @@ class HomeManager(val plugin: Homes) {
                         PlayerHomesObject.update({ PlayerHomesObject.playerUid eq home.key }) {
                             it[json] = home.value.toJson()
                         }
-                        sb.appendln("UPDATE: $home")
+                        sb.appendln("${ChatColor.GOLD}[UPDATE]${ChatColor.RESET} $home")
                     } else {
                         PlayerHomesObject.insert {
                             it[playerUid] = home.key
                             it[json] = home.value.toJson()
                         }
-                        sb.appendln("INSERT: $home")
+                        sb.appendln("${ChatColor.BLUE}[INSERT]${ChatColor.RESET} $home")
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
-        plugin.logger.info(sb.append("--- Save Complete ---").toString())
+        messenger.debug(
+                sb.append("${ChatColor.BLUE}----------- Save Complete! -----------${ChatColor.RESET}").toString())
     }
 
     fun load() {
-        val sb = StringBuilder("\n").appendln("--- Load PlayerHomes ---")
+        val sb = StringBuilder("\n")
+                .appendln("${ChatColor.GREEN}---------- Load PlayerHomes ----------${ChatColor.RESET}")
         transaction {
             PlayerHomesObject.selectAll().forEach {
                 try {
                     homes.put(it[PlayerHomesObject.playerUid], PlayerHomes.fromJson(it[PlayerHomesObject.json]))
-                    sb.appendln("LOAD: ${homes[it[PlayerHomesObject.playerUid]]}")
+                    sb.appendln("${ChatColor.GREEN}[LOAD]${ChatColor.RESET} ${homes[it[PlayerHomesObject.playerUid]]}")
                 } catch(e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
-        plugin.logger.info(sb.append("--- Load Complete ---").toString())
+        messenger.debug(
+                sb.append("${ChatColor.GREEN}----------- Load Complete! -----------${ChatColor.RESET}").toString())
     }
 }

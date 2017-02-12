@@ -9,7 +9,7 @@ class Homes : JavaPlugin() {
     lateinit var homeManager: HomeManager
 
     override fun onEnable() {
-        messenger = Messenger(this, false)
+        messenger = Messenger(this, true)
         homeManager = HomeManager(this)
 
         getCommand("home").executor = HomeCommand(this)
