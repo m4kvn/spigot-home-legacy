@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class HomeCommand(plugin: Homes) : CommandExecutor {
+    val messenger = plugin.messenger
     val homeManager = plugin.homeManager
     val subCommands = mapOf(
             "set" to HomeSetCommand(plugin)
@@ -31,7 +32,7 @@ class HomeCommand(plugin: Homes) : CommandExecutor {
         val defaultHome = playerHomes.defaultHome
 
         if (defaultHome.locationData == null) {
-            player.sendMessage("ホームが設定されていません")
+            messenger.send(player, "ホームが設定されていません！")
         } else {
             player.teleport(defaultHome.locationData?.toLocation())
         }
