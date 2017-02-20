@@ -1,20 +1,21 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.HomeCommand
-import com.masahirosaito.spigot.mscore.Messenger
-import com.masahirosaito.spigot.mscore.utils.load
+import com.masahirosaito.spigot.homes.homedata.HomeData
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 class Homes : JavaPlugin() {
     lateinit var configs: Configs
     lateinit var messenger: Messenger
-    lateinit var homeManager: HomeManager
+    lateinit var homedata: HomeData
+    lateinit var homedataFile: File
 
     override fun onEnable() {
-        configs = Configs.fromFile(File(dataFolder, "configs.json").load())
+        homedataFile = File(dataFolder, "homedata.json").load()
+        configs = Configs.load(File(dataFolder, "configs.json").load())
+        homedata = HomeData.load(homedataFile)
         messenger = Messenger(this, configs.onDebug)
-        homeManager = HomeManager(this)
 
         getCommand("home").executor = HomeCommand(this)
 
@@ -22,6 +23,11 @@ class Homes : JavaPlugin() {
     }
 
     override fun onDisable() {
-        homeManager.save()
+        homedata.save(homedataFile)
+    }
+
+    private fun File.load(): File = this.apply {
+        if (!parentFile.exists()) parentFile.mkdirs()
+        if (!exists()) createNewFile()
     }
 }
