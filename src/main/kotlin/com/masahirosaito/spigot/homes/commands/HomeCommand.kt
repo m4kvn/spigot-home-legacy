@@ -40,7 +40,16 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             if (args.isEmpty()) {
                 playerHome.defaultHome?.let { player.teleport(it.toLocation()) }
             } else {
-                playerHome.namedHomes[args[0]]?.let { player.teleport(it.toLocation()) }
+                if (!plugin.configs.onNamedHome) return true
+
+                playerHome.namedHomes[args[0]].let {
+                    if (it != null) player.teleport(it.toLocation())
+                    else plugin.messenger.send(player, buildString {
+                        append(ChatColor.RED)
+                        append("Home <${ChatColor.RESET}${args[0]}${ChatColor.RED}> is not set")
+                        append(ChatColor.RESET)
+                    })
+                }
             }
         }
     }
