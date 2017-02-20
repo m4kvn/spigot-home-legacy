@@ -10,7 +10,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
+class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name: String = "home"
     override val permission = "home.command"
     val subCommands = listOf<SubCommand>(SetCommand(plugin))
@@ -20,7 +20,7 @@ class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
 
         if (sender !is Player) return true
 
-        if (!hasPermission(sender)) return sendPermissionMsg(sender, permission)
+        if (!hasPermission(sender)) return sendPermissionMsg(sender)
 
         if (args == null || args.isEmpty()) return execute(sender, emptyList())
 
@@ -28,7 +28,7 @@ class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
             return if (it.hasPermission(sender)) {
                 it.execute(sender, args.drop(1))
             } else {
-                sendPermissionMsg(sender, it.permission)
+                it.sendPermissionMsg(sender)
             }
         }
 
@@ -43,13 +43,5 @@ class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
                 playerHome.namedHomes[args[0]]?.let { player.teleport(it.toLocation()) }
             }
         }
-    }
-
-    fun sendPermissionMsg(player: Player, permission: String): Boolean = true.apply {
-        plugin.messenger.send(player, buildString {
-            append(ChatColor.RED)
-            append("You don't have permission <$permission>")
-            append(ChatColor.RESET)
-        })
     }
 }

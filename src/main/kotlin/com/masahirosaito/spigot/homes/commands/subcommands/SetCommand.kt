@@ -5,7 +5,7 @@ import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.entity.Player
 
-class SetCommand(val plugin: Homes) : SubCommand {
+class SetCommand(override val plugin: Homes) : SubCommand {
     override val name: String = "set"
     override val permission: String = "home.command.set"
 
