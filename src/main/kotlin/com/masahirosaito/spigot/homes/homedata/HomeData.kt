@@ -2,7 +2,6 @@ package com.masahirosaito.spigot.homes.homedata
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import java.io.File
 import java.util.*
 

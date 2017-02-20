@@ -9,8 +9,9 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class HomeCommand(val plugin: Homes) : CommandExecutor {
-    val permission = ""
+class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
+    override val name: String = "home"
+    override val permission = "home.command"
     val subCommands = listOf<SubCommand>(SetCommand(plugin))
 
     override fun onCommand(sender: CommandSender?, command: Command?,
@@ -18,9 +19,9 @@ class HomeCommand(val plugin: Homes) : CommandExecutor {
 
         if (sender !is Player) return true
 
-//        if (!sender.hasPermission(permission)) return sendPermissionMsg(sender, permission)
+        if (!hasPermission(sender))  return sendPermissionMsg(sender, permission)
 
-        if (args == null || args.isEmpty()) return execute(sender)
+        if (args == null || args.isEmpty()) return execute(sender, emptyList()).let { true }
 
         subCommands.find { it.name == args[0] }?.let {
             if (it.hasPermission(sender)) it.execute(sender, args.drop(1))
@@ -30,11 +31,10 @@ class HomeCommand(val plugin: Homes) : CommandExecutor {
         return true
     }
 
-    fun execute(player: Player) : Boolean {
+    override fun execute(player: Player, args: List<String>) {
         plugin.homedata.playerHomes[player.uniqueId]?.let { playerHome ->
             playerHome.defaultHome?.let { player.teleport(it.toLocation()) }
         }
-        return true
     }
 
     fun sendPermissionMsg(player: Player, permission: String): Boolean {
