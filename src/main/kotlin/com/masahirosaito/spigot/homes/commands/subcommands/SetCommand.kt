@@ -9,7 +9,7 @@ class SetCommand(val plugin: Homes) : SubCommand {
     override val name: String = "set"
     override val permission: String = "home.command.set"
 
-    override fun execute(player: Player, args: List<String>) {
+    override fun execute(player: Player, args: List<String>): Boolean {
 
         val playerHome = plugin.homedata.playerHomes[player.uniqueId] ?: PlayerHome()
 
@@ -18,7 +18,9 @@ class SetCommand(val plugin: Homes) : SubCommand {
         } else {
             playerHome.namedHomes.put(args[0], LocationData.new(player.location))
         }
-        
+
         plugin.homedata.playerHomes.put(player.uniqueId, playerHome)
+
+        return true
     }
 }

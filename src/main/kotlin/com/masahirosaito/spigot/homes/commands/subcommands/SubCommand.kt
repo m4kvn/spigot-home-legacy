@@ -6,7 +6,7 @@ interface SubCommand {
     val name: String
     val permission: String
 
-    fun execute(player: Player, args: List<String>)
+    fun execute(player: Player, args: List<String>): Boolean
 
     fun hasPermission(player: Player): Boolean {
         return if (permission.isNullOrBlank()) true else player.hasPermission(permission)

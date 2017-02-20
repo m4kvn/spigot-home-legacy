@@ -3,6 +3,7 @@ package com.masahirosaito.spigot.homes.commands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -19,30 +20,36 @@ class HomeCommand(val plugin: Homes) : CommandExecutor, SubCommand {
 
         if (sender !is Player) return true
 
-        if (!hasPermission(sender))  return sendPermissionMsg(sender, permission)
+        if (!hasPermission(sender)) return sendPermissionMsg(sender, permission)
 
-        if (args == null || args.isEmpty()) return execute(sender, emptyList()).let { true }
+        if (args == null || args.isEmpty()) return execute(sender, emptyList())
 
         subCommands.find { it.name == args[0] }?.let {
-            if (it.hasPermission(sender)) it.execute(sender, args.drop(1))
-            else return sendPermissionMsg(sender, it.permission)
+            return if (it.hasPermission(sender)) {
+                it.execute(sender, args.drop(1))
+            } else {
+                sendPermissionMsg(sender, it.permission)
+            }
         }
 
-        return true
+        return execute(sender, args.toList())
     }
 
-    override fun execute(player: Player, args: List<String>) {
+    override fun execute(player: Player, args: List<String>): Boolean = true.apply {
         plugin.homedata.playerHomes[player.uniqueId]?.let { playerHome ->
-            playerHome.defaultHome?.let { player.teleport(it.toLocation()) }
+            if (args.isEmpty()) {
+                playerHome.defaultHome?.let { player.teleport(it.toLocation()) }
+            } else {
+                playerHome.namedHomes[args[0]]?.let { player.teleport(it.toLocation()) }
+            }
         }
     }
 
-    fun sendPermissionMsg(player: Player, permission: String): Boolean {
+    fun sendPermissionMsg(player: Player, permission: String): Boolean = true.apply {
         plugin.messenger.send(player, buildString {
             append(ChatColor.RED)
             append("You don't have permission <$permission>")
             append(ChatColor.RESET)
         })
-        return true
     }
 }
