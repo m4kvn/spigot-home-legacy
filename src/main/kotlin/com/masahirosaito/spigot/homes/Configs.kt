@@ -20,10 +20,10 @@ data class Configs(
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
 
     companion object {
-        fun fromFile(file: File): Configs {
-            return file.readText().let {
-                Gson().fromJson(if (it.isNullOrBlank()) Configs().toJson() else it, Configs::class.java)
-            }.apply { file.writeText(toJson()) }
+        fun load(file: File): Configs {
+            return Gson().fromJson(file.readText().let {
+                if (it.isNullOrBlank()) Configs().toJson() else it
+            }, Configs::class.java).apply { file.writeText(toJson()) }
         }
     }
 }
