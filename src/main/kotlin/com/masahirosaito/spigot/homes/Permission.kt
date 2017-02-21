@@ -2,7 +2,9 @@ package com.masahirosaito.spigot.homes
 
 object Permission {
     val home_command = "home.command"
-    val home_command_name = "home.command.name"
-    val home_command_player = "home.command.player"
-    val home_command_player_name = "home.command.player.name"
+    val home_command_name = home_command + ".name"
+    val home_command_player = home_command + ".player"
+    val home_command_player_name = home_command_player + ".name"
+    val home_command_set = home_command + ".set"
+    val home_command_set_name = home_command_set + ".name"
 }
