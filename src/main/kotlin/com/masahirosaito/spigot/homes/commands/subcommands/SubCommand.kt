@@ -8,6 +8,7 @@ interface SubCommand {
     val plugin: Homes
     val name: String
     val permission: String
+    val usage: String
 
     fun execute(player: Player, args: List<String>): Boolean
 
@@ -21,5 +22,9 @@ interface SubCommand {
             append("You don't have permission <$permission>")
             append(ChatColor.RESET)
         })
+    }
+
+    fun sendUsage(player: Player) {
+        plugin.messenger.send(player, usage)
     }
 }

@@ -7,8 +7,15 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class SetCommand(override val plugin: Homes) : SubCommand {
-    override val name: String = "set"
-    override val permission: String = "home.command.set"
+    override val name = "set"
+    override val permission = "home.command.set"
+    override val usage = buildString {
+        append("${ChatColor.GOLD}Set Command Usage:${ChatColor.RESET}\n")
+        append("${ChatColor.BLUE}/home set${ChatColor.RESET} : Set your home\n")
+        append("${ChatColor.BLUE}/home set <home_name>${ChatColor.RESET} : Set your named home")
+    }
+
+    val messenger = plugin.messenger
 
     override fun execute(player: Player, args: List<String>): Boolean {
 
@@ -16,20 +23,27 @@ class SetCommand(override val plugin: Homes) : SubCommand {
 
         if (args.isEmpty()) {
             playerHome.defaultHome = LocationData.new(player.location)
-            plugin.messenger.send(player, buildString {
+            messenger.send(player, buildString {
                 append(ChatColor.AQUA)
                 append("Set default home")
                 append(ChatColor.RESET)
             })
         } else {
-            if (!plugin.configs.onNamedHome) return true
-
-            playerHome.namedHomes.put(args[0], LocationData.new(player.location))
-            plugin.messenger.send(player, buildString {
-                append(ChatColor.AQUA)
-                append("Set home <${ChatColor.RESET}${args[0]}${ChatColor.AQUA}>")
-                append(ChatColor.RESET)
-            })
+            if (plugin.configs.onNamedHome) {
+                playerHome.namedHomes.put(args[0], LocationData.new(player.location))
+                messenger.send(player, buildString {
+                    append(ChatColor.AQUA)
+                    append("Set home <${ChatColor.RESET}${args[0]}${ChatColor.AQUA}>")
+                    append(ChatColor.RESET)
+                })
+            } else {
+                messenger.send(player, buildString {
+                    append(ChatColor.RED)
+                    append("Currently, the named home can not be set")
+                    append(ChatColor.RESET)
+                })
+                return true
+            }
         }
 
         plugin.homedata.playerHomes.put(player.uniqueId, playerHome)
