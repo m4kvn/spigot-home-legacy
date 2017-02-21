@@ -14,7 +14,10 @@ data class Configs(
         val onNamedHome: Boolean = true,
 
         @SerializedName("他の人のホームに移動可能にする")
-        val onFriendHome: Boolean = false
+        val onFriendHome: Boolean = true,
+
+        @SerializedName("デフォルトホームにリスポーンする")
+        val onDefaultHomeRespawn: Boolean = true
 
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)

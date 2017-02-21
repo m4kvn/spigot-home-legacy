@@ -9,6 +9,9 @@ class PlayerRespawnListener(override val plugin: Homes) : HomesListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     fun onPlayerRespawn(event: PlayerRespawnEvent) {
+
+        if (!plugin.configs.onDefaultHomeRespawn) return
+
         val playerHome = plugin.homedata.playerHomes[event.player.uniqueId] ?: return
         val defaultHome = playerHome.defaultHome ?: return
 
