@@ -11,7 +11,7 @@ commands:
 permissions:
   homes.*:
     description: Grant all permissions of Homes.
-    default: off
+    default: op
     children:
       homes.general: true
   homes.general:
@@ -19,4 +19,8 @@ permissions:
     default: off
     children:
       homes.command: true
+      homes.command.name: true
+      homes.command.player: true
+      homes.command.player.name: true
       homes.command.set: true
+      homes.command.set.name: true
