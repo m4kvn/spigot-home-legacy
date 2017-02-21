@@ -18,6 +18,7 @@ import org.bukkit.entity.Player
 class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
     override val permission = Permission.home_command
+    override val result = CommandResult()
     override val usage = buildString {
         append("${ChatColor.GOLD}Home Command Usage:\n")
         append("${ChatColor.BLUE}/home${ChatColor.RESET} : Teleport to your set home\n")
@@ -57,6 +58,10 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
 
                     try {
                         it.execute(sender, args.drop(1))
+
+                        if (it.result.message.isNotBlank()) {
+                            messenger.send(sender, it.result.message)
+                        }
 
                     } catch (e: Exception) {
                         messenger.send(sender, buildString {
