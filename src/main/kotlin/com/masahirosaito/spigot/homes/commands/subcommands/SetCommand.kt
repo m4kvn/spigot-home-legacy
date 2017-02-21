@@ -18,7 +18,7 @@ class SetCommand(override val plugin: Homes) : SubCommand {
 
     val messenger = plugin.messenger
 
-    override fun execute(player: Player, args: List<String>): Boolean {
+    override fun execute(player: Player, args: List<String>) {
         val playerHome = plugin.homedata.playerHomes[player.uniqueId] ?: PlayerHome()
 
         if (args.isEmpty()) {
@@ -42,12 +42,12 @@ class SetCommand(override val plugin: Homes) : SubCommand {
                     append("Currently, the named home can not be set")
                     append(ChatColor.RESET)
                 })
-                return true
+                return
             }
         }
 
         plugin.homedata.playerHomes.put(player.uniqueId, playerHome)
 
-        return true
+        return
     }
 }

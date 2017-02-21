@@ -87,7 +87,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
         return true
     }
 
-    override fun execute(player: Player, args: List<String>): Boolean {
+    override fun execute(player: Player, args: List<String>) {
 
         try {
             val p = if (args.contains(Args.player)) {
@@ -116,7 +116,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             })
         }
 
-        return true
+        return
     }
 
     private fun getPlayer(player: Player, args: List<String>): OfflinePlayer {
