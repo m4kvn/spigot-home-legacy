@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.ChatColor
@@ -8,9 +9,9 @@ import org.bukkit.entity.Player
 
 class SetCommand(override val plugin: Homes) : SubCommand {
     override val name = "set"
-    override val permission = "home.command.set"
+    override val permission = Permission.home_command_set
     override val usage = buildString {
-        append("${ChatColor.GOLD}Set Command Usage:${ChatColor.RESET}\n")
+        append("${ChatColor.GOLD}Set Command Usage:\n")
         append("${ChatColor.BLUE}/home set${ChatColor.RESET} : Set your home\n")
         append("${ChatColor.BLUE}/home set <home_name>${ChatColor.RESET} : Set your named home")
     }
