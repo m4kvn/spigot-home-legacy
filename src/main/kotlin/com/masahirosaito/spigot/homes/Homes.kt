@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.HomeCommand
 import com.masahirosaito.spigot.homes.homedata.HomeData
+import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -18,6 +19,8 @@ class Homes : JavaPlugin() {
         messenger = Messenger(this, configs.onDebug)
 
         getCommand("home").executor = HomeCommand(this)
+
+        PlayerRespawnListener(this).register()
 
         messenger.debug("[設定確認] $configs")
     }
