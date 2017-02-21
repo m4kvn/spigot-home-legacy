@@ -161,6 +161,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     }
 
     private fun getLocation(player: OfflinePlayer, playerHome: PlayerHome, name: String): Location {
+
         return if (name.isNullOrBlank()) {
             playerHome.defaultHome ?: throw CanNotFindDefaultHomeException(player)
         } else {

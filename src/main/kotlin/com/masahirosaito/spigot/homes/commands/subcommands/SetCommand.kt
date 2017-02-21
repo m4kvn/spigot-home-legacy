@@ -19,7 +19,6 @@ class SetCommand(override val plugin: Homes) : SubCommand {
     val messenger = plugin.messenger
 
     override fun execute(player: Player, args: List<String>): Boolean {
-
         val playerHome = plugin.homedata.playerHomes[player.uniqueId] ?: PlayerHome()
 
         if (args.isEmpty()) {
