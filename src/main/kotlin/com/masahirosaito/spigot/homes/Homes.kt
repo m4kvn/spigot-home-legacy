@@ -22,7 +22,7 @@ class Homes : JavaPlugin() {
 
         PlayerRespawnListener(this).register()
 
-        messenger.debug("[設定確認] $configs")
+        UpdateChecker("MasahiroSaito", "Homes").sendVersionMessage(this)
     }
 
     override fun onDisable() {
