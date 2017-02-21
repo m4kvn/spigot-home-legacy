@@ -2,4 +2,4 @@ package com.masahirosaito.spigot.homes.exceptions
 
 import org.bukkit.OfflinePlayer
 
-class CanNotFindDefaultHomeException(val player: OfflinePlayer) : Exception()
+class CanNotFindDefaultHomeException(player: OfflinePlayer) : Exception("${player.name}'s default home does not exist")

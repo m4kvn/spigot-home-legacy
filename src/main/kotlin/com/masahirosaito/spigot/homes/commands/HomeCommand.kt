@@ -37,21 +37,54 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override fun onCommand(sender: CommandSender?, command: Command?,
                            label: String?, args: Array<out String>?): Boolean {
 
-        if (sender !is Player) return true
+        try {
 
-        if (!hasPermission(sender)) return sendPermissionMsg(sender)
-
-        if (args == null || args.isEmpty()) return execute(sender, emptyList())
-
-        subCommands.find { it.name == args[0] }?.let {
-            return if (it.hasPermission(sender)) {
-                it.execute(sender, args.drop(1))
-            } else {
-                it.sendPermissionMsg(sender)
+            if (sender !is Player) {
+                throw InValidCommandSenderException()
             }
+
+            if (!hasPermission(sender)) {
+                throw NotHavePermissionException(permission)
+            }
+
+            if (args != null && args.isNotEmpty()) {
+
+                subCommands.find { it.name == args[0] }?.let {
+
+                    if (!it.hasPermission(sender)) {
+                        throw NotHavePermissionException(it.permission)
+                    }
+
+                    try {
+                        it.execute(sender, args.drop(1))
+
+                    } catch (e: Exception) {
+                        messenger.send(sender, buildString {
+                            append(ChatColor.RED)
+                            append(e.message)
+                            append(ChatColor.RESET)
+                        })
+                    }
+
+                    return true
+                }
+
+                execute(sender, args.toList())
+
+                return true
+            }
+
+            execute(sender, emptyList())
+
+        } catch (e: Exception) {
+            messenger.send(sender!!, buildString {
+                append(ChatColor.RED)
+                append(e.message)
+                append(ChatColor.RESET)
+            })
         }
 
-        return execute(sender, args.toList())
+        return true
     }
 
     override fun execute(player: Player, args: List<String>): Boolean {
@@ -78,16 +111,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
         } catch (e: Exception) {
             messenger.send(player, buildString {
                 append(ChatColor.RED)
-                append(when (e) {
-                    is CanNotUsePlayerHomeException -> "You can not teleport to Player Home"
-                    is NotHavePermissionException -> "You don't have permission <${e.permission}>"
-                    is ArrayIndexOutOfBoundsException -> "The argument is incorrect\n$usage"
-                    is CanNotFindOfflinePlayerException -> "Player <${e.playerName}> does not exist"
-                    is CanNotFindPlayerHomeException -> "${e.player.name}'s home does not exist"
-                    is CanNotFindDefaultHomeException -> "${e.player.name}'s default home does not exist"
-                    is CanNotFindNamedHomeException -> "${e.player.name}'s named home <${e.name}> does not exist"
-                    else -> return true
-                })
+                append(e.message)
                 append(ChatColor.RESET)
             })
         }
@@ -106,7 +130,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
         }
 
         val playerName = args.drop(args.indexOf(Args.player) + 1).firstOrNull()
-                ?: throw ArrayIndexOutOfBoundsException()
+                ?: throw CommandArgumentIncorrectException(this)
 
         return Bukkit.getOfflinePlayers()
                 .find { it.name == playerName } ?: throw CanNotFindOfflinePlayerException(playerName)
@@ -116,7 +140,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     private fun getHomeName(player: Player, offlinePlayer: OfflinePlayer, args: List<String>): String {
 
         if (!plugin.configs.onNamedHome) {
-            throw CanNotUserNamedHomeException()
+            throw CanNotUseNamedHomeException()
         }
 
         if (!player.hasPermission(Permission.home_command_name)) {
@@ -129,7 +153,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             }
         }
 
-        return args.drop(args.indexOf(Args.name) + 1).firstOrNull() ?: throw ArrayIndexOutOfBoundsException()
+        return args.drop(args.indexOf(Args.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
     }
 
     private fun getPlayerHome(player: OfflinePlayer): PlayerHome {

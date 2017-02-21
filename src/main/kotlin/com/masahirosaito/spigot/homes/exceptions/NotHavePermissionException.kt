@@ -1,3 +1,3 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-class NotHavePermissionException(val permission: String) : Exception()
+class NotHavePermissionException(permission: String) : Exception("You don't have permission <$permission>")
