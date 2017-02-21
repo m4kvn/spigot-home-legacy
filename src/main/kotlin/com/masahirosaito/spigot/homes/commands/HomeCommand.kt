@@ -18,18 +18,13 @@ import org.bukkit.entity.Player
 class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
     override val permission = Permission.home_command
-    override val result = CommandResult()
+    override var resultMessage = ""
     override val usage = buildString {
         append("${ChatColor.GOLD}Home Command Usage:\n")
         append("${ChatColor.BLUE}/home${ChatColor.RESET} : Teleport to your set home\n")
         append("${ChatColor.BLUE}/home -n <home_name>${ChatColor.RESET} : Teleport to your set named home\n")
         append("${ChatColor.BLUE}/home -p <player_name>${ChatColor.RESET} : Teleport to player's set home\n")
         append("${ChatColor.BLUE}/home -p <player_name> -n <home_name>${ChatColor.RESET} : Teleport to player's set named home")
-    }
-
-    object Args {
-        val name = "-n"
-        val player = "-p"
     }
 
     val messenger = plugin.messenger
@@ -67,19 +62,19 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
 
         subCommand.execute(player, args.drop(1))
 
-        if (subCommand.result.message.isNotBlank()) {
-            messenger.send(player, subCommand.result.message)
+        if (subCommand.resultMessage.isNotBlank()) {
+            messenger.send(player, subCommand.resultMessage)
         }
     }
 
     override fun execute(player: Player, args: List<String>) {
-        val p = if (args.contains(Args.player)) {
+        val p = if (args.contains(CommandArg.player)) {
             getPlayer(player, args)
         } else {
             player
         }
 
-        val name = if (args.contains(Args.name)) {
+        val name = if (args.contains(CommandArg.name)) {
             getHomeName(player, p, args)
         } else {
             ""
@@ -102,7 +97,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             throw NotHavePermissionException(Permission.home_command_player)
         }
 
-        val playerName = args.drop(args.indexOf(Args.player) + 1).firstOrNull()
+        val playerName = args.drop(args.indexOf(CommandArg.player) + 1).firstOrNull()
                 ?: throw CommandArgumentIncorrectException(this)
 
         return Bukkit.getOfflinePlayers()
@@ -126,7 +121,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             }
         }
 
-        return args.drop(args.indexOf(Args.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
+        return args.drop(args.indexOf(CommandArg.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
     }
 
     private fun getPlayerHome(player: OfflinePlayer): PlayerHome {
