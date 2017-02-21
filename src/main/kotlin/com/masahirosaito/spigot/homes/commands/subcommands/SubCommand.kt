@@ -23,8 +23,4 @@ interface SubCommand {
             append(ChatColor.RESET)
         })
     }
-
-    fun sendUsage(player: Player) {
-        plugin.messenger.send(player, usage)
-    }
 }
