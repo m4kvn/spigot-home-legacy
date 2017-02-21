@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 interface SubCommand {
@@ -14,13 +13,5 @@ interface SubCommand {
 
     fun hasPermission(player: Player): Boolean {
         return if (permission.isNullOrBlank()) true else player.hasPermission(permission)
-    }
-
-    fun sendPermissionMsg(player: Player): Boolean = true.apply {
-        plugin.messenger.send(player, buildString {
-            append(ChatColor.RED)
-            append("You don't have permission <$permission>")
-            append(ChatColor.RESET)
-        })
     }
 }
