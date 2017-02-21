@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 
 class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
-    override val permission = Permission.home_command_name
+    override val permission = Permission.home_command
     override val usage = buildString {
         append("${GOLD}Home Command Usage:$RESET\n")
         append("$BLUE/home$RESET : Teleport to your set home\n")
