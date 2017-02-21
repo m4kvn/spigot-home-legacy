@@ -39,47 +39,13 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
                            label: String?, args: Array<out String>?): Boolean {
 
         try {
-
-            if (sender !is Player) {
-                throw InValidCommandSenderException()
+            when {
+                sender !is Player -> throw InValidCommandSenderException()
+                !hasPermission(sender) -> throw NotHavePermissionException(permission)
+                args == null || args.isEmpty() -> execute(sender, emptyList())
+                subCommands.any { it.name == args[0] } -> executeSubCommand(args, sender)
+                else -> execute(sender, args.toList())
             }
-
-            if (!hasPermission(sender)) {
-                throw NotHavePermissionException(permission)
-            }
-
-            if (args != null && args.isNotEmpty()) {
-
-                subCommands.find { it.name == args[0] }?.let {
-
-                    if (!it.hasPermission(sender)) {
-                        throw NotHavePermissionException(it.permission)
-                    }
-
-                    try {
-                        it.execute(sender, args.drop(1))
-
-                        if (it.result.message.isNotBlank()) {
-                            messenger.send(sender, it.result.message)
-                        }
-
-                    } catch (e: Exception) {
-                        messenger.send(sender, buildString {
-                            append(ChatColor.RED)
-                            append(e.message)
-                            append(ChatColor.RESET)
-                        })
-                    }
-
-                    return true
-                }
-
-                execute(sender, args.toList())
-
-                return true
-            }
-
-            execute(sender, emptyList())
 
         } catch (e: Exception) {
             messenger.send(sender!!, buildString {
@@ -92,36 +58,38 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
         return true
     }
 
-    override fun execute(player: Player, args: List<String>) {
+    private fun executeSubCommand(args: Array<out String>, player: Player) {
+        val subCommand = subCommands.find { it.name == args[0] }!!
 
-        try {
-            val p = if (args.contains(Args.player)) {
-                getPlayer(player, args)
-            } else {
-                player
-            }
-
-            val name = if (args.contains(Args.name)) {
-                getHomeName(player, p, args)
-            } else {
-                ""
-            }
-
-            val playerHome = getPlayerHome(p)
-
-            val location = getLocation(p, playerHome, name)
-
-            player.teleport(location)
-
-        } catch (e: Exception) {
-            messenger.send(player, buildString {
-                append(ChatColor.RED)
-                append(e.message)
-                append(ChatColor.RESET)
-            })
+        if (!subCommand.hasPermission(player)) {
+            throw NotHavePermissionException(subCommand.permission)
         }
 
-        return
+        subCommand.execute(player, args.drop(1))
+
+        if (subCommand.result.message.isNotBlank()) {
+            messenger.send(player, subCommand.result.message)
+        }
+    }
+
+    override fun execute(player: Player, args: List<String>) {
+        val p = if (args.contains(Args.player)) {
+            getPlayer(player, args)
+        } else {
+            player
+        }
+
+        val name = if (args.contains(Args.name)) {
+            getHomeName(player, p, args)
+        } else {
+            ""
+        }
+
+        val playerHome = getPlayerHome(p)
+
+        val location = getLocation(p, playerHome, name)
+
+        player.teleport(location)
     }
 
     private fun getPlayer(player: Player, args: List<String>): OfflinePlayer {
