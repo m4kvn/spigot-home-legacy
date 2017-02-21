@@ -8,7 +8,6 @@ import com.masahirosaito.spigot.homes.exceptions.*
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.ChatColor.*
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.Command
@@ -20,11 +19,11 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
     override val permission = Permission.home_command
     override val usage = buildString {
-        append("${GOLD}Home Command Usage:$RESET\n")
-        append("$BLUE/home$RESET : Teleport to your set home\n")
-        append("$BLUE/home -n <home_name>$RESET : Teleport to your set named home\n")
-        append("$BLUE/home -p <player_name>$RESET : Teleport to player's set home\n")
-        append("$BLUE/home -p <player_name> -n <home_name>$RESET : Teleport to player's set named home")
+        append("${ChatColor.GOLD}Home Command Usage:\n")
+        append("${ChatColor.BLUE}/home${ChatColor.RESET} : Teleport to your set home\n")
+        append("${ChatColor.BLUE}/home -n <home_name>${ChatColor.RESET} : Teleport to your set named home\n")
+        append("${ChatColor.BLUE}/home -p <player_name>${ChatColor.RESET} : Teleport to player's set home\n")
+        append("${ChatColor.BLUE}/home -p <player_name> -n <home_name>${ChatColor.RESET} : Teleport to player's set named home")
     }
 
     object Args {
