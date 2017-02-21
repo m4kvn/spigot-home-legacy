@@ -1,12 +1,22 @@
 name: Homes
-version: @version@
+version: 0.2
 main: com.masahirosaito.spigot.homes.Homes
-prefix: Homes
-depend: [MSCore]
 authors: [MasahiroSaito]
 description: This plugin allows each player to set their home point.
 website: https://github.com/MasahiroSaito/Homes
 commands:
   home:
-    description: Main Command of Spigot Plugin Homes
-    usage: /home (set)
+    description: Homes Command
+    usage: /<command> (set)
+permissions:
+  homes.*:
+    description: Grant all permissions of Homes.
+    default: off
+    children:
+      homes.general: true
+  homes.general:
+    description: Grant general permissions of Homes.
+    default: off
+    children:
+      homes.command: true
+      homes.command.set: true
