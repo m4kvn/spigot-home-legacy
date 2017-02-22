@@ -17,7 +17,10 @@ data class Configs(
         val onFriendHome: Boolean = true,
 
         @SerializedName("Allow respawning default home")
-        val onDefaultHomeRespawn: Boolean = true
+        val onDefaultHomeRespawn: Boolean = true,
+
+        @SerializedName("Allow checking update")
+        val onUpdateCheck: Boolean = true
 
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
