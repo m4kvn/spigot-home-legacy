@@ -22,7 +22,9 @@ class Homes : JavaPlugin() {
 
         PlayerRespawnListener(this).register()
 
-        UpdateChecker("MasahiroSaito", "Homes").sendVersionMessage(this)
+        if (configs.onUpdateCheck) {
+            UpdateChecker("MasahiroSaito", "Homes").sendVersionMessage(this)
+        }
     }
 
     override fun onDisable() {
