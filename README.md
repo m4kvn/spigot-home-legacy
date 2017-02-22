@@ -2,7 +2,7 @@
 
 [Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
 
-Latest release: [available here](./releases/latest)
+Latest release : [available here](./releases/latest)
 
 ## About Homes
 
@@ -38,6 +38,12 @@ The purpose of using Homes is to make simple move using commands and to set the 
 I try my best to perform as many user tests as possible, but occasionally bugs do squeak through. If you have found a bug, or perhaps just have a feature request, please [create an issue on Github](./issues)
 
 ***
+
+# Homes
+
+[Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
+
+最新版 : [available here](./releases/latest)
 
 ## Homes について
 
