@@ -27,11 +27,14 @@ The purpose of using Homes is to make simple move using commands and to set the 
     - the respawn home feature
     - the update checking feature
 
-## More Information
+## Features Coming Soon
 
-- [Command reference](./wiki/Commands)
-- [List of Permissions](./wiki/Permissions)
-- [List of Configurations](./wiki/Configs)
+- Display a list of homes set by you and other players
+- Delete the set home
+- Move other players to your home
+- Set Private home
+- Help Command
+- Visualization of homes
 
 ## Bug Report / Feature Request
 
@@ -68,11 +71,14 @@ Homes を利用する目的は、コマンドを使った簡単な移動とリ�
     - ホームリスポーン機能
     - アップデート確認機能
 
-## 追加情報
+## 近日実装予定の機能
 
-- [コマンドの使い方](./wiki/Commands)
-- [権限リスト](./wiki/Permissions)
-- [設定リスト](./wiki/Configs)
+- 自分と他のプレイヤーの設定したホームの一覧を表示する機能
+- 設定したホームを削除する機能
+- 自分のホームに他のプレイヤーを移動させる機能
+- プライベートホームの設定機能
+- ヘルプ機能
+- 設定したホームの可視化機能
 
 ## バグ報告 / 機能要望
 
