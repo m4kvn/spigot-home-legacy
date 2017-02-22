@@ -7,16 +7,16 @@ import java.io.File
 
 data class Configs(
 
-        @SerializedName("デバッグメッセージを表示する")
+        @SerializedName("Allow showing debug messages")
         val onDebug: Boolean = false,
 
-        @SerializedName("名前付きホームを設定可能にする")
+        @SerializedName("Allow using named home")
         val onNamedHome: Boolean = true,
 
-        @SerializedName("他の人のホームに移動可能にする")
+        @SerializedName("Allow using player's home")
         val onFriendHome: Boolean = true,
 
-        @SerializedName("デフォルトホームにリスポーンする")
+        @SerializedName("Allow respawning default home")
         val onDefaultHomeRespawn: Boolean = true
 
 ) {
