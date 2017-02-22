@@ -68,20 +68,9 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     }
 
     override fun execute(player: Player, args: List<String>) {
-        val p = if (args.contains(CommandArg.player)) {
-            getPlayer(player, args)
-        } else {
-            player
-        }
-
-        val name = if (args.contains(CommandArg.name)) {
-            getHomeName(player, p, args)
-        } else {
-            ""
-        }
-
+        val p = if (args.contains(CommandArg.player)) getPlayer(player, args) else player
+        val name = if (args.contains(CommandArg.name)) getHomeName(player, p, args) else ""
         val playerHome = getPlayerHome(p)
-
         val location = getLocation(p, playerHome, name)
 
         player.teleport(location)
