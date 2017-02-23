@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.commands.subcommands.DeleteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
@@ -22,16 +23,17 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override var resultMessage = ""
     override val usage = buildString {
         append("${ChatColor.GOLD}Home Command Usage:\n")
-        append("${ChatColor.BLUE}/home${ChatColor.RESET} : Teleport to your set default home\n")
-        append("${ChatColor.BLUE}/home -n <home_name>${ChatColor.RESET} : Teleport to your set named home\n")
-        append("${ChatColor.BLUE}/home -p <player_name>${ChatColor.RESET} : Teleport to player's set default home\n")
-        append("${ChatColor.BLUE}/home -p <player_name> -n <home_name>${ChatColor.RESET} : Teleport to player's set named home")
+        append("${ChatColor.AQUA}/home${ChatColor.RESET} : Teleport to your set default home\n")
+        append("${ChatColor.AQUA}/home -n <home_name>${ChatColor.RESET} : Teleport to your set named home\n")
+        append("${ChatColor.AQUA}/home -p <player_name>${ChatColor.RESET} : Teleport to player's set default home\n")
+        append("${ChatColor.AQUA}/home -p <player_name> -n <home_name>${ChatColor.RESET} : Teleport to player's set named home")
     }
 
     val messenger = plugin.messenger
     val subCommands = listOf(
             SetCommand(plugin),
-            ListCommand(plugin)
+            ListCommand(plugin),
+            DeleteCommand(plugin)
     )
 
     override fun onCommand(sender: CommandSender?, command: Command?,

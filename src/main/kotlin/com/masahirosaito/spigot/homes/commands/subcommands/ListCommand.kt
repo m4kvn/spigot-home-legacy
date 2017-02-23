@@ -18,8 +18,8 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     override var resultMessage = ""
     override val usage = buildString {
         append("${ChatColor.GOLD}List Command Usage:\n")
-        append("${ChatColor.BLUE}/home list${ChatColor.RESET} : Display the list of set homes\n")
-        append("${ChatColor.BLUE}/home list <player_name>${ChatColor.RESET} : Display the list of player's set homes")
+        append("${ChatColor.AQUA}/home list${ChatColor.RESET} : Display the list of set homes\n")
+        append("${ChatColor.AQUA}/home list <player_name>${ChatColor.RESET} : Display the list of player's set homes")
     }
 
     override fun execute(player: Player, args: List<String>) {
