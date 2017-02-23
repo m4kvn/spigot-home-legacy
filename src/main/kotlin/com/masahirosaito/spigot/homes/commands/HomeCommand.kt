@@ -2,10 +2,7 @@ package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.commands.subcommands.DeleteCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.ListCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.*
 import com.masahirosaito.spigot.homes.exceptions.*
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.Bukkit
@@ -21,6 +18,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
     override val permission = Permission.home_command
     override var resultMessage = ""
+    override val description = "Homes Command"
     override val usage = buildString {
         append("${ChatColor.GOLD}Home Command Usage:\n")
         append("${ChatColor.AQUA}/home${ChatColor.RESET} : Teleport to your set default home\n")
@@ -33,7 +31,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     val subCommands = listOf(
             SetCommand(plugin),
             ListCommand(plugin),
-            DeleteCommand(plugin)
+            DeleteCommand(plugin),
+            HelpCommand(plugin, this)
     )
 
     override fun onCommand(sender: CommandSender?, command: Command?,

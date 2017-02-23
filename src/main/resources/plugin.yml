@@ -28,3 +28,5 @@ permissions:
       homes.command.list.player: true
       homes.command.delete: true
       homes.command.delete.name: true
+      homes.command.help: true
+      homes.command.help.command: true

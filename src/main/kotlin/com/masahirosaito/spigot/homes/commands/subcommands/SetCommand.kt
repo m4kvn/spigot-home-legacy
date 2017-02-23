@@ -12,6 +12,7 @@ class SetCommand(override val plugin: Homes) : SubCommand {
     override val name = "set"
     override val permission = Permission.home_command_set
     override var resultMessage = ""
+    override val description = "Set your home"
     override val usage = buildString {
         append("${ChatColor.GOLD}Set Command Usage:\n")
         append("${ChatColor.AQUA}/home set${ChatColor.RESET} : Set your location to your default home\n")

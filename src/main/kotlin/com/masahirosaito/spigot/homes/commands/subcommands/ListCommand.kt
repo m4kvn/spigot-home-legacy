@@ -16,6 +16,7 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     override val name = "list"
     override val permission = Permission.home_command_list
     override var resultMessage = ""
+    override val description = "Display the list of your homes"
     override val usage = buildString {
         append("${ChatColor.GOLD}List Command Usage:\n")
         append("${ChatColor.AQUA}/home list${ChatColor.RESET} : Display the list of set homes\n")

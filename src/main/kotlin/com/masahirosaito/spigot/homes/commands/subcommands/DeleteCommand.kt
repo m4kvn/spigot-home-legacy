@@ -10,6 +10,7 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
     override val name: String = "delete"
     override val permission: String = Permission.home_command_delete
     override var resultMessage: String = ""
+    override val description: String = "Delete your home"
     override val usage: String = buildString {
         append("${ChatColor.GOLD}Delete Command Usage:\n")
         append("${ChatColor.AQUA}/home delete ${ChatColor.RESET} : Delete your default home\n")
@@ -55,7 +56,7 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
             throw CanNotFindNamedHomeException(player, name)
 
         playerHome.namedHomes.remove(name)
-        resultMessage = buildString { 
+        resultMessage = buildString {
             append(ChatColor.AQUA)
             append("Successfully delete your named home <")
             append(ChatColor.RESET)

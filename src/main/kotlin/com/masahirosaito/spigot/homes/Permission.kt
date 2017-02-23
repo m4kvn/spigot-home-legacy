@@ -11,4 +11,6 @@ object Permission {
     val home_command_list_player = home_command_list + ".player"
     val home_command_delete = home_command + ".delete"
     val home_command_delete_name = home_command_delete + ".name"
+    val home_command_help = home_command + ".help"
+    val home_command_help_command = home_command_help + ".command"
 }
