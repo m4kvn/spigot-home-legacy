@@ -1,8 +1,8 @@
 # Homes
 
-[Wiki](../../wiki) | [Commands](../../wiki/Commands) | [Permissions](../../wiki/Permissions) | [Configs](../../wiki/Configs)
+[Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
 
-Latest release : [available here](../../releases/latest)
+Latest release : [available here](./releases/latest)
 
 ## About Homes
 
@@ -38,15 +38,15 @@ The purpose of using Homes is to make simple move using commands and to set the 
 
 ## Bug Report / Feature Request
 
-I try my best to perform as many user tests as possible, but occasionally bugs do squeak through. If you have found a bug, or perhaps just have a feature request, please [create an issue on Github](../../issues)
+I try my best to perform as many user tests as possible, but occasionally bugs do squeak through. If you have found a bug, or perhaps just have a feature request, please [create an issue on Github](./issues)
 
 ***
 
 # Homes
 
-[Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
+[Wiki](../../wiki) | [Commands](../../wiki/Commands) | [Permissions](../../wiki/Permissions) | [Configs](../../wiki/Configs)
 
-最新版 : [available here](./releases/latest)
+最新版 : [available here](../../releases/latest)
 
 ## Homes について
 
@@ -82,4 +82,4 @@ Homes を利用する目的は、コマンドを使った簡単な移動とリ�
 
 ## バグ報告 / 機能要望
 
-できるだけバグがないようテストを行っていますが、ときにはバグが見つかることがあります。バグを見つけた場合や、機能追加の要望があれば [GitHub で Issue を作成](./issues) してください。
+できるだけバグがないようテストを行っていますが、ときにはバグが見つかることがあります。バグを見つけた場合や、機能追加の要望があれば [GitHub で Issue を作成](../../issues) してください。
