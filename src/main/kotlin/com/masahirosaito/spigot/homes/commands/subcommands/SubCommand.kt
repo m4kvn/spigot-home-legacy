@@ -8,6 +8,7 @@ interface SubCommand {
     val name: String
     val permission: String
     var resultMessage: String
+    val description: String
     val usage: String
 
     fun execute(player: Player, args: List<String>)
