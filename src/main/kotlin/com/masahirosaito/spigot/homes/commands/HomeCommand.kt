@@ -2,10 +2,7 @@ package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.commands.subcommands.DeleteCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.ListCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.*
 import com.masahirosaito.spigot.homes.exceptions.*
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.Bukkit
@@ -34,7 +31,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     val subCommands = listOf(
             SetCommand(plugin),
             ListCommand(plugin),
-            DeleteCommand(plugin)
+            DeleteCommand(plugin),
+            HelpCommand(plugin, this)
     )
 
     override fun onCommand(sender: CommandSender?, command: Command?,
