@@ -21,6 +21,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     override val name = "home"
     override val permission = Permission.home_command
     override var resultMessage = ""
+    override val description = "Homes Command"
     override val usage = buildString {
         append("${ChatColor.GOLD}Home Command Usage:\n")
         append("${ChatColor.AQUA}/home${ChatColor.RESET} : Teleport to your set default home\n")
