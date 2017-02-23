@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands
 
-object CommandArg {
+object Option {
     val name = "-n"
     val player = "-p"
 }
