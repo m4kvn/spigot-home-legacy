@@ -25,3 +25,4 @@ permissions:
       homes.command.set: true
       homes.command.set.name: true
       homes.command.list: true
+      homes.command.list.player: true
