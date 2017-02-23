@@ -6,7 +6,7 @@ Latest release : [available here](./releases/latest)
 
 ## About Homes
 
-The purpose of using Homes is to make simple move using commands and to set the respwan location. First, you use the setting command to set the place where you are location as the point called **home**. Then you can move to the set **home** using the command for movement. Also, if you dead, you can respawn to that **home**.
+The purpose of using Homes is to make simple move using commands and to set the respawn location. First, you use the setting command to set the place where you are location as the point called **home**. Then you can move to the set **home** using the command for movement. Also, if you dead, you can respawn to that **home**.
 
 ## Homes Features
 
