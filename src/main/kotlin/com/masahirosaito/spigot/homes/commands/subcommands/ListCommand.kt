@@ -35,12 +35,12 @@ class ListCommand(override val plugin: Homes) : SubCommand {
 
         return buildString {
             append("Home List")
-            playerHome.defaultHome?.let { append("\n [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}") }
+            playerHome.defaultHome?.let { append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}") }
 
             if (playerHome.namedHomes.isNotEmpty()) {
-                append("\n [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
+                append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
                 playerHome.namedHomes.forEach {
-                    append(" - ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET}: ${getText(it.value)}\n")
+                    append("    ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET} : ${getText(it.value)}\n")
                 }
             }
         }
@@ -70,7 +70,7 @@ class ListCommand(override val plugin: Homes) : SubCommand {
 
         return buildString {
             append("$g${Bukkit.getWorld(it.worldUid).name}$r, ")
-            append("x=$a${it.x.toInt()}$r, y=$a${it.y.toInt()}$r, z=$a${it.z.toInt()}$r")
+            append("{$a${it.x.toInt()}$r, $a${it.y.toInt()}$r, $a${it.z.toInt()}$r}")
         }
     }
 }
