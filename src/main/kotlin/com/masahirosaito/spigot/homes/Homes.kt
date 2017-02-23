@@ -21,10 +21,6 @@ class Homes : JavaPlugin() {
         getCommand("home").executor = HomeCommand(this)
 
         PlayerRespawnListener(this).register()
-
-        if (configs.onUpdateCheck) {
-            UpdateChecker("MasahiroSaito", "Homes").sendVersionMessage(this)
-        }
     }
 
     override fun onDisable() {
