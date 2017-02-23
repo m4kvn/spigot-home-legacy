@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.commands.subcommands.DeleteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
@@ -31,7 +32,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     val messenger = plugin.messenger
     val subCommands = listOf(
             SetCommand(plugin),
-            ListCommand(plugin)
+            ListCommand(plugin),
+            DeleteCommand(plugin)
     )
 
     override fun onCommand(sender: CommandSender?, command: Command?,
