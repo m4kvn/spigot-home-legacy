@@ -4,7 +4,6 @@ import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.exceptions.*
 import org.bukkit.ChatColor
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class DeleteCommand(override val plugin: Homes) : SubCommand {
@@ -13,20 +12,20 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
     override var resultMessage: String = ""
     override val usage: String = buildString {
         append("${ChatColor.GOLD}Delete Command Usage:\n")
-        append("${ChatColor.AQUA}/home delete -y${ChatColor.RESET} : Delete your default home\n")
-        append("${ChatColor.AQUA}/home delete -y <home_name>${ChatColor.RESET} : Delete your named home")
+        append("${ChatColor.AQUA}/home delete ${ChatColor.RESET} : Delete your default home\n")
+        append("${ChatColor.AQUA}/home delete <home_name>${ChatColor.RESET} : Delete your named home")
     }
 
     override fun execute(player: Player, args: List<String>) {
 
-        when {
-            args.isEmpty() || args[0] != "-y" -> throw CommandArgumentIncorrectException(this)
-            args.size == 1 -> deleteHome(player)
-            else -> deleteNamedHome(player, args[1])
+        when (args.size) {
+            0 -> deleteHome(player)
+            1 -> deleteNamedHome(player, args[0])
+            else -> throw CommandArgumentIncorrectException(this)
         }
     }
 
-    private fun deleteHome(player: OfflinePlayer) {
+    private fun deleteHome(player: Player) {
         val playerHome = plugin.homedata.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
@@ -34,10 +33,14 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
             throw CanNotFindDefaultHomeException(player)
 
         playerHome.defaultHome = null
-        resultMessage = "${ChatColor.AQUA}Successfully delete your default home${ChatColor.RESET}"
+        resultMessage = buildString {
+            append(ChatColor.AQUA)
+            append("Successfully delete your default home")
+            append(ChatColor.RESET)
+        }
     }
 
-    private fun deleteNamedHome(player: Player, homeName: String) {
+    private fun deleteNamedHome(player: Player, name: String) {
 
         if (!plugin.configs.onNamedHome)
             throw CanNotUseNamedHomeException()
@@ -48,12 +51,18 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
         val playerHome = plugin.homedata.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
-        if (playerHome.namedHomes[homeName] == null)
-            throw CanNotFindNamedHomeException(player, homeName)
+        if (playerHome.namedHomes[name] == null)
+            throw CanNotFindNamedHomeException(player, name)
 
-        playerHome.namedHomes.remove(homeName)
-        resultMessage = "${ChatColor.AQUA}Successfully delete your named home <" +
-                "${ChatColor.RESET}$homeName${ChatColor.AQUA}" +
-                ">${ChatColor.RESET}"
+        playerHome.namedHomes.remove(name)
+        resultMessage = buildString { 
+            append(ChatColor.AQUA)
+            append("Successfully delete your named home <")
+            append(ChatColor.RESET)
+            append(name)
+            append(ChatColor.AQUA)
+            append(">")
+            append(ChatColor.RESET)
+        }
     }
 }
