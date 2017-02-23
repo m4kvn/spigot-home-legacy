@@ -74,8 +74,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     }
 
     override fun execute(player: Player, args: List<String>) {
-        val p = if (args.contains(CommandArg.player)) getPlayer(player, args) else player
-        val name = if (args.contains(CommandArg.name)) getHomeName(player, p, args) else ""
+        val p = if (args.contains(Option.player)) getPlayer(player, args) else player
+        val name = if (args.contains(Option.name)) getHomeName(player, p, args) else ""
         val playerHome = getPlayerHome(p)
         val location = getLocation(p, playerHome, name)
 
@@ -92,7 +92,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             throw NotHavePermissionException(Permission.home_command_player)
         }
 
-        val playerName = args.drop(args.indexOf(CommandArg.player) + 1).firstOrNull()
+        val playerName = args.drop(args.indexOf(Option.player) + 1).firstOrNull()
                 ?: throw CommandArgumentIncorrectException(this)
 
         return Bukkit.getOfflinePlayers()
@@ -116,7 +116,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             }
         }
 
-        return args.drop(args.indexOf(CommandArg.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
+        return args.drop(args.indexOf(Option.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
     }
 
     private fun getPlayerHome(player: OfflinePlayer): PlayerHome {
