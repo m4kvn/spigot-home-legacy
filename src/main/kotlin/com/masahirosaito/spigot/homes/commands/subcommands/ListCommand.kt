@@ -2,10 +2,14 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.exceptions.CanNotFindOfflinePlayerException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindPlayerHomeException
+import com.masahirosaito.spigot.homes.exceptions.CanNotUsePlayerHomeException
+import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class ListCommand(override val plugin: Homes) : SubCommand {
@@ -22,11 +26,11 @@ class ListCommand(override val plugin: Homes) : SubCommand {
 
         resultMessage = when {
             args.isEmpty() -> getHomeList(player)
-            else -> getPlayerHomeList(player, args.drop(1))
+            else -> getPlayerHomeList(player, args)
         }
     }
 
-    private fun getHomeList(player: Player): String {
+    private fun getHomeList(player: OfflinePlayer): String {
         val playerHome = plugin.homedata.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
 
         return buildString {
@@ -43,14 +47,26 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun getPlayerHomeList(player: Player, args: List<String>): String {
-        return ""
+
+        if (!plugin.configs.onFriendHome) {
+            throw CanNotUsePlayerHomeException()
+        }
+
+        if (!player.hasPermission(Permission.home_command_list_player)) {
+            throw NotHavePermissionException(Permission.home_command_list_player)
+        }
+
+        val playerName = args[0]
+        val offlinePlayer = Bukkit.getOfflinePlayers().find { it.name == playerName }
+                ?: throw CanNotFindOfflinePlayerException(playerName)
+
+        return getHomeList(offlinePlayer)
     }
 
     private fun getText(it: LocationData): String {
         val r = ChatColor.RESET
         val g = ChatColor.GREEN
         val a = ChatColor.AQUA
-        val y = ChatColor.YELLOW
 
         return buildString {
             append("$g${Bukkit.getWorld(it.worldUid).name}$r, ")
