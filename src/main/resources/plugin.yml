@@ -24,3 +24,4 @@ permissions:
       homes.command.player.name: true
       homes.command.set: true
       homes.command.set.name: true
+      homes.command.list: true
