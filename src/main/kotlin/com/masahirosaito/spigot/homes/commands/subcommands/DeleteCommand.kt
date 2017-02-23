@@ -13,8 +13,8 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
     override var resultMessage: String = ""
     override val usage: String = buildString {
         append("${ChatColor.GOLD}Delete Command Usage:\n")
-        append("${ChatColor.BLUE}/home delete -y${ChatColor.RESET} : Delete your default home\n")
-        append("${ChatColor.BLUE}/home delete -y <home_name>${ChatColor.RESET} : Delete your named home")
+        append("${ChatColor.AQUA}/home delete -y${ChatColor.RESET} : Delete your default home\n")
+        append("${ChatColor.AQUA}/home delete -y <home_name>${ChatColor.RESET} : Delete your named home")
     }
 
     override fun execute(player: Player, args: List<String>) {
