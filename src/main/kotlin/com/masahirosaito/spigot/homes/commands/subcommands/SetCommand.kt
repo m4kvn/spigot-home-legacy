@@ -3,6 +3,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException
+import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.ChatColor
@@ -29,7 +30,7 @@ class SetCommand(override val plugin: Homes) : SubCommand {
                     append(ChatColor.GOLD)
 
                     if (args.isEmpty()) {
-                        defaultHome = it
+                        defaultHomeData = HomeData(it)
                         append("default home")
                     } else {
 
@@ -37,7 +38,7 @@ class SetCommand(override val plugin: Homes) : SubCommand {
                             throw NotHavePermissionException(Permission.home_command_set_name)
                         }
 
-                        namedHomes.put(args[0], it)
+                        namedHomeData.put(args[0], HomeData(it))
                         append("named home <${ChatColor.RESET}${args[0]}${ChatColor.GOLD}>")
                     }
 

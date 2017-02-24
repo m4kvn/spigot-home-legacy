@@ -30,10 +30,10 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
         val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
-        if (playerHome.defaultHome == null)
+        if (playerHome.defaultHomeData == null)
             throw CanNotFindDefaultHomeException(player)
 
-        playerHome.defaultHome = null
+        playerHome.defaultHomeData = null
         resultMessage = buildString {
             append(ChatColor.AQUA)
             append("Successfully delete your default home")
@@ -52,10 +52,10 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
         val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
-        if (playerHome.namedHomes[name] == null)
+        if (playerHome.namedHomeData[name] == null)
             throw CanNotFindNamedHomeException(player, name)
 
-        playerHome.namedHomes.remove(name)
+        playerHome.namedHomeData.remove(name)
         resultMessage = buildString {
             append(ChatColor.AQUA)
             append("Successfully delete your named home <")

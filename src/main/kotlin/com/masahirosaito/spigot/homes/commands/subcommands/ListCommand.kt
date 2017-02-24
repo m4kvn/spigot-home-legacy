@@ -32,16 +32,20 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun getHomeList(player: OfflinePlayer): String {
-        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
+        val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
+                ?: throw CanNotFindPlayerHomeException(player)
 
         return buildString {
             append("Home List")
-            playerHome.defaultHome?.let { append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}") }
+            playerHome.defaultHomeData?.let {
+                append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it.locationData)}")
+            }
 
-            if (playerHome.namedHomes.isNotEmpty()) {
+            if (playerHome.namedHomeData.isNotEmpty()) {
                 append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
-                playerHome.namedHomes.forEach {
-                    append("    ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET} : ${getText(it.value)}\n")
+                playerHome.namedHomeData.forEach {
+                    append("    ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET}")
+                    append(" : ${getText(it.value.locationData)}\n")
                 }
             }
         }
