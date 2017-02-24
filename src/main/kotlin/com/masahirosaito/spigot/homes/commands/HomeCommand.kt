@@ -119,7 +119,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     }
 
     private fun getPlayerHome(player: OfflinePlayer): PlayerHome {
-        return plugin.homedata.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
+        return plugin.homeManager.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
     }
 
     private fun getLocation(player: OfflinePlayer, playerHome: PlayerHome, name: String): Location {

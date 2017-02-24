@@ -20,8 +20,8 @@ class SetCommand(override val plugin: Homes) : SubCommand {
     }
 
     override fun execute(player: Player, args: List<String>) {
-        plugin.homedata.playerHomes.put(
-                player.uniqueId, (plugin.homedata.playerHomes[player.uniqueId] ?: PlayerHome()).apply {
+        plugin.homeManager.playerHomes.put(
+                player.uniqueId, (plugin.homeManager.playerHomes[player.uniqueId] ?: PlayerHome()).apply {
             LocationData.new(player.location).let {
                 resultMessage = buildString {
                     append(ChatColor.AQUA)

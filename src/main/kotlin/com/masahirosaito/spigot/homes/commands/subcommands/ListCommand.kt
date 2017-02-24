@@ -32,7 +32,7 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun getHomeList(player: OfflinePlayer): String {
-        val playerHome = plugin.homedata.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
+        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
 
         return buildString {
             append("Home List")

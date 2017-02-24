@@ -27,7 +27,7 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun deleteHome(player: Player) {
-        val playerHome = plugin.homedata.playerHomes[player.uniqueId]
+        val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
         if (playerHome.defaultHome == null)
@@ -49,7 +49,7 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
         if (!player.hasPermission(Permission.home_command_delete_name))
             throw NotHavePermissionException(Permission.home_command_delete_name)
 
-        val playerHome = plugin.homedata.playerHomes[player.uniqueId]
+        val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
         if (playerHome.namedHomes[name] == null)
