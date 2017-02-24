@@ -26,26 +26,32 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     override fun execute(player: Player, args: List<String>) {
 
         resultMessage = when {
-            args.isEmpty() -> getHomeList(player)
+            args.isEmpty() -> getHomeList(player, false)
             else -> getPlayerHomeList(player, args)
         }
     }
 
-    private fun getHomeList(player: OfflinePlayer): String {
+    private fun getHomeList(player: OfflinePlayer, isPlayerHomeList: Boolean): String {
         val playerHome = plugin.homeManager.playerHomes[player.uniqueId]
                 ?: throw CanNotFindPlayerHomeException(player)
 
         return buildString {
             append("Home List")
             playerHome.defaultHomeData?.let {
-                append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it.locationData)}")
+                if (!isPlayerHomeList || !it.isPrivate) {
+                    append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] " +
+                            getText(it.locationData, it.isPrivate))
+                }
             }
 
-            if (playerHome.namedHomeData.isNotEmpty()) {
+            val namedHomeData = playerHome.namedHomeData
+                    .filter { !isPlayerHomeList || !it.value.isPrivate }
+
+            if (namedHomeData.isNotEmpty()) {
                 append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
-                playerHome.namedHomeData.forEach {
+                namedHomeData.forEach {
                     append("    ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET}")
-                    append(" : ${getText(it.value.locationData)}\n")
+                    append(" : ${getText(it.value.locationData, it.value.isPrivate)}\n")
                 }
             }
         }
@@ -65,17 +71,20 @@ class ListCommand(override val plugin: Homes) : SubCommand {
         val offlinePlayer = Bukkit.getOfflinePlayers().find { it.name == playerName }
                 ?: throw CanNotFindOfflinePlayerException(playerName)
 
-        return getHomeList(offlinePlayer)
+        return getHomeList(offlinePlayer, true)
     }
 
-    private fun getText(it: LocationData): String {
+    private fun getText(ld: LocationData, isPrivate: Boolean): String {
         val r = ChatColor.RESET
         val g = ChatColor.GREEN
         val a = ChatColor.AQUA
+        val y = ChatColor.YELLOW
+        val b = ChatColor.BLUE
 
         return buildString {
-            append("$g${Bukkit.getWorld(it.worldUid).name}$r, ")
-            append("{$a${it.x.toInt()}$r, $a${it.y.toInt()}$r, $a${it.z.toInt()}$r}")
+            append("$g${Bukkit.getWorld(ld.worldUid).name}$r, ")
+            append("{$a${ld.x.toInt()}$r, $a${ld.y.toInt()}$r, $a${ld.z.toInt()}$r}, ")
+            append(if (isPrivate) "${y}PRIVATE$r" else "${b}PUBLIC$r")
         }
     }
 }
