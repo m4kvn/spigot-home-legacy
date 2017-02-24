@@ -2,7 +2,7 @@
 
 [Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
 
-Latest release : [available here](./releases/latest)
+Download : [Homes - Teleportation Plugin - Bukkit Plugins](https://dev.bukkit.org/projects/homes-teleportation-plugin)
 
 - [日本語](./README_JA.md)
 

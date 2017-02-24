@@ -2,7 +2,9 @@
 
 [Wiki](../../wiki) | [Commands](../../wiki/Commands) | [Permissions](../../wiki/Permissions) | [Configs](../../wiki/Configs)
 
-最新版 : [ここから](../../releases/latest)
+ダウンロード：[Homes - Teleportation Plugin - Bukkit Plugins](https://dev.bukkit.org/projects/homes-teleportation-plugin)
+
+- [English](./READNE.md)
 
 ## Homes について
 
