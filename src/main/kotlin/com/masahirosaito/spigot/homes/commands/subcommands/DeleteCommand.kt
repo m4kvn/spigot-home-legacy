@@ -43,9 +43,6 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
 
     private fun deleteNamedHome(player: Player, name: String) {
 
-        if (!plugin.configs.onNamedHome)
-            throw NotAllowedByConfigException()
-
         if (!player.hasPermission(Permission.home_command_delete_name))
             throw NotHavePermissionException(Permission.home_command_delete_name)
 
