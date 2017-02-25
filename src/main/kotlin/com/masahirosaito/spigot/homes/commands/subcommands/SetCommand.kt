@@ -33,8 +33,7 @@ class SetCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun setDefaultHome(player: Player) {
-        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?:
-                PlayerHome().apply { plugin.homeManager.playerHomes.put(player.uniqueId, this) }
+        val playerHome = playerHome(player)
         val location = LocationData.new(player.location)
         val homeData = playerHome.defaultHomeData
 
@@ -48,21 +47,17 @@ class SetCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun setNamedHome(player: Player, name: String) {
+        checkNamedHomeConfig()
+        checkSetNamePermission(player)
 
-        if (!plugin.configs.onNamedHome)
-            throw NotAllowedByConfigException()
-
-        if (!player.hasPermission(Permission.home_command_set_name))
-            throw NotHavePermissionException(Permission.home_command_set_name)
-
-        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?:
-                PlayerHome().apply { plugin.homeManager.playerHomes.put(player.uniqueId, this) }
+        val playerHome = playerHome(player)
         val location = LocationData.new(player.location)
         val homeData = playerHome.namedHomeData[name]
 
         if (homeData != null) {
             homeData.locationData = location
         } else {
+            checkLimit(playerHome)
             playerHome.namedHomeData.put(name, HomeData(location))
         }
 
@@ -70,6 +65,25 @@ class SetCommand(override val plugin: Homes) : SubCommand {
             append("${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}")
             append("home named <${ChatColor.RESET}$name${ChatColor.GOLD}>")
             append(ChatColor.RESET)
+        }
+    }
+
+    private fun checkNamedHomeConfig() {
+        if (!plugin.configs.onNamedHome) throw NotAllowedByConfigException()
+    }
+
+    private fun checkSetNamePermission(player: Player) {
+        if (!player.hasPermission(Permission.home_command_set_name))
+            throw NotHavePermissionException(Permission.home_command_set_name)
+    }
+
+    private fun playerHome(player: Player) = plugin.homeManager.playerHomes[player.uniqueId] ?:
+            PlayerHome().apply { plugin.homeManager.playerHomes.put(player.uniqueId, this) }
+
+    private fun checkLimit(playerHome: PlayerHome) {
+        if (plugin.configs.homeLimit != -1 && plugin.configs.homeLimit <= playerHome.namedHomeData.size) {
+            throw Exception("You can not set more homes " +
+                    "(Limit: ${ChatColor.RESET}${plugin.configs.homeLimit}${ChatColor.RED})")
         }
     }
 }
