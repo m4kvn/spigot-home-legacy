@@ -4,7 +4,7 @@ import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOfflinePlayerException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindPlayerHomeException
-import com.masahirosaito.spigot.homes.exceptions.CanNotUsePlayerHomeException
+import com.masahirosaito.spigot.homes.exceptions.NotAllowedByConfigException
 import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import org.bukkit.Bukkit
@@ -60,7 +60,7 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     private fun getPlayerHomeList(player: Player, args: List<String>): String {
 
         if (!plugin.configs.onFriendHome) {
-            throw CanNotUsePlayerHomeException()
+            throw NotAllowedByConfigException()
         }
 
         if (!player.hasPermission(Permission.home_command_list_player)) {

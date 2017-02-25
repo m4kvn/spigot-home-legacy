@@ -85,7 +85,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     private fun getPlayer(player: Player, args: List<String>): OfflinePlayer {
 
         if (!plugin.configs.onFriendHome) {
-            throw CanNotUsePlayerHomeException()
+            throw NotAllowedByConfigException()
         }
 
         if (!player.hasPermission(Permission.home_command_player)) {
@@ -103,7 +103,7 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     private fun getHomeName(player: Player, offlinePlayer: OfflinePlayer, args: List<String>): String {
 
         if (!plugin.configs.onNamedHome) {
-            throw CanNotUseNamedHomeException()
+            throw NotAllowedByConfigException()
         }
 
         if (!player.hasPermission(Permission.home_command_name)) {
