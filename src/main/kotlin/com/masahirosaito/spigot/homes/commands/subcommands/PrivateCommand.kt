@@ -27,9 +27,8 @@ class PrivateCommand(override val plugin: Homes) : SubCommand {
         if (!plugin.configs.onPrivate)
             throw NotAllowedByConfigException()
 
-        if (args.isEmpty() || 2 < args.size || !options.contains(args[0])) {
+        if (args.isEmpty() || 2 < args.size || !options.contains(args[0]))
             throw CommandArgumentIncorrectException(this)
-        }
 
         when (args.size) {
             1 -> setDefaultHomePrivate(player, args)
