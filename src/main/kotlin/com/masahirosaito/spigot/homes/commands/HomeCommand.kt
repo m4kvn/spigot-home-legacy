@@ -4,10 +4,10 @@ import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.subcommands.*
 import com.masahirosaito.spigot.homes.exceptions.*
+import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -62,9 +62,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     private fun executeSubCommand(args: Array<out String>, player: Player) {
         val subCommand = subCommands.find { it.name == args[0] }!!
 
-        if (!subCommand.hasPermission(player)) {
+        if (!subCommand.hasPermission(player))
             throw NotHavePermissionException(subCommand.permission)
-        }
 
         subCommand.execute(player, args.drop(1))
 
@@ -74,61 +73,69 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
     }
 
     override fun execute(player: Player, args: List<String>) {
-        val p = if (args.contains(Option.player)) getPlayer(player, args) else player
-        val name = if (args.contains(Option.name)) getHomeName(player, p, args) else ""
-        val playerHome = getPlayerHome(p)
-        val location = getLocation(p, playerHome, name)
+        val isPlayerHome = args.contains(Option.player)
+        val isNamedHome = args.contains(Option.name)
 
-        player.teleport(location)
+        val p = if (isPlayerHome) getPlayer(player, args) else player
+        val name = if (isNamedHome) getHomeName(player, p, args) else ""
+
+        val playerHome = getPlayerHome(p)
+        val homeData = getHomeData(p, playerHome, name)
+
+        if (isPlayerHome && homeData.isPrivate)
+            throw PlayerHomeIsPrivateException(player, name)
+
+        player.teleport(homeData.locationData.toLocation())
     }
 
     private fun getPlayer(player: Player, args: List<String>): OfflinePlayer {
 
-        if (!plugin.configs.onFriendHome) {
+        if (!plugin.configs.onFriendHome)
             throw NotAllowedByConfigException()
-        }
 
-        if (!player.hasPermission(Permission.home_command_player)) {
+
+        if (!player.hasPermission(Permission.home_command_player))
             throw NotHavePermissionException(Permission.home_command_player)
-        }
 
-        val playerName = args.drop(args.indexOf(Option.player) + 1).firstOrNull()
-                ?: throw CommandArgumentIncorrectException(this)
 
-        return Bukkit.getOfflinePlayers()
-                .find { it.name == playerName } ?: throw CanNotFindOfflinePlayerException(playerName)
+        val playerName = args.drop(args.indexOf(Option.player) + 1).firstOrNull() ?:
+                throw CommandArgumentIncorrectException(this)
+
+        return Bukkit.getOfflinePlayers().find { it.name == playerName } ?:
+                throw CanNotFindOfflinePlayerException(playerName)
 
     }
 
     private fun getHomeName(player: Player, offlinePlayer: OfflinePlayer, args: List<String>): String {
 
-        if (!plugin.configs.onNamedHome) {
+        if (!plugin.configs.onNamedHome)
             throw NotAllowedByConfigException()
-        }
 
-        if (!player.hasPermission(Permission.home_command_name)) {
+
+        if (!player.hasPermission(Permission.home_command_name))
             throw NotHavePermissionException(Permission.home_command_name)
-        }
+
 
         if (offlinePlayer != player) {
-            if (!player.hasPermission(Permission.home_command_player_name)) {
+            if (!player.hasPermission(Permission.home_command_player_name))
                 throw NotHavePermissionException(Permission.home_command_player_name)
-            }
         }
 
-        return args.drop(args.indexOf(Option.name) + 1).firstOrNull() ?: throw CommandArgumentIncorrectException(this)
+        return args.drop(args.indexOf(Option.name) + 1).firstOrNull() ?:
+                throw CommandArgumentIncorrectException(this)
     }
 
     private fun getPlayerHome(player: OfflinePlayer): PlayerHome {
-        return plugin.homeManager.playerHomes[player.uniqueId] ?: throw CanNotFindPlayerHomeException(player)
+        return plugin.homeManager.playerHomes[player.uniqueId] ?:
+                throw CanNotFindPlayerHomeException(player)
     }
 
-    private fun getLocation(player: OfflinePlayer, playerHome: PlayerHome, name: String): Location {
+    private fun getHomeData(player: OfflinePlayer, playerHome: PlayerHome, name: String): HomeData {
 
         return if (name.isNullOrBlank()) {
             playerHome.defaultHomeData ?: throw CanNotFindDefaultHomeException(player)
         } else {
             playerHome.namedHomeData[name] ?: throw CanNotFindNamedHomeException(player, name)
-        }.locationData.toLocation()
+        }
     }
 }
