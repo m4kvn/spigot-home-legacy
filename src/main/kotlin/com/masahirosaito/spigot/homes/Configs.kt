@@ -23,7 +23,10 @@ data class Configs(
         val onUpdateCheck: Boolean = true,
 
         @SerializedName("Allow setting home private")
-        val onPrivate: Boolean = true
+        val onPrivate: Boolean = true,
+
+        @SerializedName("The limit number of named home")
+        val homeLimit: Int = -1
 
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
