@@ -25,7 +25,7 @@ class PrivateCommand(override val plugin: Homes) : SubCommand {
     override fun execute(player: Player, args: List<String>) {
 
         if (!plugin.configs.onPrivate)
-            throw CanNotUsePrivateHomeException()
+            throw NotAllowedByConfigException()
 
         if (args.isEmpty() || 2 < args.size || !options.contains(args[0])) {
             throw CommandArgumentIncorrectException(this)
@@ -48,13 +48,18 @@ class PrivateCommand(override val plugin: Homes) : SubCommand {
         val defaultHomeData = playerHome.defaultHomeData ?:
                 throw CanNotFindDefaultHomeException(player)
 
-        setPrivate(defaultHomeData, args[0] == options[0])
+        val isPrivate = args[0] == options[0]
+
+        setPrivate(defaultHomeData, isPrivate)
+
+        resultMessage = "Set your default home " +
+                "${if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC"}${ChatColor.RESET}"
     }
 
     private fun setNamedHomePrivate(player: Player, args: List<String>) {
 
         if (!plugin.configs.onNamedHome)
-            throw CanNotUseNamedHomeException()
+            throw NotAllowedByConfigException()
 
         val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?:
                 throw CanNotFindPlayerHomeException(player)
@@ -64,6 +69,11 @@ class PrivateCommand(override val plugin: Homes) : SubCommand {
         val namedHomeData = playerHome.namedHomeData[name] ?:
                 throw CanNotFindNamedHomeException(player, name)
 
-        setPrivate(namedHomeData, args[0] == options[0])
+        val isPrivate = args[0] == options[0]
+
+        setPrivate(namedHomeData, isPrivate)
+
+        resultMessage = "Set your home named ${ChatColor.LIGHT_PURPLE}$name " +
+                "${if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC"}${ChatColor.RESET}"
     }
 }
