@@ -32,7 +32,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
             SetCommand(plugin),
             ListCommand(plugin),
             DeleteCommand(plugin),
-            HelpCommand(plugin, this)
+            HelpCommand(plugin, this),
+            PrivateCommand(plugin)
     )
 
     override fun onCommand(sender: CommandSender?, command: Command?,
@@ -126,10 +127,8 @@ class HomeCommand(override val plugin: Homes) : CommandExecutor, SubCommand {
 
         return if (name.isNullOrBlank()) {
             playerHome.defaultHomeData ?: throw CanNotFindDefaultHomeException(player)
-//            playerHome.defaultHome ?: throw CanNotFindDefaultHomeException(player) TODO
         } else {
             playerHome.namedHomeData[name] ?: throw CanNotFindNamedHomeException(player, name)
-//            playerHome.namedHomes[name] ?: throw CanNotFindNamedHomeException(player, name) TODO
         }.locationData.toLocation()
     }
 }
