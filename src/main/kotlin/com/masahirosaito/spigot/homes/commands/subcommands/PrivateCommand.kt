@@ -2,77 +2,53 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.exceptions.*
-import com.masahirosaito.spigot.homes.homedata.HomeData
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class PrivateCommand(override val plugin: Homes) : SubCommand {
-    override val name: String = "private"
-    override val permission: String = Permission.home_command_private
-    override var resultMessage: String = ""
-    override val description: String = "Set your home private or public"
-    override val usage: String = buildString {
-        append("${ChatColor.GOLD}Private Command Usage:\n")
-        append("${ChatColor.AQUA}/home private (on/off)${ChatColor.RESET}" +
-                " : Set your default home private or public\n")
-        append("${ChatColor.AQUA}/home private (on/off) <home_name>${ChatColor.RESET}" +
-                " : Set your named home private or public")
+    val options = listOf("on", "off")
+
+    override fun name(): String = "private"
+
+    override fun permission(): String = Permission.home_command_private
+
+    override fun description(): String = "Set your home private or public"
+
+    override fun usages(): List<Pair<String, String>> = listOf(
+            "/home private (on/off)" to "Set your default home private or public",
+            "/home private (on/off) <home_name>" to "Set your named home private or public"
+    )
+
+    override fun configs(): List<Boolean> = listOf(plugin.configs.onPrivate)
+
+    override fun isInValidArgs(args: List<String>): Boolean {
+        return args.isEmpty() || 2 < args.size || !options.contains(args[0])
     }
 
-    private val options = listOf("on", "off")
-
     override fun execute(player: Player, args: List<String>) {
-
-        if (!plugin.configs.onPrivate)
-            throw NotAllowedByConfigException()
-
-        if (args.isEmpty() || 2 < args.size || !options.contains(args[0]))
-            throw CommandArgumentIncorrectException(this)
-
         when (args.size) {
             1 -> setDefaultHomePrivate(player, args)
             2 -> setNamedHomePrivate(player, args)
         }
     }
 
-    private fun setPrivate(homeData: HomeData, isPrivate: Boolean) {
-        homeData.isPrivate = isPrivate
-    }
-
     private fun setDefaultHomePrivate(player: Player, args: List<String>) {
-        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?:
-                throw CanNotFindPlayerHomeException(player)
-
-        val defaultHomeData = playerHome.defaultHomeData ?:
-                throw CanNotFindDefaultHomeException(player)
-
-        val isPrivate = args[0] == options[0]
-
-        setPrivate(defaultHomeData, isPrivate)
-
-        resultMessage = "Set your default home " +
-                "${if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC"}${ChatColor.RESET}"
+        plugin.homeManager.findDefaultHome(player).isPrivate = isPrivate(args)
+        send(player, getResultMessage(isPrivate(args)))
     }
 
     private fun setNamedHomePrivate(player: Player, args: List<String>) {
-
-        if (!plugin.configs.onNamedHome)
-            throw NotAllowedByConfigException()
-
-        val playerHome = plugin.homeManager.playerHomes[player.uniqueId] ?:
-                throw CanNotFindPlayerHomeException(player)
-
-        val name = args[1]
-
-        val namedHomeData = playerHome.namedHomeData[name] ?:
-                throw CanNotFindNamedHomeException(player, name)
-
-        val isPrivate = args[0] == options[0]
-
-        setPrivate(namedHomeData, isPrivate)
-
-        resultMessage = "Set your home named ${ChatColor.LIGHT_PURPLE}$name " +
-                "${if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC"}${ChatColor.RESET}"
+        checkConfig(plugin.configs.onNamedHome)
+        plugin.homeManager.findNamedHome(player, args[1]).isPrivate = isPrivate(args)
+        send(player, getResultMessage(isPrivate(args), args[1]))
     }
+
+    private fun getResultMessage(isPrivate: Boolean, name: String? = null): String = buildString {
+        append("Set your ")
+        append(if (name == null) "default home " else "home named ${ChatColor.LIGHT_PURPLE}$name ")
+        append(if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC")
+        append(ChatColor.RESET)
+    }
+
+    private fun isPrivate(args: List<String>) = args[0] == options[0]
 }

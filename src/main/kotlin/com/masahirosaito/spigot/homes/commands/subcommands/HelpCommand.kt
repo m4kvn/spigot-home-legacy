@@ -10,45 +10,43 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class HelpCommand(override val plugin: Homes, val homeCommand: HomeCommand) : SubCommand {
-    override val name: String = "help"
-    override val permission: String = Permission.home_command_help
-    override var resultMessage: String = ""
-    override val description: String = "Homes Help Command"
-    override val usage: String = buildString {
-        append("${ChatColor.GOLD}Help Command Usage:\n")
-        append("${ChatColor.AQUA}/home help${ChatColor.RESET} : Display the list of Homes commands\n")
-        append("${ChatColor.AQUA}/home help <command_name>${ChatColor.RESET} : Display the usage of Homes command")
-    }
+
+    override fun name(): String = "help"
+
+    override fun permission(): String = Permission.home_command_help
+
+    override fun description(): String = "Homes Help Command"
+
+    override fun usages(): List<Pair<String, String>> = listOf(
+            "/home help" to "Display the list of Homes commands",
+            "/home help <command_name>" to "Display the usage of Homes command"
+    )
+
+    override fun configs(): List<Boolean> = listOf()
+
+    override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {
-
         when (args.size) {
-            0 -> showCommands()
+            0 -> showCommands(player)
             1 -> showCommandUsage(player, args[0])
-            else -> throw CommandArgumentIncorrectException(this)
         }
     }
 
-    private fun showCommands() {
-        resultMessage = buildString {
+    private fun showCommands(player: Player) {
+        send(player, buildString {
             append("${ChatColor.GOLD}Homes command list${ChatColor.RESET}\n")
             append(ChatColor.LIGHT_PURPLE)
             append("/home help <command_name> : Display the usage of command\n")
             append(ChatColor.RESET)
             homeCommand.subCommands.forEach {
-                append("  ${ChatColor.AQUA}${it.name}${ChatColor.RESET} : ${it.description}\n")
+                append("  ${ChatColor.AQUA}${it.name()}${ChatColor.RESET} : ${it.description()}\n")
             }
-        }
+        })
     }
 
     private fun showCommandUsage(player: Player, name: String) {
-
-        if (!player.hasPermission(Permission.home_command_help_command))
-            throw NotHavePermissionException(Permission.home_command_help_command)
-
-        val subCommand = homeCommand.subCommands.find { it.name == name }
-                ?: throw NoSuchCommandException(name)
-
-        resultMessage = subCommand.usage
+        checkPermission(player, Permission.home_command_help_command)
+        send(player, homeCommand.findSubCommand(name).usage())
     }
 }
