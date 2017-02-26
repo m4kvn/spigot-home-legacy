@@ -2,8 +2,11 @@ package com.masahirosaito.spigot.homes.homedata
 
 import com.masahirosaito.spigot.homes.exceptions.PlayerHomeIsPrivateException
 import org.bukkit.OfflinePlayer
+import java.util.*
 
 data class HomeData(
+        val ownerUid: UUID,
+        val name: String,
         var locationData: LocationData,
         var isPrivate: Boolean = false
 ) {

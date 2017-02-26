@@ -8,17 +8,16 @@ import org.bukkit.entity.Player
 
 data class PlayerHome(
         var defaultHomeData: HomeData? = null,
-        val namedHomeData: MutableMap<String, HomeData> = mutableMapOf()
+        val namedHomeData: MutableList<HomeData> = mutableListOf()
 ) {
-    fun findNamedHome(player: OfflinePlayer, name: String) = namedHomeData[name] ?:
+    fun findNamedHome(player: OfflinePlayer, name: String) = namedHomeData.find { it.name == name } ?:
             throw CanNotFindNamedHomeException(player, name)
 
     fun findDefaultHome(player: OfflinePlayer) = defaultHomeData ?:
             throw CanNotFindDefaultHomeException(player)
 
     fun removeNamedHome(player: OfflinePlayer, name: String) {
-        findNamedHome(player, name)
-        namedHomeData.remove(name)
+        namedHomeData.remove(findNamedHome(player, name))
     }
 
     fun removeDefaultHome(player: OfflinePlayer) {
@@ -26,18 +25,18 @@ data class PlayerHome(
         defaultHomeData = null
     }
 
-    fun haveName(name: String): Boolean = namedHomeData.containsKey(name)
+    fun haveName(name: String): Boolean = namedHomeData.any { it.name == name }
 
     fun setDefaultHome(player: Player) {
-        defaultHomeData = HomeData(LocationData.new(player.location))
+        defaultHomeData = HomeData(player.uniqueId, "default", LocationData.new(player.location))
     }
 
     fun setNamedHome(player: Player, name: String, limit: Int) {
         if (!haveName(name) && namedHomeData.isLimit(limit)) throwLimitException(limit)
-        namedHomeData.put(name, HomeData(LocationData.new(player.location)))
+        namedHomeData.add(HomeData(player.uniqueId, name, LocationData.new(player.location)))
     }
 
-    private fun MutableMap<String, HomeData>.isLimit(limit: Int): Boolean = size >= limit
+    private fun MutableList<HomeData>.isLimit(limit: Int): Boolean = size >= limit
 
     private fun throwLimitException(limit: Int) {
         throw Exception("You can not set more homes (Limit: ${ChatColor.RESET}$limit${ChatColor.RED})")

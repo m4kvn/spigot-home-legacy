@@ -37,7 +37,8 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
             ListCommand(plugin),
             DeleteCommand(plugin),
             HelpCommand(plugin, this),
-            PrivateCommand(plugin)
+            PrivateCommand(plugin),
+            InviteCommand(plugin)
     )
 
     override fun execute(player: Player, args: List<String>) {

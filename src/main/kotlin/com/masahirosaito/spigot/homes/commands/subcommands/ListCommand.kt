@@ -61,18 +61,21 @@ class ListCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun getResultMessage(playerHome: PlayerHome, isPlayerHomeList: Boolean) = buildString {
+        if (playerHome.defaultHomeData == null && playerHome.namedHomeData.isEmpty()) {
+            throw Exception("You have not set any homes")
+        }
         append("Home List")
         playerHome.defaultHomeData?.let {
             if (!isPlayerHomeList || !it.isPrivate) {
                 append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}")
             }
         }
-        playerHome.namedHomeData.filter { !isPlayerHomeList || !it.value.isPrivate }.apply {
+        playerHome.namedHomeData.filter { !isPlayerHomeList || !it.isPrivate }.apply {
             if (isNotEmpty()) {
                 append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
                 this.forEach {
-                    append("    ${ChatColor.LIGHT_PURPLE}${it.key}${ChatColor.RESET}")
-                    append(" : ${getText(it.value)}\n")
+                    append("    ${ChatColor.LIGHT_PURPLE}${it.name}${ChatColor.RESET}")
+                    append(" : ${getText(it)}\n")
                 }
             }
         }
