@@ -25,6 +25,9 @@ data class Configs(
         @SerializedName("Allow setting home private")
         val onPrivate: Boolean = true,
 
+        @SerializedName("Allow invitation")
+        val onInvite: Boolean = true,
+
         @SerializedName("The limit number of named home")
         val homeLimit: Int = -1
 
