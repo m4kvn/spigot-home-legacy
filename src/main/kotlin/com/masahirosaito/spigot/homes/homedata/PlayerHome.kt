@@ -26,8 +26,6 @@ data class PlayerHome(
         defaultHomeData = null
     }
 
-    fun haveDefault(): Boolean = defaultHomeData != null
-
     fun haveName(name: String): Boolean = namedHomeData.containsKey(name)
 
     fun setDefaultHome(player: Player) {
