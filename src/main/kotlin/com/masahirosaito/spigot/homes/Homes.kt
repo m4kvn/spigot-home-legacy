@@ -46,9 +46,10 @@ class Homes : JavaPlugin() {
 
         homeManager = HomeManager().apply {
             OldHomeData.load(oldHomeDataFile).playerHomes.forEach {
-                playerHomes.put(it.key, PlayerHome().apply {
-                    it.value.defaultHome?.let { defaultHomeData = HomeData(it) }
-                    it.value.namedHomes.forEach { namedHomeData.put(it.key, HomeData(it.value)) }
+                val uuid = it.key
+                playerHomes.put(uuid, PlayerHome().apply {
+                    it.value.defaultHome?.let { defaultHomeData = HomeData(uuid, "default", it) }
+                    it.value.namedHomes.forEach { namedHomeData.add(HomeData(uuid, it.key, it.value)) }
                 })
             }
             save(playerHomeDataFile)
