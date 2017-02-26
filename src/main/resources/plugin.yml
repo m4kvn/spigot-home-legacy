@@ -31,3 +31,5 @@ permissions:
       homes.command.help: true
       homes.command.help.command: true
       homes.command.private: true
+      homes.command.invite: true
+      homes.command.invite.name: true
