@@ -66,6 +66,9 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
 
     private fun inviteHome(homeData: HomeData, player: Player, playerName: String, message: String) {
         findOnlinePlayer(playerName).let {
+            if (it.hasMetadata(metadata)) {
+                throw Exception("${it.name} already has another invitation")
+            }
             it.setMetadata(metadata, FixedMetadataValue(plugin, homeData))
             send(it, message)
         }
