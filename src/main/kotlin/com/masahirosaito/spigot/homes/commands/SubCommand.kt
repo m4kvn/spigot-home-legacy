@@ -18,9 +18,11 @@ interface SubCommand {
 
     fun usages(): List<Pair<String, String>>
 
-    fun configs(): List<Boolean>
+    fun configs(): List<Boolean> = listOf()
 
-    fun isInValidArgs(args: List<String>): Boolean
+    fun options(): List<String> = listOf()
+
+    fun isInValidArgs(args: List<String>): Boolean = false
 
     fun onCommand(player: Player, args: List<String>) {
         checkPermission(player, permission())
@@ -57,4 +59,18 @@ interface SubCommand {
         append("${ChatColor.GOLD}${name()} command usage:")
         usages().forEach { append("\n${ChatColor.AQUA}${it.first}${ChatColor.RESET} : ${it.second}") }
     }
+
+    fun List<String>.getOptionArg(option: String): String {
+        try {
+            return get(indexOf(option) + 1)
+        } catch (e: Exception) {
+            throw CommandArgumentIncorrectException(this@SubCommand)
+        }
+    }
+
+    fun List<String>.hasOptions(): Boolean {
+        options().forEach { if (contains(it)) return true }; return false
+    }
+
+    fun options(index: Int) = options()[index]
 }

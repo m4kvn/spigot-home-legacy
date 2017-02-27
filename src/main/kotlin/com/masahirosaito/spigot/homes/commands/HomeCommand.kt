@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class HomeCommand(plugin: Homes) : MainCommand(plugin) {
-    val options = listOf("-p")
 
     override fun name(): String = "home"
 
@@ -21,14 +20,15 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
             "/home" to "Teleport to your default home",
             "/home <home_name>" to "Teleport to your named home",
             "/home -p <player_name>" to "Teleport to player's default home",
-            "/home -p <player_name> <home_name>" to "Teleport to player's named home"
+            "/home <home_name> -p <player_name>" to "Teleport to player's named home"
     )
 
-    override fun configs(): List<Boolean> = listOf()
+    override fun options(): List<String> = listOf("-p")
 
     override fun isInValidArgs(args: List<String>): Boolean = when (args.size) {
-        0, 1 -> false
-        2, 3 -> !options.contains(args.first())
+        0, 1 -> args.hasOptions()
+        2 -> !options().contains(args[0])
+        3 -> !options().contains(args[1])
         else -> true
     }
 
@@ -44,9 +44,9 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
     override fun execute(player: Player, args: List<String>) {
         when (args.size) {
             0 -> teleportHome(player)
-            1 -> teleportHome(player, args.last())
+            1 -> teleportHome(player, args.first())
             2 -> teleportPlayerHome(player, args.last())
-            3 -> teleportPlayerHome(player, args.getPlayerName(), args.last())
+            3 -> teleportPlayerHome(player, args.getOptionArg(options(0)), args.first())
         }
     }
 
@@ -88,6 +88,4 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
 
         player.teleport(homeData.location())
     }
-
-    private fun List<String>.getPlayerName() = get(indexOf(options[0]) + 1)
 }

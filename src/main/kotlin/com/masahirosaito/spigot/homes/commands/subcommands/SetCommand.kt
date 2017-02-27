@@ -19,8 +19,6 @@ class SetCommand(override val plugin: Homes) : SubCommand {
             "/home set <home_name>" to "Set your location to your named home"
     )
 
-    override fun configs(): List<Boolean> = listOf()
-
     override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {

@@ -7,7 +7,7 @@ website: https://github.com/MasahiroSaito/Homes
 commands:
   home:
     description: Homes Command
-    usage: /<command> (set)
+    usage: /<command>
 permissions:
   homes.*:
     description: Grant all permissions of Homes.

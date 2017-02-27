@@ -23,8 +23,6 @@ class HelpCommand(override val plugin: Homes, val homeCommand: HomeCommand) : Su
             "/home help <command_name>" to "Display the usage of Homes command"
     )
 
-    override fun configs(): List<Boolean> = listOf()
-
     override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {

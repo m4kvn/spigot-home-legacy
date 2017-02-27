@@ -19,8 +19,6 @@ class DeleteCommand(override val plugin: Homes) : SubCommand {
             "/home delete <home_name>" to "Delete your named home"
     )
 
-    override fun configs(): List<Boolean> = listOf()
-
     override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {

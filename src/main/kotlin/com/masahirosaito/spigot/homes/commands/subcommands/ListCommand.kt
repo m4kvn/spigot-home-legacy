@@ -23,8 +23,6 @@ class ListCommand(override val plugin: Homes) : SubCommand {
             "/home list <player_name>" to "Display the list of player's homes"
     )
 
-    override fun configs(): List<Boolean> = listOf()
-
     override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {

@@ -23,7 +23,7 @@ abstract class MainCommand(override val plugin: Homes) : SubCommand, CommandExec
                 else -> onCommand(sender, list)
             }
         } catch (e: Exception) {
-            plugin.messenger.send(sender, buildString {
+            send(sender, buildString {
                 append(ChatColor.RED)
                 append(e.message)
                 append(ChatColor.RESET)
