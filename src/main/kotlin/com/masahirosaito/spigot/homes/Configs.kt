@@ -13,7 +13,7 @@ data class Configs(
         @SerializedName("Allow using named home")
         val onNamedHome: Boolean = true,
 
-        @SerializedName("Allow using player's home")
+        @SerializedName("Allow using player home")
         val onFriendHome: Boolean = true,
 
         @SerializedName("Allow respawning default home")
