@@ -3,6 +3,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.HomeCommand
+import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.CommandArgumentIncorrectException
 import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
 import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException

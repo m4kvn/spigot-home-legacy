@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.InValidCommandSenderException
 import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
 import org.bukkit.ChatColor

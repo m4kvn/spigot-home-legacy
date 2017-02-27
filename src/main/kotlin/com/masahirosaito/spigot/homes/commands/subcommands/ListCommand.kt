@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
