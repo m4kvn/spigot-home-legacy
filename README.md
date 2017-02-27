@@ -33,6 +33,7 @@ The purpose of using Homes is to make simple move using commands and to set the 
     - the player's home feature
     - the respawn home feature
     - the update checking feature
+    - the number of homes can be set
 
 ## Features Coming Soon
 
