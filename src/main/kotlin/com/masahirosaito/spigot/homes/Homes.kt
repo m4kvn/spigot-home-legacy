@@ -2,21 +2,23 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.HomeCommand
 import com.masahirosaito.spigot.homes.homedata.HomeData
+import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
+import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 class Homes : JavaPlugin() {
     lateinit var configs: Configs
     lateinit var messenger: Messenger
-    lateinit var homedata: HomeData
-    lateinit var homedataFile: File
+    lateinit var homeManager: HomeManager
+    lateinit var playerHomeDataFile: File
 
     override fun onEnable() {
-        homedataFile = File(dataFolder, "homedata.json").load()
         configs = Configs.load(File(dataFolder, "configs.json").load())
-        homedata = HomeData.load(homedataFile)
         messenger = Messenger(this, configs.onDebug)
+
+        loadData()
 
         getCommand("home").executor = HomeCommand(this)
 
@@ -24,11 +26,35 @@ class Homes : JavaPlugin() {
     }
 
     override fun onDisable() {
-        homedata.save(homedataFile)
+        homeManager.save(playerHomeDataFile)
     }
 
     private fun File.load(): File = this.apply {
         if (!parentFile.exists()) parentFile.mkdirs()
         if (!exists()) createNewFile()
+    }
+
+    private fun loadData() {
+        playerHomeDataFile = File(dataFolder, "playerhomes.json")
+
+        val oldHomeDataFile = File(dataFolder, "homedata.json")
+
+        if (!oldHomeDataFile.exists() || playerHomeDataFile.exists()) {
+            homeManager = HomeManager.load(playerHomeDataFile.load())
+            return
+        }
+
+        homeManager = HomeManager().apply {
+            OldHomeData.load(oldHomeDataFile).playerHomes.forEach {
+                val uuid = it.key
+                playerHomes.put(uuid, PlayerHome().apply {
+                    it.value.defaultHome?.let { defaultHomeData = HomeData(uuid, "default", it) }
+                    it.value.namedHomes.forEach { namedHomeData.add(HomeData(uuid, it.key, it.value)) }
+                })
+            }
+            save(playerHomeDataFile)
+        }
+
+        oldHomeDataFile.delete()
     }
 }

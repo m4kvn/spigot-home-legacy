@@ -2,68 +2,46 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.exceptions.*
+import com.masahirosaito.spigot.homes.commands.SubCommand
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class DeleteCommand(override val plugin: Homes) : SubCommand {
-    override val name: String = "delete"
-    override val permission: String = Permission.home_command_delete
-    override var resultMessage: String = ""
-    override val description: String = "Delete your home"
-    override val usage: String = buildString {
-        append("${ChatColor.GOLD}Delete Command Usage:\n")
-        append("${ChatColor.AQUA}/home delete ${ChatColor.RESET} : Delete your default home\n")
-        append("${ChatColor.AQUA}/home delete <home_name>${ChatColor.RESET} : Delete your named home")
-    }
+
+    override fun name(): String = "delete"
+
+    override fun permission(): String = Permission.home_command_delete
+
+    override fun description(): String = "Delete your home"
+
+    override fun usages(): List<Pair<String, String>> = listOf(
+            "/home delete" to "Delete your default home",
+            "/home delete <home_name>" to "Delete your named home"
+    )
+
+    override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
 
     override fun execute(player: Player, args: List<String>) {
-
         when (args.size) {
             0 -> deleteHome(player)
             1 -> deleteNamedHome(player, args[0])
-            else -> throw CommandArgumentIncorrectException(this)
         }
     }
 
     private fun deleteHome(player: Player) {
-        val playerHome = plugin.homedata.playerHomes[player.uniqueId]
-                ?: throw CanNotFindPlayerHomeException(player)
-
-        if (playerHome.defaultHome == null)
-            throw CanNotFindDefaultHomeException(player)
-
-        playerHome.defaultHome = null
-        resultMessage = buildString {
-            append(ChatColor.AQUA)
-            append("Successfully delete your default home")
-            append(ChatColor.RESET)
-        }
+        plugin.homeManager.findPlayerHome(player).removeDefaultHome(player)
+        send(player, getResultMessage())
     }
 
     private fun deleteNamedHome(player: Player, name: String) {
+        checkPermission(player, Permission.home_command_delete_name)
+        plugin.homeManager.findPlayerHome(player).removeNamedHome(player, name)
+        send(player, getResultMessage(name))
+    }
 
-        if (!plugin.configs.onNamedHome)
-            throw CanNotUseNamedHomeException()
-
-        if (!player.hasPermission(Permission.home_command_delete_name))
-            throw NotHavePermissionException(Permission.home_command_delete_name)
-
-        val playerHome = plugin.homedata.playerHomes[player.uniqueId]
-                ?: throw CanNotFindPlayerHomeException(player)
-
-        if (playerHome.namedHomes[name] == null)
-            throw CanNotFindNamedHomeException(player, name)
-
-        playerHome.namedHomes.remove(name)
-        resultMessage = buildString {
-            append(ChatColor.AQUA)
-            append("Successfully delete your named home <")
-            append(ChatColor.RESET)
-            append(name)
-            append(ChatColor.AQUA)
-            append(">")
-            append(ChatColor.RESET)
-        }
+    private fun getResultMessage(name: String? = null): String = buildString {
+        append("${ChatColor.AQUA}Successfully delete your ")
+        append(if (name == null) "default home" else "named home <${ChatColor.RESET}$name${ChatColor.AQUA}>")
+        append(ChatColor.RESET)
     }
 }
