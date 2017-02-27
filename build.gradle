@@ -44,3 +44,10 @@ dependencies {
 jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
+
+task copyToServer(type: Copy) {
+    from "build/libs/Homes-${version}.jar"
+    into "Server/plugins/"
+}
+
+build.finalizedBy copyToServer
