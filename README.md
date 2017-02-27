@@ -23,6 +23,8 @@ The purpose of using Homes is to make simple move using commands and to set the 
 - You can check the home list
 - You can check the command list
 - You can delete the home
+- You can set your home private or public
+- You can invite the other player to your home
 
 ### If you are _administrator_ of Spigot server
 
@@ -31,14 +33,15 @@ The purpose of using Homes is to make simple move using commands and to set the 
     - the player's home feature
     - the respawn home feature
     - the update checking feature
+    - the number of homes can be set
 
 ## Features Coming Soon
 
-- Move other players to your home
-- Set Private home
 - Visualization of homes
 - Set up fee for command
-- Teleport timer
+- Delay to Teleport
+- Useful commands for administrators
+- Teleport to the last dead place
 
 ## Bug Report / Feature Request
 
