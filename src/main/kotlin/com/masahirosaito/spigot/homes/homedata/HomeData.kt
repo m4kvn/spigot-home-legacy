@@ -1,21 +1,18 @@
 package com.masahirosaito.spigot.homes.homedata
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import java.io.File
+import com.masahirosaito.spigot.homes.exceptions.PlayerHomeIsPrivateException
+import org.bukkit.OfflinePlayer
 import java.util.*
 
-data class HomeData(val playerHomes: MutableMap<UUID, PlayerHome> = mutableMapOf()) {
+data class HomeData(
+        val ownerUid: UUID,
+        val name: String,
+        var locationData: LocationData,
+        var isPrivate: Boolean = false
+) {
+    fun location() = locationData.toLocation()
 
-    fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
-
-    fun save(file: File) = file.writeText(toJson())
-
-    companion object {
-        fun load(file: File): HomeData {
-            return Gson().fromJson(file.readText().let {
-                if (it.isNullOrBlank()) HomeData().toJson() else it
-            }, HomeData::class.java).apply { save(file)}
-        }
+    fun checkPrivate(offlinePlayer: OfflinePlayer, homeName: String? = null) = this.apply {
+        if (isPrivate) throw PlayerHomeIsPrivateException(offlinePlayer, homeName)
     }
 }

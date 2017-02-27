@@ -20,7 +20,16 @@ data class Configs(
         val onDefaultHomeRespawn: Boolean = true,
 
         @SerializedName("Allow checking update")
-        val onUpdateCheck: Boolean = true
+        val onUpdateCheck: Boolean = true,
+
+        @SerializedName("Allow setting home private")
+        val onPrivate: Boolean = true,
+
+        @SerializedName("Allow invitation")
+        val onInvite: Boolean = true,
+
+        @SerializedName("The limit number of named home")
+        val homeLimit: Int = -1
 
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)

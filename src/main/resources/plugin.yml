@@ -7,7 +7,7 @@ website: https://github.com/MasahiroSaito/Homes
 commands:
   home:
     description: Homes Command
-    usage: /<command> (set)
+    usage: /<command>
 permissions:
   homes.*:
     description: Grant all permissions of Homes.
@@ -30,3 +30,6 @@ permissions:
       homes.command.delete.name: true
       homes.command.help: true
       homes.command.help.command: true
+      homes.command.private: true
+      homes.command.invite: true
+      homes.command.invite.name: true

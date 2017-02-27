@@ -13,4 +13,7 @@ object Permission {
     val home_command_delete_name = home_command_delete + ".name"
     val home_command_help = home_command + ".help"
     val home_command_help_command = home_command_help + ".command"
+    val home_command_private = home_command + ".private"
+    val home_command_invite = home_command + ".invite"
+    val home_command_invite_name = home_command_invite + ".name"
 }
