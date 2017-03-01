@@ -5,14 +5,24 @@ import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
+import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
 
-class Homes : JavaPlugin() {
+class Homes : JavaPlugin {
     lateinit var configs: Configs
     lateinit var messenger: Messenger
     lateinit var homeManager: HomeManager
     lateinit var playerHomeDataFile: File
+
+    constructor() : super()
+
+    /**
+     * This is for unit testing
+     */
+    constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
+            super(loader, description, dataFolder, file)
 
     override fun onEnable() {
         configs = Configs.load(File(dataFolder, "configs.json").load())
