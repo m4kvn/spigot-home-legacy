@@ -40,8 +40,10 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     embed "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile 'junit:junit:4.12'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.2'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.2'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.5'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.6'
+    testCompile group: 'org.powermock', name: 'powermock-api-easymock', version: '1.6.6'
+    testCompile group: 'org.easymock', name: 'easymock', version: '3.4'
 }
 
 jar {
