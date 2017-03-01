@@ -47,7 +47,7 @@ jar {
 
 task copyToServer(type: Copy) {
     from "build/libs/Homes-${version}.jar"
-    into "Server/plugins/"
+    into "server/plugins/"
 }
 
 build.finalizedBy copyToServer
