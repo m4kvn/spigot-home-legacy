@@ -27,12 +27,12 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.easymock.EasyMock.mock;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
     private Homes homes;
@@ -65,8 +65,6 @@ public class TestInstanceCreator {
             homes = PowerMockito.spy(
                     new Homes(mockPluginLoader, pdf, pluginDirectory,
                             new File(pluginDirectory, "testPluginFile")));
-
-            PowerMockito.doAnswer(invocation -> null).when(homes, "setupMetrics");
 
             doReturn(pluginDirectory).when(homes).getDataFolder();
 
