@@ -3,9 +3,10 @@ package com.masahirosaito.spigot.homes.utils;
 import java.util.logging.*;
 
 public class Util {
-    private Util() {}
+    private Util() {
+    }
 
-    public static final Logger logger = Logger.getLogger("Homes-Test");
+    public static final Logger logger = Logger.getLogger("Homes");
 
     static {
         logger.setUseParentHandlers(false);
