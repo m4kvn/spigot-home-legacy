@@ -18,20 +18,14 @@ class Homes : JavaPlugin {
 
     constructor() : super()
 
-    /**
-     * This is for unit testing
-     */
     constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
             super(loader, description, dataFolder, file)
 
     override fun onEnable() {
         configs = Configs.load(File(dataFolder, "configs.json").load())
         messenger = Messenger(this, configs.onDebug)
-
         loadData()
-
         getCommand("home").executor = HomeCommand(this)
-
         PlayerRespawnListener(this).register()
     }
 
