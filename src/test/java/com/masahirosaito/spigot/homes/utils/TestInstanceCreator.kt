@@ -10,13 +10,16 @@ import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.easymock.ConstructorArgs
 import org.junit.Assert
+import org.mockito.Matchers.any
 import org.powermock.api.easymock.PowerMock
 import org.powermock.api.easymock.PowerMock.createMock
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.api.mockito.PowerMockito.mock
 import org.powermock.reflect.Whitebox
 import java.io.File
+import java.util.*
 import java.util.logging.Level
+import java.util.logging.Logger
 
 object TestInstanceCreator {
     lateinit var mockServer: Server
@@ -28,7 +31,7 @@ object TestInstanceCreator {
     fun setUp(): Boolean {
         try {
             mockServer = mock(Server::class.java).apply {
-                PowerMockito.`when`(logger).thenReturn(Util.logger)
+                PowerMockito.`when`(logger).thenReturn(SpyLogger(Logger.getLogger("Homes")))
                 PowerMockito.`when`(pluginManager).thenReturn(createPluginManager())
             }
             homes = createHomes(mockServer).apply {
@@ -38,6 +41,19 @@ object TestInstanceCreator {
                 PowerMockito.`when`(server).thenReturn(mockServer)
             }
             Bukkit.setServer(mockServer)
+
+            PowerMockito.`when`(Bukkit.getOfflinePlayers()).thenAnswer {
+                MockPlayerFactory.offlinePlayers.values.toTypedArray()
+            }
+            PowerMockito.`when`(Bukkit.getOnlinePlayers()).thenAnswer {
+                MockPlayerFactory.players.values
+            }
+            PowerMockito.`when`(Bukkit.getOfflinePlayer(any(UUID::class.java))).thenAnswer { invocation ->
+                MockPlayerFactory.offlinePlayers[invocation.getArgumentAt(0, UUID::class.java)]
+            }
+            PowerMockito.`when`(Bukkit.getPlayer(any(UUID::class.java))).thenAnswer { invocation ->
+                MockPlayerFactory.players[invocation.getArgumentAt(0, UUID::class.java)]
+            }
 
             homes.onLoad()
             homes.onEnable()
@@ -60,7 +76,7 @@ object TestInstanceCreator {
                 it.set(Class.forName("org.bukkit.Bukkit"), null)
             }
         } catch (e: Exception) {
-            Util.log(Level.SEVERE,
+            Logger.getLogger("Homes").log(Level.SEVERE,
                     "Error while trying to unregister the server from Bukkit. Has Bukkit changed?")
             e.printStackTrace()
             Assert.fail(e.message)
