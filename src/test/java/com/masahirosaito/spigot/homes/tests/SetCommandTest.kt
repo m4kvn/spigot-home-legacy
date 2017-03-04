@@ -2,11 +2,11 @@ package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.commands.HomeCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.tests.utils.MockWorldFactory
-import com.masahirosaito.spigot.homes.tests.utils.SpyLogger
-import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
+import com.masahirosaito.spigot.homes.tests.commands.Permission
+import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
+import com.masahirosaito.spigot.homes.tests.exceptions.CommandArgumentIncorrectException
+import com.masahirosaito.spigot.homes.tests.exceptions.NotHavePermissionException
+import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -16,7 +16,8 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,82 +34,80 @@ class SetCommandTest {
     lateinit var homeCommand: HomeCommand
     lateinit var logs: MutableList<String>
     lateinit var nepian: Player
-    lateinit var setCommand: SubCommand
 
     @Before
     fun setUp() {
-        Assert.assertTrue(TestInstanceCreator.setUp())
+        assertTrue(TestInstanceCreator.setUp())
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         homeCommand = pluginCommand.executor as HomeCommand
         logs = (mockServer.logger as SpyLogger).logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
-        setCommand = homeCommand.subCommands.find { it.name() == "set" } ?: throw Exception()
+
+        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME_NAME)
+        nepian.set(Permission.HOME_PLAYER)
+        nepian.set(Permission.HOME_PLAYER_NAME)
     }
 
     @After
     fun tearDown() {
         logs.forEachIndexed { i, s -> println("$i -> $s") }
-        Assert.assertTrue(TestInstanceCreator.tearDown())
+        assertTrue(TestInstanceCreator.tearDown())
+    }
+
+    @Test
+    fun コマンドの親権限を持っていない場合() {
+        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET)), logs.last())
+
+        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET)), logs.last())
+    }
+
+    @Test
+    fun 名前付きホーム設定の権限を持っていない場合() {
+        nepian.set(Permission.HOME_SET)
+        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET_NAME)), logs.last())
+    }
+
+    @Test
+    fun 引数が間違っている場合() {
+        nepian.set(Permission.HOME_SET)
+        nepian.set(Permission.HOME_SET_NAME)
+        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1", "home2"))
+        assertEquals(SetCommandData.msg(CommandArgumentIncorrectException(SetCommandData)), logs.last())
     }
 
     @Test
     fun デフォルトホームの設定と移動() {
+        nepian.set(Permission.HOME_SET)
+        nepian.set(Permission.HOME_SET_NAME)
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        val firstLocation = nepian.location
 
+        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        assertEquals(SetCommandData.msgSuccessSetDefaultHome(), logs.last())
+
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        homeCommand.onCommand(nepian, pluginCommand, "home", null)
+        assertEquals(firstLocation, nepian.location)
     }
 
     @Test
-    fun test() {
-        // デフォルトホームの設定テスト
+    fun 名前付きホームの設定と移動() {
+        nepian.set(Permission.HOME_SET)
+        nepian.set(Permission.HOME_SET_NAME)
         nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
-        Assert.assertEquals(nepian.location, homes.homeManager.findDefaultHome(nepian).location())
-        Assert.assertEquals(defaultHomeMsg, logs.last())
+        val firstLocation = nepian.location
 
-        // 名前付きホームの設定テスト
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
         homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-        Assert.assertEquals(nepian.location, homes.homeManager.findNamedHome(nepian, "home1").location())
-        Assert.assertEquals(namedHomeMsg("home1"), logs.last())
+        assertEquals(SetCommandData.msgSuccessSetNamedHome("home1"), logs.last())
 
-        // 引数を間違えた場合のテスト
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1", "home2"))
-        Assert.assertEquals("$argumentIncorrectMsg\n$setCommandUsage", logs.last())
-
-        // 設定したデフォルトホームへの移動テスト
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", null)
-        Assert.assertEquals(homes.homeManager.findDefaultHome(nepian).location(), nepian.location)
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        Assert.assertEquals(homes.homeManager.findDefaultHome(nepian).location(), nepian.location)
-
-        // 設定した名前付きホームへの移動テスト
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        Assert.assertEquals(homes.homeManager.findNamedHome(nepian, "home1").location(), nepian.location)
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        Assert.assertEquals(homes.homeManager.findNamedHome(nepian, "home1").location(), nepian.location)
-
-        // 他のプライヤーからの移動テスト
-        MockPlayerFactory.makeNewMockPlayer("Minene", mockServer).apply {
-
-            // Nepianのデフォルトホームへの移動
-            teleport(MockWorldFactory.makeRandomLocation())
-            homeCommand.onCommand(this, pluginCommand, "home", arrayOf("-p", "Nepian"))
-            Assert.assertEquals(homes.homeManager.findDefaultHome(nepian).location(), this.location)
-
-            // Nepianのhome1への移動
-            teleport(MockWorldFactory.makeRandomLocation())
-            homeCommand.onCommand(this, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-            Assert.assertEquals(homes.homeManager.findNamedHome(nepian, "home1").location(), this.location)
-
-
-        }
+        assertEquals(firstLocation, nepian.location)
     }
 }
