@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.utils;
+package com.masahirosaito.spigot.homes.tests.utils;
 
 
 import java.io.PrintWriter;
