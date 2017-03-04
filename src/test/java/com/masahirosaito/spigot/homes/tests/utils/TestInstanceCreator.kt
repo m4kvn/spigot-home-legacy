@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.utils
+package com.masahirosaito.spigot.homes.tests.utils
 
 import com.masahirosaito.spigot.homes.Homes
 import org.bukkit.Bukkit
@@ -30,17 +30,17 @@ object TestInstanceCreator {
 
     fun setUp(): Boolean {
         try {
-            mockServer = mock(Server::class.java).apply {
+            TestInstanceCreator.mockServer = mock(Server::class.java).apply {
                 PowerMockito.`when`(logger).thenReturn(SpyLogger(Logger.getLogger("Homes")))
-                PowerMockito.`when`(pluginManager).thenReturn(createPluginManager())
+                PowerMockito.`when`(pluginManager).thenReturn(TestInstanceCreator.createPluginManager())
             }
-            homes = createHomes(mockServer).apply {
+            TestInstanceCreator.homes = TestInstanceCreator.createHomes(mockServer).apply {
                 PowerMockito.`when`(name).thenReturn("Homes")
-                PowerMockito.`when`(dataFolder).thenReturn(pluginFolder)
-                PowerMockito.`when`(getCommand("home")).thenReturn(createPluginCommand(this))
-                PowerMockito.`when`(server).thenReturn(mockServer)
+                PowerMockito.`when`(dataFolder).thenReturn(TestInstanceCreator.pluginFolder)
+                PowerMockito.`when`(getCommand("home")).thenReturn(TestInstanceCreator.createPluginCommand(this))
+                PowerMockito.`when`(server).thenReturn(TestInstanceCreator.mockServer)
             }
-            Bukkit.setServer(mockServer)
+            Bukkit.setServer(TestInstanceCreator.mockServer)
 
             PowerMockito.`when`(Bukkit.getOfflinePlayers()).thenAnswer {
                 MockPlayerFactory.offlinePlayers.values.toTypedArray()
@@ -54,9 +54,12 @@ object TestInstanceCreator {
             PowerMockito.`when`(Bukkit.getPlayer(any(UUID::class.java))).thenAnswer { invocation ->
                 MockPlayerFactory.players[invocation.getArgumentAt(0, UUID::class.java)]
             }
+            PowerMockito.`when`(Bukkit.getWorld(any(UUID::class.java))).thenAnswer { invocation ->
+                MockWorldFactory.worlds[invocation.getArgumentAt(0, UUID::class.java)]
+            }
 
-            homes.onLoad()
-            homes.onEnable()
+            TestInstanceCreator.homes.onLoad()
+            TestInstanceCreator.homes.onEnable()
 
             return true
 
@@ -69,6 +72,7 @@ object TestInstanceCreator {
 
     fun tearDown(): Boolean {
         MockPlayerFactory.clear()
+        MockWorldFactory.clear()
 
         try {
             Bukkit::class.java.getDeclaredField("server").let {
@@ -83,8 +87,8 @@ object TestInstanceCreator {
             return false
         }
 
-        homes.onDisable()
-        FileUtil.delete(pluginFolder)
+        TestInstanceCreator.homes.onDisable()
+        FileUtil.delete(TestInstanceCreator.pluginFolder)
 
         return true
     }
