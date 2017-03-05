@@ -34,11 +34,13 @@ data class Configs(
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
 
+    fun save(file: File) = file.writeText(toJson())
+
     companion object {
         fun load(file: File): Configs {
             return Gson().fromJson(file.readText().let {
                 if (it.isNullOrBlank()) Configs().toJson() else it
-            }, Configs::class.java).apply { file.writeText(toJson()) }
+            }, Configs::class.java).apply { save(file) }
         }
     }
 }

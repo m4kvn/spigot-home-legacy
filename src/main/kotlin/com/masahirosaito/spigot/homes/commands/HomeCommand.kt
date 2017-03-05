@@ -62,10 +62,9 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
         val homeData = if (homeName == null) {
             getDefaultHome(player)
         } else {
-            getNamedHome(player, homeName).apply {
-                checkConfig(plugin.configs.onNamedHome)
-                checkPermission(player, Permission.home_command_name)
-            }
+            checkConfig(plugin.configs.onNamedHome)
+            checkPermission(player, Permission.home_command_name)
+            getNamedHome(player, homeName)
         }
 
         player.teleport(homeData.location())
@@ -80,10 +79,10 @@ class HomeCommand(plugin: Homes) : MainCommand(plugin) {
         val homeData = if (homeName == null) {
             getDefaultHome(offlinePlayer)
         } else {
-            getNamedHome(offlinePlayer, homeName).apply {
-                checkConfig(plugin.configs.onNamedHome)
-                checkPermission(player, Permission.home_command_player_name)
-            }
+            checkConfig(plugin.configs.onNamedHome)
+            checkPermission(player, Permission.home_command_name)
+            checkPermission(player, Permission.home_command_player_name)
+            getNamedHome(offlinePlayer, homeName)
         }.checkPrivate(offlinePlayer, homeName)
 
         player.teleport(homeData.location())
