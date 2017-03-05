@@ -137,7 +137,7 @@ class PrivateCommandTest {
     }
 
     @Test
-    fun 他の人はプライベートかした名前付きホームに移動できない() {
+    fun 他の人はプライベート化した名前付きホームに移動できない() {
         nepian.setOps()
         minene.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME, Permission.HOME_NAME)
 
@@ -150,7 +150,7 @@ class PrivateCommandTest {
 
         minene.teleport(MockWorldFactory.makeRandomLocation())
         command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        Assert.assertEquals(HomeCommandData.msg(PlayerHomeIsPrivateException(nepian)), logs.last())
+        Assert.assertEquals(HomeCommandData.msg(PlayerHomeIsPrivateException(nepian, "home1")), logs.last())
     }
 
     @Test
