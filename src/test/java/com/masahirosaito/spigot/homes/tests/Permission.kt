@@ -8,5 +8,8 @@ enum class Permission(val permission: String) {
     HOME_PLAYER_NAME("homes.command.player.name"),
 
     HOME_SET("homes.command.set"),
-    HOME_SET_NAME("homes.command.set.name")
+    HOME_SET_NAME("homes.command.set.name"),
+
+    HOME_DELETE("homes.command.delete"),
+    HOME_DELETE_NAME("homes.command.delete.name")
 }
