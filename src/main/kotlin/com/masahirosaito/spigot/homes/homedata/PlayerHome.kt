@@ -32,7 +32,7 @@ data class PlayerHome(
     }
 
     fun setNamedHome(player: Player, name: String, limit: Int) {
-        if (!haveName(name) && namedHomeData.isLimit(limit)) throwLimitException(limit)
+        if (!haveName(name) && limit != -1 && namedHomeData.isLimit(limit)) throwLimitException(limit)
         namedHomeData.add(HomeData(player.uniqueId, name, LocationData.new(player.location)))
     }
 
