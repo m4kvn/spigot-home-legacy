@@ -1,12 +1,6 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.tests.commands.HomeCommandData
-import com.masahirosaito.spigot.homes.tests.commands.PrivateCommandData
-import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
-import com.masahirosaito.spigot.homes.tests.exceptions.CommandArgumentIncorrectException
-import com.masahirosaito.spigot.homes.tests.exceptions.NotHavePermissionException
-import com.masahirosaito.spigot.homes.tests.exceptions.PlayerHomeIsPrivateException
 import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -58,12 +52,12 @@ class PrivateCommandTest {
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         defaultLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
-        Assert.assertEquals(SetCommandData.msgSuccessSetDefaultHome(), logs.last())
+        Assert.assertEquals("[Homes] Successfully set as default home", logs.last())
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         namedLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-        Assert.assertEquals(SetCommandData.msgSuccessSetNamedHome("home1"), logs.last())
+        Assert.assertEquals("[Homes] Successfully set as home named <home1>", logs.last())
 
         minene.teleport(MockWorldFactory.makeRandomLocation())
     }
@@ -76,16 +70,16 @@ class PrivateCommandTest {
     @Test
     fun 親権限を持っていない場合は全ての機能を実行できない() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals(PrivateCommandData.msg(NotHavePermissionException(Permission.HOME_PRIVATE)), logs.last())
+        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off"))
-        Assert.assertEquals(PrivateCommandData.msg(NotHavePermissionException(Permission.HOME_PRIVATE)), logs.last())
+        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals(PrivateCommandData.msg(NotHavePermissionException(Permission.HOME_PRIVATE)), logs.last())
+        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
-        Assert.assertEquals(PrivateCommandData.msg(NotHavePermissionException(Permission.HOME_PRIVATE)), logs.last())
+        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
     }
 
     @Test
@@ -93,16 +87,21 @@ class PrivateCommandTest {
         nepian.setOps()
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true), logs.last())
+        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(false), logs.last())
+        Assert.assertEquals("[Homes] Set your default home PUBLIC", logs.last())
+    }
+
+    @Test
+    fun コマンドを実行すると名前付きホームをプライベート化できる() {
+        nepian.setOps()
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true, "home1"), logs.last())
+        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(false, "home1"), logs.last())
+        Assert.assertEquals("[Homes] Set your home named home1 PUBLIC", logs.last())
     }
 
     @Test
@@ -110,13 +109,28 @@ class PrivateCommandTest {
         nepian.setOps()
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private"))
-        Assert.assertEquals(PrivateCommandData.msg(CommandArgumentIncorrectException(PrivateCommandData)), logs.last())
+        Assert.assertEquals(buildString {
+            append("[Homes] The argument is incorrect\n")
+            append("private command usage:\n")
+            append("/home private (on/off) : Set your default home private or public\n")
+            append("/home private (on/off) <home_name> : Set your named home private or public")
+        }, logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "aaa"))
-        Assert.assertEquals(PrivateCommandData.msg(CommandArgumentIncorrectException(PrivateCommandData)), logs.last())
+        Assert.assertEquals(buildString {
+            append("[Homes] The argument is incorrect\n")
+            append("private command usage:\n")
+            append("/home private (on/off) : Set your default home private or public\n")
+            append("/home private (on/off) <home_name> : Set your named home private or public")
+        }, logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1", "home2"))
-        Assert.assertEquals(PrivateCommandData.msg(CommandArgumentIncorrectException(PrivateCommandData)), logs.last())
+        Assert.assertEquals(buildString {
+            append("[Homes] The argument is incorrect\n")
+            append("private command usage:\n")
+            append("/home private (on/off) : Set your default home private or public\n")
+            append("/home private (on/off) <home_name> : Set your named home private or public")
+        }, logs.last())
     }
 
     @Test
@@ -129,11 +143,11 @@ class PrivateCommandTest {
         Assert.assertEquals(defaultLocation, minene.location)
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true), logs.last())
+        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
 
         minene.teleport(MockWorldFactory.makeRandomLocation())
         command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        Assert.assertEquals(HomeCommandData.msg(PlayerHomeIsPrivateException(nepian)), logs.last())
+        Assert.assertEquals("[Homes] Nepian's default home is PRIVATE", logs.last())
     }
 
     @Test
@@ -146,11 +160,11 @@ class PrivateCommandTest {
         Assert.assertEquals(namedLocation, minene.location)
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true, "home1"), logs.last())
+        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
 
         minene.teleport(MockWorldFactory.makeRandomLocation())
         command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        Assert.assertEquals(HomeCommandData.msg(PlayerHomeIsPrivateException(nepian, "home1")), logs.last())
+        Assert.assertEquals("[Homes] Nepian's home named home1 is PRIVATE", logs.last())
     }
 
     @Test
@@ -165,6 +179,8 @@ class PrivateCommandTest {
             append("  [Named Home]\n")
             append("    home1 : world, {0, 0, 0}, PUBLIC\n")
         }, logs.last())
+
+        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
         Assert.assertEquals(buildString {
             append("[Homes] Home List\n")
             append("  [Default] world, {0, 0, 0}, PUBLIC\n")
@@ -172,10 +188,8 @@ class PrivateCommandTest {
             append("    home1 : world, {0, 0, 0}, PUBLIC\n")
         }, logs.last())
 
-        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
-
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true), logs.last())
+        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
         Assert.assertEquals(buildString {
@@ -193,7 +207,7 @@ class PrivateCommandTest {
         }, logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true, "home1"), logs.last())
+        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
         Assert.assertEquals(buildString {
@@ -204,8 +218,6 @@ class PrivateCommandTest {
         }, logs.last())
 
         command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
-        Assert.assertEquals(buildString {
-            append("[Homes] No homes")
-        }, logs.last())
+        Assert.assertEquals("[Homes] No homes", logs.last())
     }
 }
