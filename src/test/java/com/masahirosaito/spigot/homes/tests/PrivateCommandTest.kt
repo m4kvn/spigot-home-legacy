@@ -154,7 +154,58 @@ class PrivateCommandTest {
     }
 
     @Test
-    fun プライベート化したホームはリスト表示されない() {
+    fun プライベート化したホームは自分以外からリスト表示されない() {
         nepian.setOps()
+        minene.setOps()
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
+        Assert.assertEquals(buildString {
+            append("[Homes] Home List\n")
+            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
+            append("  [Named Home]\n")
+            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
+        }, logs.last())
+        Assert.assertEquals(buildString {
+            append("[Homes] Home List\n")
+            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
+            append("  [Named Home]\n")
+            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
+        }, logs.last())
+
+        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true), logs.last())
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
+        Assert.assertEquals(buildString {
+            append("[Homes] Home List\n")
+            append("  [Default] world, {0, 0, 0}, PRIVATE\n")
+            append("  [Named Home]\n")
+            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
+        }, logs.last())
+
+        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
+        Assert.assertEquals(buildString {
+            append("[Homes] Home List\n")
+            append("  [Named Home]\n")
+            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
+        }, logs.last())
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+        Assert.assertEquals(PrivateCommandData.msgSuccessPrivate(true, "home1"), logs.last())
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
+        Assert.assertEquals(buildString {
+            append("[Homes] Home List\n")
+            append("  [Default] world, {0, 0, 0}, PRIVATE\n")
+            append("  [Named Home]\n")
+            append("    home1 : world, {0, 0, 0}, PRIVATE\n")
+        }, logs.last())
+
+        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
+        Assert.assertEquals(buildString {
+            append("[Homes] No homes")
+        }, logs.last())
     }
 }
