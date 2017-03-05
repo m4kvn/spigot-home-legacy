@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
 import com.masahirosaito.spigot.homes.tests.exceptions.CommandArgumentIncorrectException
 import com.masahirosaito.spigot.homes.tests.exceptions.NamedHomeLimitException
