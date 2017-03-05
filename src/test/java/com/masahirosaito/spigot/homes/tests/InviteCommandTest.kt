@@ -1,11 +1,8 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.tests.utils.SpyLogger
-import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
-import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.configFile
-import com.masahirosaito.spigot.homes.tests.utils.setOps
+import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
+import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -16,11 +13,9 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
@@ -28,7 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class)
-class ConfigsTest {
+class InviteCommandTest {
     lateinit var mockServer: Server
     lateinit var homes: Homes
     lateinit var pluginCommand: PluginCommand
@@ -36,9 +31,12 @@ class ConfigsTest {
     lateinit var logs: MutableList<String>
     lateinit var nepian: Player
 
+    lateinit var defaultLocation: Location
+    lateinit var namedLocation: Location
+
     @Before
     fun setUp() {
-        Assert.assertTrue(TestInstanceCreator.setUp())
+        assertTrue(TestInstanceCreator.setUp())
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
@@ -46,31 +44,23 @@ class ConfigsTest {
         logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
-        nepian.setOps()
+        nepian.set(Permission.HOME_DEFAULT, Permission.HOME_NAME)
+        nepian.set(Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME)
+        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
 
-        assertTrue(configFile.exists())
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        defaultLocation = nepian.location
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        assertEquals(SetCommandData.msgSuccessSetDefaultHome(), logs.last())
+
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        namedLocation = nepian.location
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        assertEquals(SetCommandData.msgSuccessSetNamedHome("home1"), logs.last())
     }
 
     @After
     fun tearDown() {
-        Assert.assertTrue(TestInstanceCreator.tearDown())
-    }
-
-    @Test
-    fun 設定を変更したファイルの読み込み() {
-        val offConfig = homes.configs.copy(
-                onDebug = false,
-                onNamedHome = false,
-                onFriendHome = false,
-                onDefaultHomeRespawn = false,
-                onUpdateCheck = false,
-                onPrivate = false,
-                onInvite = false,
-                homeLimit = 10
-        )
-        offConfig.save(configFile)
-        homes.onDisable()
-        homes.onEnable()
-        assertEquals(offConfig, homes.configs)
+        assertTrue(TestInstanceCreator.tearDown())
     }
 }

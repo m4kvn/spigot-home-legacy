@@ -2,10 +2,12 @@ package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.tests.commands.HomeCommandData
-import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.exceptions.*
-import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.configFile
+import com.masahirosaito.spigot.homes.tests.utils.set
+import com.masahirosaito.spigot.homes.tests.utils.setOps
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -42,13 +44,12 @@ class HomeCommandTest {
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = (mockServer.logger as SpyLogger).logs
+        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
         assertTrue(TestInstanceCreator.tearDown())
     }
 

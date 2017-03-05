@@ -48,7 +48,7 @@ class DeleteCommandTest {
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = (mockServer.logger as SpyLogger).logs
+        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
         nepian.set(Permission.HOME_DEFAULT, Permission.HOME_NAME)
@@ -68,7 +68,6 @@ class DeleteCommandTest {
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
         assertTrue(TestInstanceCreator.tearDown())
     }
 

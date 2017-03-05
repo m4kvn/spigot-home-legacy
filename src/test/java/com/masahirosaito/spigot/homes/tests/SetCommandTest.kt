@@ -44,18 +44,15 @@ class SetCommandTest {
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = (mockServer.logger as SpyLogger).logs
+        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
-        nepian.set(Permission.HOME_DEFAULT)
-        nepian.set(Permission.HOME_NAME)
-        nepian.set(Permission.HOME_PLAYER)
-        nepian.set(Permission.HOME_PLAYER_NAME)
+        nepian.set(Permission.HOME_DEFAULT, Permission.HOME_NAME)
+        nepian.set(Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME)
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
         assertTrue(TestInstanceCreator.tearDown())
     }
 
@@ -77,16 +74,14 @@ class SetCommandTest {
 
     @Test
     fun 引数が間違っている場合() {
-        nepian.set(Permission.HOME_SET)
-        nepian.set(Permission.HOME_SET_NAME)
+        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1", "home2"))
         assertEquals(SetCommandData.msg(CommandArgumentIncorrectException(SetCommandData)), logs.last())
     }
 
     @Test
     fun デフォルトホームの設定と移動() {
-        nepian.set(Permission.HOME_SET)
-        nepian.set(Permission.HOME_SET_NAME)
+        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         val firstLocation = nepian.location
 
@@ -100,8 +95,7 @@ class SetCommandTest {
 
     @Test
     fun 名前付きホームの設定と移動() {
-        nepian.set(Permission.HOME_SET)
-        nepian.set(Permission.HOME_SET_NAME)
+        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         val firstLocation = nepian.location
 

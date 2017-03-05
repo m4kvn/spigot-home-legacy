@@ -1,9 +1,7 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.HomeCommand
 import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.tests.utils.SpyLogger
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -39,13 +37,12 @@ class HomesTest {
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
-        logs = (mockServer.logger as SpyLogger).logs
+        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
         assertTrue(TestInstanceCreator.tearDown())
     }
 
