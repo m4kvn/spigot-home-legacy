@@ -51,7 +51,7 @@ class DeleteCommandTest {
         logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
-        nepian.set(Permission.HOME_DEFAULT, Permission.HOME_NAME)
+        nepian.set(Permission.HOME, Permission.HOME_NAME)
         nepian.set(Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME)
         nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
 

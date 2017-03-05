@@ -10,4 +10,10 @@ object PrivateCommandData : CommandData {
     )
 
     override fun description(): String = "Set your home private or public"
+
+    fun msgSuccessPrivate(isPrivate: Boolean, name: String? = null): String = prefix(buildString {
+        append("Set your ")
+        append(if (name == null) "default home " else "home named $name ")
+        append(if (isPrivate) "PRIVATE" else "PUBLIC")
+    })
 }

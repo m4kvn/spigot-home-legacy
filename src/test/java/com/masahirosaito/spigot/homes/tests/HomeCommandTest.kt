@@ -58,45 +58,45 @@ class HomeCommandTest {
 
         // デフォルトホームへの移動
         command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_DEFAULT)), logs.last())
+        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME)), logs.last())
 
         // 名前付きホームへの移動
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_DEFAULT)), logs.last())
+        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME)), logs.last())
 
         // プレイヤーホームへの移動
         command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_DEFAULT)), logs.last())
+        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME)), logs.last())
 
         // プレイヤーの名前付きホームへの移動
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_DEFAULT)), logs.last())
+        assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME)), logs.last())
     }
 
     @Test
     fun 名前付きホームコマンドの権限を持っていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
         assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_NAME)), logs.last())
     }
 
     @Test
     fun プレイヤーホームコマンドの権限を持っていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Nepian"))
         assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_PLAYER)), logs.last())
     }
 
     @Test
     fun 名前付きホームコマンドとプレイヤーホームコマンド両方の権限を持っていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
         assertEquals(HomeCommandData.msg(NotHavePermissionException(Permission.HOME_PLAYER)), logs.last())
     }
 
     @Test
     fun プレイヤー名前付きコマンドの権限を持っていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         nepian.set(Permission.HOME_NAME)
         nepian.set(Permission.HOME_PLAYER)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
@@ -105,7 +105,7 @@ class HomeCommandTest {
 
     @Test
     fun コマンドの引数が不適切な場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("-p"))
         assertEquals(HomeCommandData.msg(CommandArgumentIncorrectException(HomeCommandData)), logs.last())
@@ -119,7 +119,7 @@ class HomeCommandTest {
 
     @Test
     fun 自分のデフォルトホームが設定されていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         command.onCommand(nepian, pluginCommand, "home", null)
         assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
 
@@ -130,7 +130,7 @@ class HomeCommandTest {
 
     @Test
     fun 自分の名前付きホームが設定されていない場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         nepian.set(Permission.HOME_NAME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
         assertEquals(HomeCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
@@ -144,7 +144,7 @@ class HomeCommandTest {
     @Test
     fun 他のプレイヤーのデフォルトホームが設定されていない場合() {
         val minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         nepian.set(Permission.HOME_PLAYER)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Minene"))
         assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(minene)), logs.last())
@@ -153,7 +153,7 @@ class HomeCommandTest {
     @Test
     fun 他のプレイヤーの名前付きホームが設定されていない場合() {
         val minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         nepian.set(Permission.HOME_PLAYER)
         nepian.set(Permission.HOME_NAME)
         nepian.set(Permission.HOME_PLAYER_NAME)
@@ -163,7 +163,7 @@ class HomeCommandTest {
 
     @Test
     fun 存在しないプレイヤーを指定した場合() {
-        nepian.set(Permission.HOME_DEFAULT)
+        nepian.set(Permission.HOME)
         nepian.set(Permission.HOME_PLAYER)
         nepian.set(Permission.HOME_NAME)
         nepian.set(Permission.HOME_PLAYER_NAME)
