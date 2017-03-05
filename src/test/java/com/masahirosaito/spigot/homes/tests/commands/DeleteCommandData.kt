@@ -8,4 +8,9 @@ object DeleteCommandData : CommandData {
             "/home delete" to "Delete your default home",
             "/home delete <home_name>" to "Delete your named home"
     )
+
+    fun getResultMessage(name: String? = null): String = prefix(buildString {
+        append("Successfully delete your ")
+        append(if (name == null) "default home" else "named home <$name>")
+    })
 }
