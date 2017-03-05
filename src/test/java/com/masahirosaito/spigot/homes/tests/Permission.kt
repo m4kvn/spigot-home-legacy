@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.tests.commands
+package com.masahirosaito.spigot.homes.tests
 
 enum class Permission(val permission: String) {
 

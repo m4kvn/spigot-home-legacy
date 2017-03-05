@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.tests.utils
 
-import com.masahirosaito.spigot.homes.tests.commands.Permission
+import com.masahirosaito.spigot.homes.tests.Permission
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
