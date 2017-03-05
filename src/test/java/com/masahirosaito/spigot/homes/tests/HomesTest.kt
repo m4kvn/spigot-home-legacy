@@ -14,6 +14,7 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.junit.After
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +30,6 @@ class HomesTest {
     lateinit var mockServer: Server
     lateinit var homes: Homes
     lateinit var pluginCommand: PluginCommand
-    lateinit var homeCommand: HomeCommand
     lateinit var logs: MutableList<String>
     lateinit var nepian: Player
 
@@ -39,7 +39,6 @@ class HomesTest {
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
-        homeCommand = pluginCommand.executor as HomeCommand
         logs = (mockServer.logger as SpyLogger).logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
     }
@@ -62,6 +61,6 @@ class HomesTest {
 
     @Test
     fun コマンドの登録() {
-        assertTrue(homes.getCommand("home").executor is HomeCommand)
+        assertNotNull(homes.getCommand("home").executor)
     }
 }
