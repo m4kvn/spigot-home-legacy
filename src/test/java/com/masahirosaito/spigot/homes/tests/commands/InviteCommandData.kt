@@ -17,26 +17,26 @@ object InviteCommandData : CommandData {
 
     fun metadata(homes: Homes) = "${homes.name}.invite"
 
-    fun msgNoReceivedInvitation() = "You have not received an invitation"
+    fun msgNoReceivedInvitation() = prefix("You have not received an invitation")
 
-    fun msgAlreadyReceivedInvitation(player: OfflinePlayer) = "${player.name} already has another invitation"
+    fun msgAlreadyReceivedInvitation(player: OfflinePlayer) = prefix("${player.name} already has another invitation")
 
-    fun msgReceivedInvitationFrom(player: OfflinePlayer, homeName: String? = null) = buildString {
+    fun msgReceivedInvitationFrom(player: OfflinePlayer, homeName: String? = null) = prefix(buildString {
         append("You have been invited from ${player.name} to ${player.name}'s ")
-        append(if (homeName == null) "default home" else "home named $homeName.\n")
-        append("To accept an invitation, please run /home invite within 30 seconds")
-    }
-
-    fun msgInvited(player: OfflinePlayer, homeName: String? = null) = buildString {
-        append("You invited ${player.name}$ to your ")
         append(if (homeName == null) "default home" else "home named $homeName")
-    }
+        append(".\nTo accept an invitation, please run /home invite within 30 seconds")
+    })
 
-    fun msgAcceptedInvitationFrom(player: OfflinePlayer) = "You accepted ${player.name}'s invitation"
+    fun msgInvited(target: OfflinePlayer, homeName: String? = null) = prefix(buildString {
+        append("You invited ${target.name} to your ")
+        append(if (homeName == null) "default home" else "home named $homeName")
+    })
 
-    fun msgAcceptedInvitation(player: OfflinePlayer) = "${player.name} accepted your invitation"
+    fun msgAcceptedInvitationFrom(player: OfflinePlayer) = prefix("You accepted ${player.name}'s invitation")
 
-    fun msgCanceledInvitationFrom(player: OfflinePlayer) = "Invitation from ${player.name} has been canceled"
+    fun msgAcceptedInvitation(player: OfflinePlayer) = prefix("${player.name} accepted your invitation")
 
-    fun msgCanceledInvitation(target: OfflinePlayer) = "${target.name} canceled your invitation"
+    fun msgCanceledInvitationFrom(player: OfflinePlayer) = prefix("Invitation from ${player.name} has been canceled")
+
+    fun msgCanceledInvitation(target: OfflinePlayer) = prefix("${target.name} canceled your invitation")
 }
