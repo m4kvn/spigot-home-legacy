@@ -1,16 +1,19 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.HomeCommand
 import com.masahirosaito.spigot.homes.tests.commands.Permission
 import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
 import com.masahirosaito.spigot.homes.tests.exceptions.CommandArgumentIncorrectException
+import com.masahirosaito.spigot.homes.tests.exceptions.NamedHomeLimitException
+import com.masahirosaito.spigot.homes.tests.exceptions.NotAllowedByConfigException
 import com.masahirosaito.spigot.homes.tests.exceptions.NotHavePermissionException
 import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.configFile
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.World
+import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
@@ -31,7 +34,7 @@ class SetCommandTest {
     lateinit var mockServer: Server
     lateinit var homes: Homes
     lateinit var pluginCommand: PluginCommand
-    lateinit var homeCommand: HomeCommand
+    lateinit var command: CommandExecutor
     lateinit var logs: MutableList<String>
     lateinit var nepian: Player
 
@@ -41,7 +44,7 @@ class SetCommandTest {
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
-        homeCommand = pluginCommand.executor as HomeCommand
+        command = pluginCommand.executor
         logs = (mockServer.logger as SpyLogger).logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
@@ -59,17 +62,17 @@ class SetCommandTest {
 
     @Test
     fun コマンドの親権限を持っていない場合() {
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
         assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET)), logs.last())
 
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
         assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET)), logs.last())
     }
 
     @Test
     fun 名前付きホーム設定の権限を持っていない場合() {
         nepian.set(Permission.HOME_SET)
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
         assertEquals(SetCommandData.msg(NotHavePermissionException(Permission.HOME_SET_NAME)), logs.last())
     }
 
@@ -77,7 +80,7 @@ class SetCommandTest {
     fun 引数が間違っている場合() {
         nepian.set(Permission.HOME_SET)
         nepian.set(Permission.HOME_SET_NAME)
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1", "home2"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1", "home2"))
         assertEquals(SetCommandData.msg(CommandArgumentIncorrectException(SetCommandData)), logs.last())
     }
 
@@ -88,11 +91,11 @@ class SetCommandTest {
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         val firstLocation = nepian.location
 
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
         assertEquals(SetCommandData.msgSuccessSetDefaultHome(), logs.last())
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", null)
+        command.onCommand(nepian, pluginCommand, "home", null)
         assertEquals(firstLocation, nepian.location)
     }
 
@@ -103,11 +106,60 @@ class SetCommandTest {
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         val firstLocation = nepian.location
 
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
         assertEquals(SetCommandData.msgSuccessSetNamedHome("home1"), logs.last())
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
-        homeCommand.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
         assertEquals(firstLocation, nepian.location)
+    }
+
+    @Test
+    fun 名前付きホーム設定がオフの場合() {
+        nepian.setOps()
+        homes.configs.copy(onNamedHome = false).apply {
+            save(configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertEquals(this, homes.configs)
+        }
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        assertEquals(SetCommandData.msg(NotAllowedByConfigException()), logs.last())
+    }
+
+    @Test
+    fun 名前付きホーム制限が無制限の場合() {
+        nepian.setOps()
+        homes.configs.copy(homeLimit = -1).apply {
+            save(configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertEquals(this, homes.configs)
+        }
+
+        repeat(100, { i ->
+            val loc = nepian.teleport(MockWorldFactory.makeRandomLocation()).let { nepian.location }
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home$i"))
+            nepian.teleport(MockWorldFactory.makeRandomLocation())
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("home$i"))
+            assertEquals(loc, nepian.location)
+        })
+    }
+
+    @Test
+    fun 名前付きホーム制限が設定されている場合() {
+        nepian.setOps()
+        homes.configs.copy(homeLimit = 5).apply {
+            save(configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertEquals(this, homes.configs)
+        }
+
+        repeat(6, { i ->
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home$i"))
+        })
+        assertEquals(SetCommandData.msg(NamedHomeLimitException(5)), logs.last())
     }
 }
