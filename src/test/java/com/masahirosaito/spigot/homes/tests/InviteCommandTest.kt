@@ -166,7 +166,7 @@ class InviteCommandTest {
         Assert.assertEquals(InviteCommandData.msgReceivedInvitationFrom(nepian), logs[logs.lastIndex - 1])
         Assert.assertEquals(InviteCommandData.msgInvited(minene), logs.last())
 
-        sleep(31000)
+        sleep(40000)
 
         Assert.assertEquals(InviteCommandData.msgCanceledInvitationFrom(nepian), logs[logs.lastIndex - 1])
         Assert.assertEquals(InviteCommandData.msgCanceledInvitation(minene), logs.last())
@@ -175,7 +175,7 @@ class InviteCommandTest {
         Assert.assertEquals(InviteCommandData.msgReceivedInvitationFrom(nepian, "home1"), logs[logs.lastIndex - 1])
         Assert.assertEquals(InviteCommandData.msgInvited(minene, "home1"), logs.last())
 
-        sleep(31000)
+        sleep(40000)
 
         Assert.assertEquals(InviteCommandData.msgCanceledInvitationFrom(nepian), logs[logs.lastIndex - 1])
         Assert.assertEquals(InviteCommandData.msgCanceledInvitation(minene), logs.last())
