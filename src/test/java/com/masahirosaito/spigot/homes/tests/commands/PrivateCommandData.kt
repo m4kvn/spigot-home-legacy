@@ -8,4 +8,6 @@ object PrivateCommandData : CommandData {
             "/home private (on/off)" to "Set your default home private or public",
             "/home private (on/off) <home_name>" to "Set your named home private or public"
     )
+
+    override fun description(): String = "Set your home private or public"
 }

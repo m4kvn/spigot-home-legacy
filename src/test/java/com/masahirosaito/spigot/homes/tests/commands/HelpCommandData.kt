@@ -8,4 +8,6 @@ object HelpCommandData : CommandData {
             "/home help" to "Display the list of Homes commands",
             "/home help <command_name>" to "Display the usage of Homes command"
     )
+
+    override fun description(): String = "Homes Help Command"
 }

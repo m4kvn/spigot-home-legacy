@@ -9,6 +9,8 @@ object SetCommandData : CommandData {
             "/home set <home_name>" to "Set your location to your named home"
     )
 
+    override fun description(): String = "Set your home or named home"
+
     fun msgSuccessSetDefaultHome() = prefix("Successfully set as default home")
 
     fun msgSuccessSetNamedHome(name: String) = prefix("Successfully set as home named <$name>")

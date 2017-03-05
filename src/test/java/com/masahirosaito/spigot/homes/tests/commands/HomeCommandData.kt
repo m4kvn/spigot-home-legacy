@@ -10,4 +10,6 @@ object HomeCommandData : CommandData {
             "/home -p <player_name>" to "Teleport to player's default home",
             "/home <home_name> -p <player_name>" to "Teleport to player's named home"
     )
+
+    override fun description(): String = "Homes Command"
 }

@@ -8,6 +8,8 @@ interface CommandData {
 
     fun usages(): List<Pair<String, String>>
 
+    fun description(): String
+
     fun msg(e: Exception) = prefix(ChatColor.stripColor(e.message))
 
     fun usage(): String = buildString {
