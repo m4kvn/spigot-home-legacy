@@ -16,7 +16,7 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
 
     override fun name(): String = "invite"
 
-    override fun permission(): String = Permission.home_command_invite
+    override fun permission(): String = ""
 
     override fun description(): String = "Invite the other player to your home"
 
@@ -52,6 +52,7 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun inviteDefaultHome(player: Player, playerName: String) {
+        checkPermission(player, Permission.home_command_invite)
         val data = plugin.homeManager.findDefaultHome(player)
         inviteHome(data, player, playerName, getInviteMessage(player))
         send(player, getInvitedMessage(playerName))
@@ -59,6 +60,7 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
 
     private fun inviteNamedHome(player: Player, playerName: String, homeName: String) {
         checkConfig(plugin.configs.onNamedHome)
+        checkPermission(player, Permission.home_command_invite)
         checkPermission(player, Permission.home_command_invite_name)
         val data = plugin.homeManager.findNamedHome(player, homeName)
         inviteHome(data, player, playerName, getInviteMessage(player, homeName))
@@ -97,8 +99,8 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
     private fun getInviteMessage(player: Player, homeName: String? = null) = buildString {
         val r = ChatColor.RESET; val y = ChatColor.YELLOW
         append("${y}You have been invited from $r${player.name}$y to ${player.name}'s ")
-        append(if (homeName == null) "default home" else "home named $r$homeName$y.\n")
-        append("To accept an invitation, please run ")
+        append(if (homeName == null) "default home" else "home named $r$homeName$y")
+        append(".\nTo accept an invitation, please run ")
         append("${ChatColor.AQUA}/home invite$y within ${ChatColor.LIGHT_PURPLE}30 seconds$r")
     }
 
