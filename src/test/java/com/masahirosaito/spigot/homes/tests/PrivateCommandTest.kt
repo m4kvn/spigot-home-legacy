@@ -11,8 +11,9 @@ import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,188 +37,164 @@ class PrivateCommandTest {
 
     @Before
     fun setUp() {
-        Assert.assertTrue(TestInstanceCreator.setUp())
+        assertThat(TestInstanceCreator.setUp(), `is`(true))
+
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
         minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
 
-        nepian.set(Permission.HOME, Permission.HOME_NAME)
-        nepian.set(Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME)
-        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
+        nepian.setOps()
+        minene.setOps()
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         defaultLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
-        Assert.assertEquals("[Homes] Successfully set as default home", logs.last())
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as default home"))
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         namedLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-        Assert.assertEquals("[Homes] Successfully set as home named <home1>", logs.last())
 
-        minene.teleport(MockWorldFactory.makeRandomLocation())
+        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as home named <home1>"))
     }
 
     @After
     fun tearDown() {
-        Assert.assertTrue(TestInstanceCreator.tearDown())
+        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
+        minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
+
+        assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 
     @Test
-    fun 親権限を持っていない場合は全ての機能を実行できない() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off"))
-        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
-        Assert.assertEquals("[Homes] You don't have permission <homes.command.private>", logs.last())
-    }
-
-    @Test
-    fun コマンドを実行するとデフォルトホームをプライベート化できる() {
-        nepian.setOps()
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off"))
-        Assert.assertEquals("[Homes] Set your default home PUBLIC", logs.last())
-    }
-
-    @Test
-    fun コマンドを実行すると名前付きホームをプライベート化できる() {
-        nepian.setOps()
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
-        Assert.assertEquals("[Homes] Set your home named home1 PUBLIC", logs.last())
-    }
-
-    @Test
-    fun 引数が間違っていた場合はコマンドの使い方を表示する() {
-        nepian.setOps()
-
+    fun 引数が間違っている場合に使い方を表示する() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private"))
-        Assert.assertEquals(buildString {
+        assertThat(nepian.lastMsg(), `is`(buildString {
             append("[Homes] The argument is incorrect\n")
             append("private command usage:\n")
             append("/home private (on/off) : Set your default home private or public\n")
             append("/home private (on/off) <home_name> : Set your named home private or public")
-        }, logs.last())
+        }))
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "aaa"))
-        Assert.assertEquals(buildString {
+        assertThat(nepian.lastMsg(), `is`(buildString {
             append("[Homes] The argument is incorrect\n")
             append("private command usage:\n")
             append("/home private (on/off) : Set your default home private or public\n")
             append("/home private (on/off) <home_name> : Set your named home private or public")
-        }, logs.last())
+        }))
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1", "home2"))
-        Assert.assertEquals(buildString {
+        assertThat(nepian.lastMsg(), `is`(buildString {
             append("[Homes] The argument is incorrect\n")
             append("private command usage:\n")
             append("/home private (on/off) : Set your default home private or public\n")
             append("/home private (on/off) <home_name> : Set your named home private or public")
-        }, logs.last())
+        }))
     }
 
     @Test
-    fun 他の人はプライベート化したデフォルトホームに移動できない() {
-        nepian.setOps()
-        minene.set(Permission.HOME, Permission.HOME_PLAYER)
-
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        Assert.assertEquals(defaultLocation, minene.location)
-
+    fun デフォルトホームのプライベート化には親権限が必要() {
+        nepian.setOps(false)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
 
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        Assert.assertEquals("[Homes] Nepian's default home is PRIVATE", logs.last())
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command>"))
     }
 
     @Test
-    fun 他の人はプライベート化した名前付きホームに移動できない() {
-        nepian.setOps()
-        minene.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME, Permission.HOME_NAME)
+    fun 名前付きホームのプライベートには親権限が必要() {
+        nepian.setOps(false)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
 
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        Assert.assertEquals(namedLocation, minene.location)
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command>"))
+    }
+
+    @Test
+    fun デフォルトホームのプライベート化にはプライベート権限が必要() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.private>"))
+    }
+
+    @Test
+    fun 名前付きホームのプライベート化にはプライベート権限が必要() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.private>"))
+    }
+
+    @Test
+    fun 名前付きホームのプライベート化には名前付きプライベート権限が必要() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_PRIVATE)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.private.name>"))
+    }
+
+    @Test
+    fun プライベート権限を持っている場合はデフォルトホームをプライベート化できる() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_PRIVATE)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your default home PRIVATE"))
+    }
+
+    @Test
+    fun 名前付きプライベート権限を持っている場合は名前付きホームをプライベート化できる() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_PRIVATE, Permission.HOME_PRIVATE_NAME)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named home1 PRIVATE"))
+    }
+
+    @Test
+    fun プライベート化機能が設定でオフの場合はデフォルトホームをプライベート化できない() {
+        homes.configs.copy(onPrivate = false).apply {
+            save(TestInstanceCreator.configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(homes.configs, `is`(this))
+        }
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
+    }
+
+    @Test
+    fun プライベート化機能が設定でオフの場合は名前付きホームをプライベート化できない() {
+        homes.configs.copy(onPrivate = false).apply {
+            save(TestInstanceCreator.configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(homes.configs, `is`(this))
+        }
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
+    }
+
+    @Test
+    fun 名前付きホーム機能が設定でオフの場合は名前付きホームをプライベート化できない() {
+        homes.configs.copy(onNamedHome = false).apply {
+            save(TestInstanceCreator.configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(homes.configs, `is`(this))
+        }
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
 
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        Assert.assertEquals("[Homes] Nepian's home named home1 is PRIVATE", logs.last())
-    }
-
-    @Test
-    fun プライベート化したホームは自分以外からリスト表示されない() {
-        nepian.setOps()
-        minene.setOps()
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
-        Assert.assertEquals(buildString {
-            append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
-            append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-        }, logs.last())
-
-        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
-        Assert.assertEquals(buildString {
-            append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
-            append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-        }, logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        Assert.assertEquals("[Homes] Set your default home PRIVATE", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
-        Assert.assertEquals(buildString {
-            append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PRIVATE\n")
-            append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-        }, logs.last())
-
-        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
-        Assert.assertEquals(buildString {
-            append("[Homes] Home List\n")
-            append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-        }, logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        Assert.assertEquals("[Homes] Set your home named home1 PRIVATE", logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
-        Assert.assertEquals(buildString {
-            append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PRIVATE\n")
-            append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PRIVATE\n")
-        }, logs.last())
-
-        command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
-        Assert.assertEquals("[Homes] No homes", logs.last())
+        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
     }
 }
