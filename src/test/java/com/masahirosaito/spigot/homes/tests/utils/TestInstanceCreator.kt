@@ -79,7 +79,7 @@ object TestInstanceCreator {
     }
 
     fun tearDown(): Boolean {
-        spyLogger.logs.forEachIndexed { i, s -> println("$i -> $s") }
+        spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
         MockPlayerFactory.clear()
         MockWorldFactory.clear()
 

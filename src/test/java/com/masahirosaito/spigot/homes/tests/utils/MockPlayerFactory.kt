@@ -11,6 +11,7 @@ import org.mockito.Matchers.any
 import org.mockito.Matchers.anyString
 import org.powermock.api.mockito.PowerMockito
 import java.util.*
+import java.util.logging.Logger
 
 object MockPlayerFactory {
     val players: MutableMap<UUID, Player> = mutableMapOf()
@@ -19,6 +20,7 @@ object MockPlayerFactory {
     val offlinePlayers: MutableMap<UUID, OfflinePlayer> = mutableMapOf()
     val ops: MutableList<UUID> = mutableListOf()
     val metadatas: MutableMap<UUID, MutableMap<String, MutableList<MetadataValue>>> = mutableMapOf()
+    val loggers: MutableMap<UUID, SpyLogger> = mutableMapOf()
 
     fun makeNewMockPlayer(playerName: String, mockServer: Server): Player {
         return PowerMockito.mock(Player::class.java).apply {
@@ -31,7 +33,7 @@ object MockPlayerFactory {
             /* TODO: hasPermission(permission: String): Boolean */
             PowerMockito.`when`(hasPermission(anyString())).thenAnswer { invocation ->
                 if (isOps()) true
-                else permissions[uniqueId]?.contains(invocation.getArgumentAt(0, String::class.java))
+                else permissions[uniqueId]?.contains(invocation.getArgumentAt(0, String::class.java)) ?: false
             }
 
             /* TODO: getMetadata(metadataKey: String): List<MetadataValue> */
@@ -48,7 +50,7 @@ object MockPlayerFactory {
 
             /* TODO: hasMetadata(metadataKey: String): Boolean */
             PowerMockito.`when`(hasMetadata(anyString())).thenAnswer { invocation ->
-                metadatas[uniqueId]?.contains(invocation.getArgumentAt(0, String::class.java))
+                metadatas[uniqueId]?.contains(invocation.getArgumentAt(0, String::class.java)) ?: false
             }
 
             /* TODO: removeMetadata(metadataKey: String, plugin: JavaPlugin): Unit */
@@ -63,7 +65,7 @@ object MockPlayerFactory {
 
             /* TODO: sendMessage(msg: String): Unit */
             PowerMockito.`when`(sendMessage(anyString())).thenAnswer { invocation ->
-                server.logger.info(invocation.getArgumentAt(0, String::class.java))
+                loggers[uniqueId]?.info(invocation.getArgumentAt(0, String::class.java))
             }
 
             register(this)
@@ -76,6 +78,7 @@ object MockPlayerFactory {
         permissions.put(player.uniqueId, mutableListOf())
         offlinePlayers.put(player.uniqueId, player)
         metadatas.put(player.uniqueId, mutableMapOf())
+        loggers.put(player.uniqueId, SpyLogger(Logger.getLogger(player.name)))
     }
 
     fun clear() {
@@ -85,5 +88,6 @@ object MockPlayerFactory {
         offlinePlayers.clear()
         ops.clear()
         metadatas.clear()
+        loggers.clear()
     }
 }

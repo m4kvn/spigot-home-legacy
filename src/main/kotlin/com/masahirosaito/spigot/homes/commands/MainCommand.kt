@@ -18,6 +18,7 @@ abstract class MainCommand(override val plugin: Homes) : SubCommand, CommandExec
         val list = args?.toList() ?: emptyList()
         if (sender !is Player) throw InValidCommandSenderException()
         try {
+            checkPermission(sender, permission())
             when {
                 haveSubCommand(list) -> onSubCommand(sender, list)
                 else -> onCommand(sender, list)
