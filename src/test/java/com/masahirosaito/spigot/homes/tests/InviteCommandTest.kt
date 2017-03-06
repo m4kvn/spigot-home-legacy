@@ -359,6 +359,14 @@ class InviteCommandTest {
     }
 
     @Test
+    fun 名前付きホームへの招待は親権限が必要() {
+        nepian.setOps(false)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command>"))
+    }
+
+    @Test
     fun デフォルトホームへの招待は招待権限が必要() {
         nepian.setOps(false)
         nepian.set(Permission.HOME)
@@ -427,5 +435,39 @@ class InviteCommandTest {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
 
         assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
+    }
+
+    @Test
+    fun 引数が間違っていた場合は使い方を表示する() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1", "home2"))
+
+        assertThat(nepian.lastMsg(), `is`(buildString {
+            append("invite command usage:\n")
+            append("/home invite : Accept the invitation\n")
+            append("/home invite <player_name> : Invite to your default home\n")
+            append("/home invite <player_name> <home_name> : Invite to your named home")
+        }))
+    }
+
+    @Test
+    fun 招待したプレイヤーが存在しない場合はメッセージを表示する() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Moichi", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Player <Moichi> does not exist"))
+    }
+
+    @Test
+    fun 招待されていない状態に招待許可をすると招待がないと表示される() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] You have not received an invitation"))
+    }
+
+    @Test
+    fun 既に招待を受けているプレイヤーに招待を送った場合にメッセージを表示する() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("Minene already has another invitation"))
     }
 }
