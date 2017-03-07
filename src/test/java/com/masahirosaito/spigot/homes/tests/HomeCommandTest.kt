@@ -160,8 +160,11 @@ class HomeCommandTest {
         nepian.setOps(false)
         nepian.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_NAME)
 
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.player.name>"))
+        "[Homes] You don't have permission <homes.command.player.name>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
     }
 
     @Test
