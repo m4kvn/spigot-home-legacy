@@ -49,7 +49,7 @@ class HomeDataTest {
 
     @After
     fun tearDown() {
-        TestInstanceCreator.tearDown()
+        assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 
     @Test
