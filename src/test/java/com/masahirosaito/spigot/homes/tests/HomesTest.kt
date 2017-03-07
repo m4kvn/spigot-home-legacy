@@ -1,9 +1,6 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.HomeCommand
-import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.tests.utils.SpyLogger
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -13,9 +10,10 @@ import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.After
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,38 +27,33 @@ import java.io.File
 class HomesTest {
     lateinit var mockServer: Server
     lateinit var homes: Homes
-    lateinit var pluginCommand: PluginCommand
     lateinit var logs: MutableList<String>
-    lateinit var nepian: Player
 
     @Before
     fun setUp() {
-        assertTrue(TestInstanceCreator.setUp())
+        assertThat(TestInstanceCreator.setUp(), `is`(true))
+
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
-        pluginCommand = homes.getCommand("home")
-        logs = (mockServer.logger as SpyLogger).logs
-        nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
-        assertTrue(TestInstanceCreator.tearDown())
+        assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 
     @Test
     fun 設定ファイルの生成() {
-        assertTrue(File(TestInstanceCreator.pluginFolder, "configs.json").exists())
+        assertThat(File(TestInstanceCreator.pluginFolder, "configs.json").exists(), `is`(true))
     }
 
     @Test
     fun データファイルの生成() {
-        assertTrue(File(TestInstanceCreator.pluginFolder, "playerhomes.json").exists())
+        assertThat(File(TestInstanceCreator.pluginFolder, "playerhomes.json").exists(), `is`(true))
     }
 
     @Test
     fun コマンドの登録() {
-        assertNotNull(homes.getCommand("home").executor)
+        assertThat(homes.getCommand("home").executor, `is`(notNullValue()))
     }
 }

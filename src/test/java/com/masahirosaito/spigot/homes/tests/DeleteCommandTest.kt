@@ -1,13 +1,6 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.tests.commands.DeleteCommandData
-import com.masahirosaito.spigot.homes.tests.commands.HomeCommandData
-import com.masahirosaito.spigot.homes.tests.commands.SetCommandData
-import com.masahirosaito.spigot.homes.tests.exceptions.CanNotFindDefaultHomeException
-import com.masahirosaito.spigot.homes.tests.exceptions.CanNotFindNamedHomeException
-import com.masahirosaito.spigot.homes.tests.exceptions.CommandArgumentIncorrectException
-import com.masahirosaito.spigot.homes.tests.exceptions.NotHavePermissionException
 import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -18,9 +11,9 @@ import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
+import org.hamcrest.CoreMatchers.*
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,168 +28,150 @@ class DeleteCommandTest {
     lateinit var homes: Homes
     lateinit var pluginCommand: PluginCommand
     lateinit var command: CommandExecutor
-    lateinit var logs: MutableList<String>
     lateinit var nepian: Player
+    lateinit var minene: Player
 
     lateinit var defaultLocation: Location
     lateinit var namedLocation: Location
 
+    lateinit var nepianLocation: Location
+    lateinit var mineneLocation: Location
+
     @Before
     fun setUp() {
-        assertTrue(TestInstanceCreator.setUp())
+        assertThat(TestInstanceCreator.setUp(), `is`(true))
+
         mockServer = TestInstanceCreator.mockServer
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = (mockServer.logger as SpyLogger).logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
+        minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
 
-        nepian.set(Permission.HOME_DEFAULT, Permission.HOME_NAME)
-        nepian.set(Permission.HOME_PLAYER, Permission.HOME_PLAYER_NAME)
-        nepian.set(Permission.HOME_SET, Permission.HOME_SET_NAME)
+        nepian.setOps()
+        minene.setOps()
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         defaultLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
-        assertEquals(SetCommandData.msgSuccessSetDefaultHome(), logs.last())
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as default home"))
 
         nepian.teleport(MockWorldFactory.makeRandomLocation())
         namedLocation = nepian.location
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-        assertEquals(SetCommandData.msgSuccessSetNamedHome("home1"), logs.last())
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as home named <home1>"))
+
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        assertThat(nepian.location, `is`(not(namedLocation)))
+
+        minene.teleport(MockWorldFactory.makeRandomLocation())
+        assertThat(minene.location, `is`(not(namedLocation)))
+
+        nepianLocation = nepian.location
+        mineneLocation = minene.location
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
-        assertTrue(TestInstanceCreator.tearDown())
+        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
+        minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
+
+        assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 
     @Test
-    fun コマンドの親権限を持っていない場合() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.msg(NotHavePermissionException(Permission.HOME_DELETE)), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(defaultLocation, nepian.location)
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.msg(NotHavePermissionException(Permission.HOME_DELETE)), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(namedLocation, nepian.location)
-    }
-
-    @Test
-    fun 名前付きホーム設定の権限を持っていない場合() {
-        nepian.set(Permission.HOME_DELETE)
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.getResultMessage(null), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.msg(NotHavePermissionException(Permission.HOME_DELETE_NAME)), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(namedLocation, nepian.location)
-    }
-
-    @Test
-    fun このコマンドの全ての権限を持っている場合() {
-        nepian.set(Permission.HOME_DELETE, Permission.HOME_DELETE_NAME)
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.getResultMessage(null), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.getResultMessage("home1"), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(HomeCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
-    }
-
-    @Test
-    fun プレイヤーが管理者の場合() {
-        nepian.setOps()
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.getResultMessage(null), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
-
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.getResultMessage("home1"), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(HomeCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
-    }
-
-    @Test
-    fun 引数が間違っている場合() {
-        nepian.set(Permission.HOME_DELETE, Permission.HOME_DELETE_NAME)
-
+    fun 引数が間違っている場合は使い方を表示し終わる() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1", "home2"))
-        assertEquals(DeleteCommandData.msg(CommandArgumentIncorrectException(DeleteCommandData)), logs.last())
 
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(defaultLocation, nepian.location)
+        assertThat(nepian.lastMsg(), `is`(buildString {
+            append("[Homes] The argument is incorrect\n")
+            append("delete command usage:\n")
+            append("/home delete : Delete your default home\n")
+            append("/home delete <home_name> : Delete your named home")
+        }))
 
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(namedLocation, nepian.location)
+        assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(notNullValue()))
+        assertThat(homes.homeManager.findPlayerHome(nepian).haveName("home1"), `is`(true))
     }
 
     @Test
-    fun デフォルトホームが設定されていない場合() {
-        nepian.set(Permission.HOME_DELETE, Permission.HOME_DELETE_NAME)
+    fun コマンドの実行には親権限が必要() {
+        nepian.setOps(false)
 
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.getResultMessage(null), logs.last())
+        "[Homes] You don't have permission <homes.command>".apply {
 
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
 
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        assertEquals(DeleteCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertEquals(HomeCommandData.msg(CanNotFindDefaultHomeException(nepian)), logs.last())
+        assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(notNullValue()))
+        assertThat(homes.homeManager.findPlayerHome(nepian).haveName("home1"), `is`(true))
     }
 
     @Test
-    fun 名前付きホームが設定されていない場合() {
-        nepian.set(Permission.HOME_DELETE, Permission.HOME_DELETE_NAME)
+    fun コマンドの実行には削除権限が必要() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME)
+
+        "[Homes] You don't have permission <homes.command.delete>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+
+        assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(notNullValue()))
+        assertThat(homes.homeManager.findPlayerHome(nepian).haveName("home1"), `is`(true))
+    }
+
+    @Test
+    fun 名前付きホーム削除の実行には名前付き削除権限が必要() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_DELETE)
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.getResultMessage("home1"), logs.last())
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.delete.name>"))
 
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(HomeCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
+        assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(notNullValue()))
+        assertThat(homes.homeManager.findPlayerHome(nepian).haveName("home1"), `is`(true))
+    }
+
+    @Test
+    fun 削除権限を持っている場合はホームの削除を行える() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_DELETE)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
+
+        assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(nullValue()))
+    }
+
+    @Test
+    fun 名前付き削除権限を持っている場合は名前付きホームの削除を行える() {
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_DELETE, Permission.HOME_DELETE_NAME)
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
+
+        assertThat(homes.homeManager.findPlayerHome(nepian).haveName("home1"), `is`(false))
+    }
+
+    @Test
+    fun ホームが存在しない場合はメッセージを表示し終了する() {
+        homes.homeManager.findPlayerHome(nepian).defaultHomeData = null
+
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
+        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's default home does not exist"))
+    }
+
+    @Test
+    fun 名前付きホームが存在しない場合はメッセージを表示し終了する() {
+        homes.homeManager.findPlayerHome(nepian).namedHomeData.removeAll { it.name == "home1" }
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        assertEquals(DeleteCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertEquals(HomeCommandData.msg(CanNotFindNamedHomeException(nepian, "home1")), logs.last())
+        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's home named <home1> does not exist"))
     }
 }

@@ -33,7 +33,8 @@ data class PlayerHome(
 
     fun setNamedHome(player: Player, name: String, limit: Int) {
         if (!haveName(name) && limit != -1 && namedHomeData.isLimit(limit)) throwLimitException(limit)
-        namedHomeData.add(HomeData(player.uniqueId, name, LocationData.new(player.location)))
+        if (haveName(name)) findNamedHome(player, name).locationData = LocationData.new(player.location)
+        else namedHomeData.add(HomeData(player.uniqueId, name, LocationData.new(player.location)))
     }
 
     private fun MutableList<HomeData>.isLimit(limit: Int): Boolean = size >= limit

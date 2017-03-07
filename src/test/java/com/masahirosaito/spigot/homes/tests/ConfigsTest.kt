@@ -43,16 +43,16 @@ class ConfigsTest {
         homes = TestInstanceCreator.homes
         pluginCommand = homes.getCommand("home")
         command = pluginCommand.executor
-        logs = (mockServer.logger as SpyLogger).logs
+        logs = TestInstanceCreator.spyLogger.logs
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
 
         nepian.setOps()
+
         assertTrue(configFile.exists())
     }
 
     @After
     fun tearDown() {
-        logs.forEachIndexed { i, s -> println("$i -> $s") }
         Assert.assertTrue(TestInstanceCreator.tearDown())
     }
 
