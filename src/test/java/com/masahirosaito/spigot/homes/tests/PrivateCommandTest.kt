@@ -197,4 +197,36 @@ class PrivateCommandTest {
 
         assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
     }
+
+    @Test
+    fun デフォルトホームが存在しない状態でプライベートを行った場合はメッセージを送信し終わる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's default home does not exist"))
+    }
+
+    @Test
+    fun 名前付きホームが存在しない状態でプライベートを行った場合はメッセージを送信し終わる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's home named <home1> does not exist"))
+    }
+
+    @Test
+    fun プライベート化したデフォルトホームをパブリック化できる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your default home PUBLIC"))
+    }
+
+    @Test
+    fun プライベート化した名前付きホームをパブリック化できる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
+
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named home1 PUBLIC"))
+    }
 }
