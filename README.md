@@ -1,4 +1,4 @@
-# Homes
+# Homes [![Build Status](https://travis-ci.org/MasahiroSaito/Homes.svg?branch=master)](https://travis-ci.org/MasahiroSaito/Homes)
 
 [Wiki](./wiki) | [Commands](./wiki/Commands) | [Permissions](./wiki/Permissions) | [Configs](./wiki/Configs)
 
