@@ -12,11 +12,11 @@ import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
 class InviteCommand(override val plugin: Homes) : SubCommand {
-    private val metadata = plugin.name + ".invite"
+    private val meta = "homes.invite"
 
     override fun name(): String = "invite"
 
-    override fun permission(): String = Permission.home_command_invite
+    override fun permission(): String = ""
 
     override fun description(): String = "Invite the other player to your home"
 
@@ -39,71 +39,111 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
     }
 
     private fun allowInvitation(player: Player) {
-        if (!player.hasMetadata(metadata)) throw Exception("You have not received an invitation")
-        val homeData = player.getMetadata(metadata).first().value() as HomeData
-        player.teleport(homeData.location())
-        player.removeMetadata(metadata, plugin)
-        send(player, "${ChatColor.AQUA}You accepted ${findOfflinePlayer(homeData.ownerUid).name}'s invitation")
-        try {
-            val owner = findOnlinePlayer(homeData.ownerUid)
-            send(owner, "${ChatColor.AQUA}${player.name} accepted your invitation")
-        } catch(e: Exception) {
+        if (!player.hasMetadata(meta)) {
+            throw Exception("You have not received an invitation")
+        } else {
+            val th = player.getMetadata(meta).first().value() as Thread
+            if (th.isAlive) {
+                th.interrupt()
+                th.join()
+            }
         }
     }
 
     private fun inviteDefaultHome(player: Player, playerName: String) {
+        checkPermission(player, Permission.home_command_invite)
         val data = plugin.homeManager.findDefaultHome(player)
-        inviteHome(data, player, playerName, getInviteMessage(player))
-        send(player, getInvitedMessage(playerName))
+        inviteHome(data, player, playerName, msgReceiveInvitationFrom(player.name))
+        send(player, msgInvite(playerName))
     }
 
     private fun inviteNamedHome(player: Player, playerName: String, homeName: String) {
         checkConfig(plugin.configs.onNamedHome)
+        checkPermission(player, Permission.home_command_invite)
         checkPermission(player, Permission.home_command_invite_name)
         val data = plugin.homeManager.findNamedHome(player, homeName)
-        inviteHome(data, player, playerName, getInviteMessage(player, homeName))
-        send(player, getInvitedMessage(playerName, homeName))
+        inviteHome(data, player, playerName, msgReceiveInvitationFrom(player.name, homeName))
+        send(player, msgInvite(playerName, homeName))
     }
 
     private fun inviteHome(homeData: HomeData, player: Player, playerName: String, message: String) {
-        findOnlinePlayer(playerName).let {
-            if (it.hasMetadata(metadata)) {
-                throw Exception("${it.name} already has another invitation")
+        val op = findOnlinePlayer(playerName).apply {
+            if (hasMetadata(meta)) {
+                throw Exception("$name already has another invitation")
             }
-            it.setMetadata(metadata, FixedMetadataValue(plugin, homeData))
-            send(it, message)
+            send(this, message)
         }
-        thread {
-            Thread.sleep(30000)
+        val th = thread(name = "$meta.${player.name}.$playerName") {
             try {
+                Thread.sleep(30000)
                 val target = findOnlinePlayer(playerName)
-                if (target.hasMetadata(metadata)) {
-                    target.removeMetadata(metadata, plugin)
-                    send(target, buildString {
-                        append("${ChatColor.RED}Invitation from ")
-                        append("${ChatColor.RESET}${player.name}${ChatColor.RED} ")
-                        append("has been canceled${ChatColor.RESET}")
-                    })
-                    send(player, buildString {
-                        append("${ChatColor.RESET}${target.name}${ChatColor.RED} ")
-                        append("canceled your invitation${ChatColor.RESET}")
-                    })
+                if (target.hasMetadata(meta)) {
+                    target.removeMetadata(meta, plugin)
+                    send(target, msgCancelInvitationFrom(player.name))
+                    send(player, msgCanceledInvitationTo(target.name))
+                }
+            } catch (e: InterruptedException) {
+                try {
+                    val target = findOnlinePlayer(playerName)
+                    target.teleport(homeData.location())
+                    target.removeMetadata(meta, plugin)
+                    send(target, msgAcceptInvitationFrom(findOfflinePlayer(homeData.ownerUid).name))
+                    try {
+                        val owner = findOnlinePlayer(homeData.ownerUid)
+                        send(owner, msgAcceptedInvitationTo(target.name))
+                    } catch(e: Exception) {
+                    }
+                } catch (e: Exception) {
                 }
             } catch(e: Exception) {
+                e.message?.let { send(player, it) }
             }
         }
+        op.setMetadata(meta, FixedMetadataValue(plugin, th))
     }
 
-    private fun getInviteMessage(player: Player, homeName: String? = null) = buildString {
-        val r = ChatColor.RESET; val y = ChatColor.YELLOW
-        append("${y}You have been invited from $r${player.name}$y to ${player.name}'s ")
-        append(if (homeName == null) "default home" else "home named $r$homeName$y.\n")
-        append("To accept an invitation, please run ")
-        append("${ChatColor.AQUA}/home invite$y within ${ChatColor.LIGHT_PURPLE}30 seconds$r")
+    private fun msgCancelInvitationFrom(playerName: String) = buildString {
+        append("${ChatColor.RED}Invitation from")
+        append(" ${ChatColor.RESET}$playerName${ChatColor.RED}")
+        append(" has been canceled${ChatColor.RESET}")
     }
 
-    private fun getInvitedMessage(playerName: String, homeName: String? = null) = buildString {
-        append("${ChatColor.YELLOW}You invited ${ChatColor.RESET}$playerName${ChatColor.YELLOW} to your ")
-        append(if (homeName == null) "default home" else "home named ${ChatColor.RESET}$homeName")
+    private fun msgCanceledInvitationTo(playerName: String) = buildString {
+        append("${ChatColor.RESET}$playerName${ChatColor.RED}")
+        append(" canceled your invitation${ChatColor.RESET}")
+    }
+
+    private fun msgAcceptInvitationFrom(playerName: String) = buildString {
+        append("${ChatColor.AQUA}You accepted $playerName's invitation")
+    }
+
+    private fun msgAcceptedInvitationTo(playerName: String) = buildString {
+        append("${ChatColor.AQUA}$playerName accepted your invitation")
+    }
+
+    private fun msgReceiveInvitationFrom(playerName: String) = buildString {
+        append("${ChatColor.YELLOW}You have been invited from")
+        append(" ${ChatColor.RESET}$playerName${ChatColor.YELLOW} to default home.\n")
+        append("To accept an invitation, please run ${ChatColor.AQUA}/home invite")
+        append(" ${ChatColor.YELLOW}within ${ChatColor.LIGHT_PURPLE}30 seconds${ChatColor.RESET}")
+    }
+
+    private fun msgReceiveInvitationFrom(playerName: String, homeName: String) = buildString {
+        append("${ChatColor.YELLOW}You have been invited from")
+        append(" ${ChatColor.RESET}$playerName${ChatColor.YELLOW}")
+        append(" to home named <${ChatColor.RESET}$homeName${ChatColor.YELLOW}>.\n")
+        append("To accept an invitation, please run ${ChatColor.AQUA}/home invite")
+        append(" ${ChatColor.YELLOW}within ${ChatColor.LIGHT_PURPLE}30 seconds${ChatColor.RESET}")
+    }
+
+    private fun msgInvite(playerName: String) = buildString {
+        append("${ChatColor.YELLOW}You invited")
+        append(" ${ChatColor.RESET}$playerName${ChatColor.YELLOW}")
+        append(" to your default home")
+    }
+
+    private fun msgInvite(playerName: String, homeName: String) = buildString {
+        append("${ChatColor.YELLOW}You invited ${ChatColor.RESET}$playerName${ChatColor.YELLOW}")
+        append(" to your home named <${ChatColor.RESET}$homeName${ChatColor.YELLOW}>${ChatColor.RESET}")
     }
 }

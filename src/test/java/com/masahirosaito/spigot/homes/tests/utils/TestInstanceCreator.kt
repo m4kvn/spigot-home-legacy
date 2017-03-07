@@ -28,6 +28,7 @@ import java.util.logging.Logger
 object TestInstanceCreator {
     lateinit var mockServer: Server
     lateinit var homes: Homes
+    lateinit var spyLogger: SpyLogger
 
     val pluginFolder = File("bin/test/server/plugins/homestest")
     val pluginFile = File(pluginFolder, "testPluginFile")
@@ -35,18 +36,19 @@ object TestInstanceCreator {
 
     fun setUp(): Boolean {
         try {
-            TestInstanceCreator.mockServer = mock(Server::class.java).apply {
+            mockServer = mock(Server::class.java).apply {
                 PowerMockito.`when`(logger).thenReturn(SpyLogger(Logger.getLogger("Homes")))
-                PowerMockito.`when`(pluginManager).thenReturn(TestInstanceCreator.createPluginManager())
+                PowerMockito.`when`(pluginManager).thenReturn(createPluginManager())
                 PowerMockito.`when`(consoleSender).thenReturn(HomesConsoleCommandSender(this))
             }
-            TestInstanceCreator.homes = TestInstanceCreator.createHomes(mockServer).apply {
+            homes = TestInstanceCreator.createHomes(mockServer).apply {
                 PowerMockito.`when`(name).thenReturn("Homes")
-                PowerMockito.`when`(dataFolder).thenReturn(TestInstanceCreator.pluginFolder)
-                PowerMockito.`when`(getCommand("home")).thenReturn(TestInstanceCreator.createPluginCommand(this))
-                PowerMockito.`when`(server).thenReturn(TestInstanceCreator.mockServer)
+                PowerMockito.`when`(dataFolder).thenReturn(pluginFolder)
+                PowerMockito.`when`(getCommand("home")).thenReturn(createPluginCommand(this))
+                PowerMockito.`when`(server).thenReturn(mockServer)
             }
-            Bukkit.setServer(TestInstanceCreator.mockServer)
+            spyLogger = (mockServer.logger as SpyLogger)
+            Bukkit.setServer(mockServer)
 
             PowerMockito.`when`(Bukkit.getOfflinePlayers()).thenAnswer {
                 MockPlayerFactory.offlinePlayers.values.toTypedArray()
@@ -64,8 +66,8 @@ object TestInstanceCreator {
                 MockWorldFactory.worlds[invocation.getArgumentAt(0, UUID::class.java)]
             }
 
-            TestInstanceCreator.homes.onLoad()
-            TestInstanceCreator.homes.onEnable()
+            homes.onLoad()
+            homes.onEnable()
 
             return true
 
@@ -77,6 +79,7 @@ object TestInstanceCreator {
     }
 
     fun tearDown(): Boolean {
+        spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
         MockPlayerFactory.clear()
         MockWorldFactory.clear()
 
@@ -93,35 +96,30 @@ object TestInstanceCreator {
             return false
         }
 
-        TestInstanceCreator.homes.onDisable()
-        FileUtil.delete(TestInstanceCreator.pluginFolder)
+        homes.onDisable()
+        FileUtil.delete(pluginFolder)
 
         return true
     }
 
-    private fun createHomes(server: Server): Homes {
-        return PowerMockito.spy(Homes(createJavaPluginLoader(server), createDescriptionFile(), pluginFolder, pluginFile))
+    private fun createHomes(server: Server) = PowerMockito.spy(
+            Homes(createJavaPluginLoader(server), createDescriptionFile(), pluginFolder, pluginFile)
+    )
+
+    private fun createJavaPluginLoader(server: Server) = PowerMock.createMock(
+            JavaPluginLoader::class.java).apply {
+        Whitebox.setInternalState(this, "server", server)
     }
 
-    private fun createJavaPluginLoader(server: Server): JavaPluginLoader {
-        return PowerMock.createMock(JavaPluginLoader::class.java).apply {
-            Whitebox.setInternalState(this, "server", server)
-        }
+    private fun createDescriptionFile() = PowerMockito.spy(
+            PluginDescriptionFile("Homes", "0.6", "com.masahirosaito.spigot.homes.Homes")).apply {
+        PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
+        PowerMockito.`when`(authors).thenReturn(listOf())
     }
 
-    private fun createDescriptionFile(): PluginDescriptionFile {
-        return PowerMockito.spy(PluginDescriptionFile("Homes", "0.6", "com.masahirosaito.spigot.homes.Homes")).apply {
-            PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
-            PowerMockito.`when`(authors).thenReturn(listOf())
-        }
-    }
+    private fun createPluginCommand(homes: Homes) = createMock(PluginCommand::class.java, ConstructorArgs(
+            PowerMock.constructor(PluginCommand::class.java, String::class.java, Plugin::class.java), "home", homes)
+    )
 
-    private fun createPluginCommand(homes: Homes): PluginCommand {
-        val constructor = PowerMock.constructor(PluginCommand::class.java, String::class.java, Plugin::class.java)
-        return createMock(PluginCommand::class.java, ConstructorArgs(constructor, "home", homes))
-    }
-
-    private fun createPluginManager(): PluginManager {
-        return mock(PluginManager::class.java)
-    }
+    private fun createPluginManager() = mock(PluginManager::class.java)
 }

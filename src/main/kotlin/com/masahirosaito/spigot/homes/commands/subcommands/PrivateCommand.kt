@@ -40,6 +40,7 @@ class PrivateCommand(override val plugin: Homes) : SubCommand {
 
     private fun setNamedHomePrivate(player: Player, args: List<String>) {
         checkConfig(plugin.configs.onNamedHome)
+        checkPermission(player, Permission.home_command_private_name)
         plugin.homeManager.findNamedHome(player, args[1]).isPrivate = isPrivate(args)
         send(player, getResultMessage(isPrivate(args), args[1]))
     }
