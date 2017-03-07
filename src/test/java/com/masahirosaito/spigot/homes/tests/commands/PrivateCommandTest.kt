@@ -1,6 +1,7 @@
-package com.masahirosaito.spigot.homes.tests
+package com.masahirosaito.spigot.homes.tests.commands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location

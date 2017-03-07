@@ -33,6 +33,7 @@ object TestInstanceCreator {
     val pluginFolder = File("bin/test/server/plugins/homestest")
     val pluginFile = File(pluginFolder, "testPluginFile")
     val configFile = File(pluginFolder, "configs.json")
+    val playerhomesFile = File(pluginFolder, "playerhomes.json")
 
     fun setUp(): Boolean {
         try {
