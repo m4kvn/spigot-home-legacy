@@ -36,6 +36,11 @@ class InviteCommandTest {
     lateinit var defaultLocation: Location
     lateinit var namedLocation: Location
 
+    lateinit var nepianLocation: Location
+    lateinit var mineneLocation: Location
+
+    val metadata = "homes.invite"
+
     private fun Player.acceptInvitation() {
         if (this.hasMetadata("homes.invite")) {
             val th = (this.getMetadata("homes.invite")[0].value() as Thread)
@@ -74,6 +79,15 @@ class InviteCommandTest {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
 
         assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as home named <home1>"))
+
+        nepian.teleport(MockWorldFactory.makeRandomLocation())
+        assertThat(nepian.location, `is`(not(namedLocation)))
+
+        minene.teleport(MockWorldFactory.makeRandomLocation())
+        assertThat(minene.location, `is`(not(namedLocation)))
+
+        nepianLocation = nepian.location
+        mineneLocation = minene.location
     }
 
     @After
@@ -87,387 +101,314 @@ class InviteCommandTest {
     }
 
     @Test
-    fun デフォルトホームへの招待を送ると送信メッセージが表示される() {
+    fun デフォルトホームへの招待を受けたプレイヤーは招待メタデータとしてスレッドを持っている() {
+
         command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] You invited Minene to your default home"))
+        assertThat(minene.hasMetadata(metadata), `is`(true))
+        assertThat(minene.getMetadata(metadata)[0].value() is Thread, `is`(true))
     }
 
     @Test
-    fun デフォルトホームへの招待を受けると招待メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+    fun 名前付きホームへの招待を受けたプレイヤーは招待メタデータを持っている() {
 
-        assertThat(minene.lastMsg(), `is`(buildString {
-            append("[Homes] You have been invited from Nepian to default home.\n")
-            append("To accept an invitation, please run /home invite within 30 seconds")
-        }))
-    }
-
-    @Test
-    fun 名前付きホームへの招待他を送ると送信メッセージが表示される() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] You invited Minene to your home named <home1>"))
+        assertThat(minene.hasMetadata(metadata), `is`(true))
+        assertThat(minene.getMetadata(metadata)[0].value() is Thread, `is`(true))
     }
 
     @Test
-    fun 名前付きホームへの招待を受けると招待メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+    fun 引数が間違っている場合は使い方を表示し終わる() {
 
-        assertThat(minene.lastMsg(), `is`(buildString {
-            append("[Homes] You have been invited from Nepian to home named <home1>.\n")
-            append("To accept an invitation, please run /home invite within 30 seconds")
-        }))
-    }
-
-    @Test
-    fun デフォルトホームへ招待を受けたプレイヤーは招待メタデータにスレッドを持っている() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(true))
-        assertThat(minene.getMetadata("homes.invite")[0].value() is Thread, `is`(true))
-    }
-
-    @Test
-    fun 名前付きホームへ招待を受けたプレイヤーは招待メータデータにスレッドを持っている() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(true))
-        assertThat(minene.getMetadata("homes.invite")[0].value() is Thread, `is`(true))
-    }
-
-    @Test
-    fun デフォルトホームへの招待を受け入れるとそのホームへ移動する() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(defaultLocation))
-    }
-
-    @Test
-    fun 名前付きホームへの招待を受け入れるとそのホームへ移動する() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(namedLocation))
-    }
-
-    @Test
-    fun デフォルトホームへの招待を受け入れると招待メタデータが削除される() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(false))
-    }
-
-    @Test
-    fun 名前付きホームへの招待を受け入れると招待メタデータが削除される() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(false))
-    }
-
-    @Test
-    fun デフォルトホームへの招待を受け入れるとスレッドが終了される() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).let {
-            command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-            assertThat(it.isAlive, `is`(false))
-        }
-    }
-
-    @Test
-    fun 名前付きホームへの招待を受け入れるとスレッドが終了される() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).let {
-            command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-            assertThat(it.isAlive, `is`(false))
-        }
-    }
-
-    @Test
-    fun デフォルトホームが設定されていない状態で招待を送った場合に失敗メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's default home does not exist"))
-    }
-
-    @Test
-    fun 名前付きホームが設定されていない状態で招待を送った場合に失敗メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Nepian's home named <home1> does not exist"))
-    }
-
-    @Test
-    fun デフォルトホームへの招待は三十秒後に自動的に拒否される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        System.nanoTime().let {
-            (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-            ((System.nanoTime() - it) / 1000000).let {
-                mockServer.logger.info("経過時間: $it ms")
-
-                assertThat("三十秒後にスレッドが終了していない", it in 29000..31000, `is`(true))
-            }
-        }
-    }
-
-    @Test
-    fun 名前付きホームへの招待は三十秒後に自動的に拒否される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        System.nanoTime().let {
-            (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-            ((System.nanoTime() - it) / 1000000).let {
-                mockServer.logger.info("経過時間: $it ms")
-
-                assertThat("三十秒後にスレッドが終了していない", it in 29000..31000, `is`(true))
-            }
-        }
-    }
-
-    @Test
-    fun デフォルホームへの招待が拒否された場合に招待したプレイヤーへ拒否メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Minene canceled your invitation"))
-    }
-
-    @Test
-    fun 名前付きホームへの招待が拒否された場合に招待したプレイヤーへ拒否メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Minene canceled your invitation"))
-    }
-
-    @Test
-    fun デフォルホームへの招待が拒否された場合に招待されたプレイヤーへ拒否メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(minene.lastMsg(), `is`("[Homes] Invitation from Nepian has been canceled"))
-    }
-
-    @Test
-    fun 名前付きホームへの招待が拒否された場合に招待されたプレイヤーへ拒否メッセージが表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(minene.lastMsg(), `is`("[Homes] Invitation from Nepian has been canceled"))
-    }
-
-    @Test
-    fun デフォルホームへの招待が拒否された場合に招待されたプレイヤーの招待メタデータが削除される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(false))
-    }
-
-    @Test
-    fun 名前付きホームへの招待が拒否された場合に招待されたプレイヤーの招待メタデータが削除される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        (minene.getMetadata("homes.invite")[0].value() as Thread).join()
-
-        assertThat(minene.hasMetadata("homes.invite"), `is`(false))
-    }
-
-    @Test
-    fun デフォルトホームがプライベートでも招待を行うことができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You invited Minene to your default home"))
-        assertThat(minene.lastMsg(), `is`(buildString {
-            append("[Homes] You have been invited from Nepian to default home.\n")
-            append("To accept an invitation, please run /home invite within 30 seconds")
-        }))
-    }
-
-    @Test
-    fun 名前付きホームがプライベートでも招待を行うことができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You invited Minene to your home named <home1>"))
-        assertThat(minene.lastMsg(), `is`(buildString {
-            append("[Homes] You have been invited from Nepian to home named <home1>.\n")
-            append("To accept an invitation, please run /home invite within 30 seconds")
-        }))
-    }
-
-    @Test
-    fun デフォルトホームがプライベートでも招待を受け入れることができる() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(defaultLocation))
-    }
-
-    @Test
-    fun 名前付きホームがプライベートでも招待を受け入れることができる() {
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(namedLocation))
-    }
-
-    @Test
-    fun デフォルトホームへの招待を受け入れるのに権限は必要ない() {
-        minene.setOps(false)
-        minene.set(Permission.HOME)
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(defaultLocation))
-    }
-
-    @Test
-    fun 名前付きホームへの招待を受け入れるのに権限は必要ない() {
-        minene.setOps(false)
-        minene.set(Permission.HOME)
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
-
-        assertThat(minene.location, `is`(namedLocation))
-    }
-
-    @Test
-    fun デフォルトホームへの招待は親権限が必要() {
-        nepian.setOps(false)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command>"))
-    }
-
-    @Test
-    fun 名前付きホームへの招待は親権限が必要() {
-        nepian.setOps(false)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command>"))
-    }
-
-    @Test
-    fun デフォルトホームへの招待は招待権限が必要() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.invite>"))
-    }
-
-    @Test
-    fun 名前付きホームへの招待は招待権限が必要() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.invite>"))
-    }
-
-    @Test
-    fun 名前付きホームへの招待は名前付き招待権限が必要() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_INVITE)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.invite.name>"))
-    }
-
-    @Test
-    fun 招待権限を持っているとデフォルトホームへ招待ができる() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_INVITE)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`(not("[Homes] You don't have permission <homes.command.invite>")))
-    }
-
-    @Test
-    fun 名前付き招待権限を持っていると名前付きホームへ招待ができる() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_INVITE, Permission.HOME_INVITE_NAME)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`(not("[Homes] You don't have permission <homes.command.invite.name>")))
-    }
-
-    @Test
-    fun 招待機能が設定でオフの場合はデフォルトホームへの招待を行えない() {
-        homes.configs.copy(onInvite = false).apply {
-            save(TestInstanceCreator.configFile)
-            homes.onDisable()
-            homes.onEnable()
-            assertThat(homes.configs, `is`(this))
-        }
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-    }
-
-    @Test
-    fun 招待機能が設定でオフの場合は名前付きホームへの招待を行えない() {
-        homes.configs.copy(onInvite = false).apply {
-            save(TestInstanceCreator.configFile)
-            homes.onDisable()
-            homes.onEnable()
-            assertThat(homes.configs, `is`(this))
-        }
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-    }
-
-    @Test
-    fun 引数が間違っていた場合は使い方を表示する() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1", "home2"))
 
         assertThat(nepian.lastMsg(), `is`(buildString {
+            append("[Homes] The argument is incorrect\n")
             append("invite command usage:\n")
             append("/home invite : Accept the invitation\n")
             append("/home invite <player_name> : Invite to your default home\n")
             append("/home invite <player_name> <home_name> : Invite to your named home")
         }))
+
+        assertThat(minene.hasMetadata(metadata), `is`(false))
+    }
+
+    @Test
+    fun コマンドの実行には親権限が必要() {
+
+        nepian.setOps(false)
+
+        "[Homes] You don't have permission <homes.command>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+    }
+
+    @Test
+    fun 招待を送るコマンドの実行には招待権限が必要() {
+
+        nepian.setOps(false)
+        nepian.set(Permission.HOME)
+
+        "[Homes] You don't have permission <homes.command.invite>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+    }
+
+    @Test
+    fun 名前付きホームへの招待を送るコマンドの実行には名前付き招待権限が必要() {
+
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_INVITE)
+
+        "[Homes] You don't have permission <homes.command.invite.name>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata("homes.invite"), `is`(false))
+        }
+    }
+
+    @Test
+    fun 招待権限を持っている場合は招待を送るコマンドの実行を行える() {
+
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_INVITE)
+
+        "[Homes] You invited Minene to your default home".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+    }
+
+    @Test
+    fun 名前付き招待権限を持っている場合は名前付きホームへの招待を送るコマンドの実行を行える() {
+
+        nepian.setOps(false)
+        nepian.set(Permission.HOME, Permission.HOME_INVITE, Permission.HOME_INVITE_NAME)
+
+        "[Homes] You invited Minene to your home named <home1>".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+    }
+
+    @Test
+    fun デフォルトホームへの招待を受けたプレイヤーは招待メッセージが表示される() {
+
+        buildString {
+            append("[Homes] You have been invited from Nepian to default home.\n")
+            append("To accept an invitation, please run /home invite within 30 seconds")
+        }.apply {
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(minene.lastMsg(), `is`(this))
+        }
+    }
+
+    @Test
+    fun 名前付きホームへの招待を受けたプレイヤーは招待メッセージが表示される() {
+
+        buildString {
+            append("[Homes] You have been invited from Nepian to home named <home1>.\n")
+            append("To accept an invitation, please run /home invite within 30 seconds")
+        }.apply {
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(minene.lastMsg(), `is`(this))
+        }
+    }
+
+    @Test
+    fun 親権限があれば招待を受け入れることができる() {
+
+        minene.setOps(false)
+        minene.set(Permission.HOME)
+
+        "[Homes] Minene accepted your invitation".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+
+            (minene.getMetadata(metadata)[0].value() as Thread).let {
+                command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
+                assertThat(nepian.lastMsg(), `is`(this))
+                assertThat(minene.location, `is`(defaultLocation))
+                assertThat(minene.hasMetadata(metadata), `is`(false))
+                assertThat(it.isAlive, `is`(false))
+            }
+        }
+
+        "[Homes] You accepted Nepian's invitation".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+
+            (minene.getMetadata(metadata)[0].value() as Thread).let {
+                command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
+                assertThat(minene.lastMsg(), `is`(this))
+                assertThat(minene.location, `is`(namedLocation))
+                assertThat(minene.hasMetadata(metadata), `is`(false))
+                assertThat(it.isAlive, `is`(false))
+            }
+        }
+    }
+
+    @Test
+    fun デフォルトホームが設定されていない状態で招待を送った場合にメッセージが表示され終了する() {
+
+        homes.homeManager.findPlayerHome(nepian).defaultHomeData = null
+
+        "[Homes] Nepian's default home does not exist".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+    }
+
+    @Test
+    fun 名前付きホームが設定されていない状態で招待を送った場合にメッセージが表示され終了する() {
+
+        homes.homeManager.findPlayerHome(nepian).namedHomeData.removeAll { it.name == "home1" }
+
+        "[Homes] Nepian's home named <home1> does not exist".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+    }
+
+    @Test
+    fun ホームへの招待は三十秒後に自動的に拒否される() {
+
+        "[Homes] Minene canceled your invitation".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            System.nanoTime().let {
+                (minene.getMetadata(metadata)[0].value() as Thread).join()
+                ((System.nanoTime() - it) / 1000000).let {
+                    mockServer.logger.info("経過時間: $it ms")
+
+                    assertThat(it in 29000..31000, `is`(true))
+                }
+            }
+
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+
+        "[Homes] Invitation from Nepian has been canceled".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            System.nanoTime().let {
+                (minene.getMetadata(metadata)[0].value() as Thread).join()
+                ((System.nanoTime() - it) / 1000000).let {
+                    mockServer.logger.info("経過時間: $it ms")
+
+                    assertThat(it in 29000..31000, `is`(true))
+                }
+            }
+
+            assertThat(minene.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
+    }
+
+    @Test
+    fun ホームがプライベートでも招待を送ることができる() {
+
+        homes.homeManager.findDefaultHome(nepian).isPrivate = true
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
+
+        assertThat(minene.location, `is`(defaultLocation))
+
+        homes.homeManager.findNamedHome(nepian, "home1").isPrivate = true
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+        command.onCommand(minene, pluginCommand, "home", arrayOf("invite"))
+
+        assertThat(minene.location, `is`(namedLocation))
+    }
+
+    @Test
+    fun 招待機能が設定でオフの場合はデフォルトホームへの招待を行えない() {
+
+        homes.configs.copy(onInvite = false).apply {
+            save(TestInstanceCreator.configFile)
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(homes.configs, `is`(this))
+        }
+
+        "[Homes] Not allowed by the configuration of this server".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
+        }
     }
 
     @Test
     fun 招待したプレイヤーが存在しない場合はメッセージを表示する() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Moichi", "home1"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] Player <Moichi> does not exist"))
+        "[Homes] Player <Moichi> does not exist".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Moichi"))
+            assertThat(nepian.lastMsg(), `is`(this))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Moichi", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
     }
 
     @Test
     fun 招待されていない状態に招待許可をすると招待がないと表示される() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] You have not received an invitation"))
+        "[Homes] You have not received an invitation".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
     }
 
     @Test
     fun 既に招待を受けているプレイヤーに招待を送った場合にメッセージを表示する() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
 
-        assertThat(nepian.lastMsg(), `is`("Minene already has another invitation"))
+        "[Homes] Minene already has another invitation".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            minene.acceptInvitation()
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            minene.acceptInvitation()
+        }
     }
 }
