@@ -93,10 +93,13 @@ class HomeCommandTest {
         }.apply {
             command.onCommand(nepian, pluginCommand, "home", arrayOf("-p"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "home2"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene", "home2"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "home2", "-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
@@ -110,10 +113,13 @@ class HomeCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", null)
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
@@ -128,6 +134,7 @@ class HomeCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
@@ -142,6 +149,7 @@ class HomeCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
             assertThat(nepian.lastMsg(), `is`(this))
+
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
@@ -152,11 +160,8 @@ class HomeCommandTest {
         nepian.setOps(false)
         nepian.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_NAME)
 
-        "[Homes] You don't have permission <homes.command.player.name>".apply {
-
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
-            assertThat(nepian.lastMsg(), `is`(this))
-        }
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
+        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.player.name>"))
     }
 
     @Test
@@ -250,6 +255,7 @@ class HomeCommandTest {
 
     @Test
     fun 名前付きホーム設定がオフの場合はメッセージを表示し終わる() {
+
         homes.configs.copy(onNamedHome = false).apply {
             save(TestInstanceCreator.configFile)
             homes.onDisable()
@@ -257,17 +263,21 @@ class HomeCommandTest {
             assertThat(homes.configs, `is`(this))
         }
 
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-        assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-        assertThat(nepian.location, `is`(nepianLocation))
+        "[Homes] Not allowed by the configuration of this server".apply {
 
-        command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        assertThat(minene.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-        assertThat(minene.location, `is`(mineneLocation))
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
+            assertThat(nepian.lastMsg(), `is`(this))
+            assertThat(nepian.location, `is`(nepianLocation))
+
+            command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
+            assertThat(minene.lastMsg(), `is`(this))
+            assertThat(minene.location, `is`(mineneLocation))
+        }
     }
 
     @Test
     fun プレイヤーホーム設定がオフの場合はメッセージを表示し終わる() {
+
         homes.configs.copy(onFriendHome = false).apply {
             save(TestInstanceCreator.configFile)
             homes.onDisable()
@@ -275,17 +285,21 @@ class HomeCommandTest {
             assertThat(homes.configs, `is`(this))
         }
 
-        command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
-        assertThat(minene.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-        assertThat(minene.location, `is`(mineneLocation))
+        "[Homes] Not allowed by the configuration of this server".apply {
 
-        command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
-        assertThat(minene.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
-        assertThat(minene.location, `is`(mineneLocation))
+            command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
+            assertThat(minene.lastMsg(), `is`(this))
+            assertThat(minene.location, `is`(mineneLocation))
+
+            command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
+            assertThat(minene.lastMsg(), `is`(this))
+            assertThat(minene.location, `is`(mineneLocation))
+        }
     }
 
     @Test
-    fun ホームがプライベートの状態で自分以外のプレイヤーは移動できない() {
+    fun デフォルトホームがプライベートの状態で自分以外のプレイヤーは移動できない() {
+
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on"))
         assertThat(homes.homeManager.findDefaultHome(nepian).isPrivate, `is`(true))
 
@@ -295,6 +309,10 @@ class HomeCommandTest {
         command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
         assertThat(minene.lastMsg(), `is`("[Homes] Nepian's default home is PRIVATE"))
         assertThat(minene.location, `is`(mineneLocation))
+    }
+
+    @Test
+    fun 名前付きホームがプライベートの状態で自分以外のプレイヤーは移動できない() {
 
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
         assertThat(homes.homeManager.findNamedHome(nepian, "home1").isPrivate, `is`(true))
