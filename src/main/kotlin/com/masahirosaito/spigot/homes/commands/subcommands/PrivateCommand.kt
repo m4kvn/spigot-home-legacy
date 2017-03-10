@@ -2,55 +2,71 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.commands.BaseCommand
+import com.masahirosaito.spigot.homes.commands.CommandUsage
+import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.findDefaultHome
+import com.masahirosaito.spigot.homes.findNamedHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
-class PrivateCommand(override val plugin: Homes) : SubCommand {
-    val options = listOf("on", "off")
-
-    override fun name(): String = "private"
-
-    override fun permission(): String = Permission.home_command_private
-
-    override fun description(): String = "Set your home private or public"
-
-    override fun usages(): List<Pair<String, String>> = listOf(
+class PrivateCommand(override val plugin: Homes) : PlayerCommand {
+    override val name: String = "private"
+    override val fee: Double = plugin.fee.PRIVATE
+    override val description: String = "Set your home private or public"
+    override val permissions: List<String> = listOf(
+            Permission.home_command,
+            Permission.home_command_private
+    )
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home private (on/off)" to "Set your default home private or public",
             "/home private (on/off) <home_name>" to "Set your named home private or public"
+    ))
+    override val commands: List<BaseCommand> = listOf(
+            PrivateNameCommand(this)
     )
 
-    override fun configs(): List<Boolean> = listOf(plugin.configs.onPrivate)
+    override fun configs(): List<Boolean> = listOf(
+            plugin.configs.onPrivate
+    )
 
-    override fun isInValidArgs(args: List<String>): Boolean {
-        return args.isEmpty() || 2 < args.size || !options.contains(args[0])
-    }
+    override fun isValidArgs(args: List<String>): Boolean = args.size == 1 && (args[0] == "on" || args[0] == "off")
 
     override fun execute(player: Player, args: List<String>) {
-        when (args.size) {
-            1 -> setDefaultHomePrivate(player, args)
-            2 -> setNamedHomePrivate(player, args)
+        if (args[0] == "on") {
+            player.findDefaultHome(plugin).isPrivate = true
+            send(player, "Set your default home ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
+        } else {
+            player.findDefaultHome(plugin).isPrivate = false
+            send(player, "Set your default home ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }
     }
 
-    private fun setDefaultHomePrivate(player: Player, args: List<String>) {
-        plugin.homeManager.findDefaultHome(player).isPrivate = isPrivate(args)
-        send(player, getResultMessage(isPrivate(args)))
-    }
+    class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCommand), PlayerCommand {
+        override val fee: Double = plugin.fee.PRIVATE_NAME
+        override val permissions: List<String> = listOf(
+                Permission.home_command,
+                Permission.home_command_private_name
+        )
 
-    private fun setNamedHomePrivate(player: Player, args: List<String>) {
-        checkConfig(plugin.configs.onNamedHome)
-        checkPermission(player, Permission.home_command_private_name)
-        plugin.homeManager.findNamedHome(player, args[1]).isPrivate = isPrivate(args)
-        send(player, getResultMessage(isPrivate(args), args[1]))
-    }
+        override fun configs(): List<Boolean> = listOf(
+                plugin.configs.onPrivate,
+                plugin.configs.onNamedHome
+        )
 
-    private fun getResultMessage(isPrivate: Boolean, name: String? = null): String = buildString {
-        append("Set your ")
-        append(if (name == null) "default home " else "home named ${ChatColor.LIGHT_PURPLE}$name ")
-        append(if (isPrivate) "${ChatColor.YELLOW}PRIVATE" else "${ChatColor.AQUA}PUBLIC")
-        append(ChatColor.RESET)
-    }
+        override fun isValidArgs(args: List<String>): Boolean = args.size == 2 && (args[0] == "on" || args[0] == "off")
 
-    private fun isPrivate(args: List<String>) = args[0] == options[0]
+        override fun execute(player: Player, args: List<String>) {
+            if (args[0] == "on") {
+                player.findNamedHome(plugin, args[1]).isPrivate = true
+                send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
+                        " ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
+            } else {
+                player.findNamedHome(plugin, args[1]).isPrivate = false
+                send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
+                        " ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
+            }
+        }
+    }
 }
