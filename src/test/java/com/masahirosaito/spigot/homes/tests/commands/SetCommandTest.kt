@@ -17,6 +17,7 @@ import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -83,18 +84,9 @@ class SetCommandTest {
     }
 
     @Test
-    fun 名前付きホームの設定には設定権限が必要() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.set>"))
-    }
-
-    @Test
     fun 名前付きホームの設定には名前付き設定権限が必要() {
         nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_SET)
+        nepian.set(Permission.HOME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
 
         assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.set.name>"))
@@ -112,7 +104,7 @@ class SetCommandTest {
     @Test
     fun 名前付き設定権限を持っている場合は名前付きホームを設定できる() {
         nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_SET, Permission.HOME_SET_NAME)
+        nepian.set(Permission.HOME, Permission.HOME_SET_NAME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
 
         assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as home named <home1>"))
@@ -132,12 +124,8 @@ class SetCommandTest {
 
     @Test
     fun 名前付きホーム機能が設定でオフの場合は名前付きホームを設定できない() {
-        homes.configs.copy(onNamedHome = false).apply {
-            save(TestInstanceCreator.configFile)
-            homes.onDisable()
-            homes.onEnable()
-            assertThat(homes.configs, `is`(this))
-        }
+        homes.configs = homes.configs.copy(onNamedHome = false)
+        assertThat(homes.configs.onNamedHome, `is`(false))
         command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
 
         assertThat(nepian.lastMsg(), `is`("[Homes] Not allowed by the configuration of this server"))
@@ -145,12 +133,8 @@ class SetCommandTest {
 
     @Test
     fun 名前付きホームの制限設定が無制限の場合は名前付きホームをいくらでも設定できる() {
-        homes.configs.copy(homeLimit = -1).apply {
-            save(TestInstanceCreator.configFile)
-            homes.onDisable()
-            homes.onEnable()
-            assertThat(homes.configs, `is`(this))
-        }
+        homes.configs = homes.configs.copy(homeLimit = -1)
+        assertThat(homes.configs.homeLimit, `is`(-1))
         repeat(1000, { i ->
             nepian.teleport(MockWorldFactory.makeRandomLocation())
             command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home$i"))
@@ -161,12 +145,8 @@ class SetCommandTest {
 
     @Test
     fun 名前付きホームの制限設定が設定されている場合は名前付きホームの設定できる数が制限される() {
-        homes.configs.copy(homeLimit = 5).apply {
-            save(TestInstanceCreator.configFile)
-            homes.onDisable()
-            homes.onEnable()
-            assertThat(homes.configs, `is`(this))
-        }
+        homes.configs = homes.configs.copy(homeLimit = 5)
+        assertThat(homes.configs.homeLimit, `is`(5))
         repeat(6, { i ->
             nepian.teleport(MockWorldFactory.makeRandomLocation())
             command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home$i"))

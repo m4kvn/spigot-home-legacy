@@ -92,8 +92,6 @@ class HomeCommandTest {
             append("/home -p <player_name> : Teleport to player's default home\n")
             append("/home <home_name> -p <player_name> : Teleport to player's named home")
         }.apply {
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("-p"))
-            assertThat(nepian.lastMsg(), `is`(this))
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "home2"))
             assertThat(nepian.lastMsg(), `is`(this))
@@ -135,23 +133,17 @@ class HomeCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
-
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
-            assertThat(nepian.lastMsg(), `is`(this))
         }
     }
 
     @Test
     fun 名前付きホームの実行には名前付きホーム権限が必要() {
         nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_PLAYER)
+        nepian.set(Permission.HOME)
 
         "[Homes] You don't have permission <homes.command.name>".apply {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
-            assertThat(nepian.lastMsg(), `is`(this))
-
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1", "-p", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
     }
@@ -159,7 +151,7 @@ class HomeCommandTest {
     @Test
     fun 名前付きプレイヤーホームを実行するには名前付きプレイヤーホーム権限が必要() {
         nepian.setOps(false)
-        nepian.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_NAME)
+        nepian.set(Permission.HOME)
 
         "[Homes] You don't have permission <homes.command.player.name>".apply {
 
@@ -201,7 +193,7 @@ class HomeCommandTest {
     @Test
     fun 名前付きプレイヤーホーム権限を持っている場合は名前付きプレイヤーホームコマンドで他のプレイヤーの名前付きホームへ移動できる() {
         minene.setOps(false)
-        minene.set(Permission.HOME, Permission.HOME_PLAYER, Permission.HOME_NAME, Permission.HOME_PLAYER_NAME)
+        minene.set(Permission.HOME, Permission.HOME_PLAYER_NAME)
         minene.teleport(MockWorldFactory.makeRandomLocation())
         command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
 

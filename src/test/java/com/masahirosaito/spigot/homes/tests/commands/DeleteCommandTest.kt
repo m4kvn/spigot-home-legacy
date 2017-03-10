@@ -122,8 +122,6 @@ class DeleteCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
             assertThat(nepian.lastMsg(), `is`(this))
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
-            assertThat(nepian.lastMsg(), `is`(this))
         }
 
         assertThat(homes.homeManager.findPlayerHome(nepian).defaultHomeData, `is`(notNullValue()))

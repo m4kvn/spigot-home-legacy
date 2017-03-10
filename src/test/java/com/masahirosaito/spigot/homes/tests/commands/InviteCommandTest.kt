@@ -167,10 +167,6 @@ class InviteCommandTest {
             command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
             assertThat(nepian.lastMsg(), `is`(this))
             assertThat(minene.hasMetadata(metadata), `is`(false))
-
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
-            assertThat(nepian.lastMsg(), `is`(this))
-            assertThat(minene.hasMetadata(metadata), `is`(false))
         }
     }
 
