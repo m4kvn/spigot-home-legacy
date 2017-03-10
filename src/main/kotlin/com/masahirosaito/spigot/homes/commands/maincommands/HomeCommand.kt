@@ -30,7 +30,7 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
             PrivateCommand(plugin),
             InviteCommand(plugin),
             ListCommand(plugin),
-            HelpCommand(plugin)
+            HelpCommand(this)
     )
     override val commands: List<BaseCommand> = listOf(
             HomeNameCommand(this),
