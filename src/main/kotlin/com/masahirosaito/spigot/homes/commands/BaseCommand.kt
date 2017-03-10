@@ -30,7 +30,7 @@ interface BaseCommand {
     }
 
     fun executeCommand(sender: CommandSender,  args: List<String>) {
-        val cmd = findCommand(args).apply { println("$this.onCommand") }
+        val cmd = findCommand(args)
         when {
             cmd is PlayerCommand && sender is Player -> cmd.onCommand(sender, args)
             cmd is ConsoleCommand && sender is ConsoleCommandSender -> cmd.onCommand(sender, args)
