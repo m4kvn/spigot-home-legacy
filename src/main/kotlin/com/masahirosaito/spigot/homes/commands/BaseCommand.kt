@@ -21,6 +21,10 @@ interface BaseCommand {
         if (!message.isNullOrBlank()) plugin.messenger.send(sender, message)
     }
 
+    fun send(sender: CommandSender, obj: Any) {
+        send(sender, obj.toString())
+    }
+
     fun checkConfig() {
         if (configs().contains(false)) throw Exception("Not allowed by the configuration of this server")
     }
