@@ -20,5 +20,8 @@ enum class Permission(val permission: String) {
     HOME_PRIVATE_NAME("homes.command.private.name"),
 
     HOME_HELP("homes.command.help"),
-    HOME_HELP_COMMAND("homes.command.help.command")
+    HOME_HELP_COMMAND("homes.command.help.command"),
+
+    HOME_LIST("homes.command.list"),
+    HOME_LIST_PLAYER("homes.command.list.player")
 }
