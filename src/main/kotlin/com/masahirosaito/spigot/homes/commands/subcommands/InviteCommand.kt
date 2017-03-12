@@ -14,7 +14,6 @@ import kotlin.concurrent.thread
 class InviteCommand(override val plugin: Homes) : PlayerCommand {
     private val INVITE_META = "homes.invite"
     override val name: String = "invite"
-    override val fee: Double = plugin.fee.INVITE
     override val description: String = "Invite the other player to your home"
     override val permissions: List<String> = listOf(
             Permission.home_command
@@ -28,6 +27,8 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
             InvitePlayerCommand(this),
             InvitePlayerNameCommand(this)
     )
+
+    override fun fee(): Double = plugin.fee.INVITE
 
     override fun configs(): List<Boolean> = listOf(
             plugin.configs.onInvite
@@ -48,11 +49,12 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     class InvitePlayerCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand {
-        override val fee: Double = plugin.fee.INVITE_PLAYER
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_invite
         )
+
+        override fun fee(): Double = plugin.fee.INVITE_PLAYER
 
         override fun configs(): List<Boolean> = listOf(
                 plugin.configs.onInvite,
@@ -67,11 +69,12 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand{
-        override val fee: Double = plugin.fee.INVITE_PLAYER_NAME
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_invite_name
         )
+
+        override fun fee(): Double = plugin.fee.INVITE_PLAYER_NAME
 
         override fun configs(): List<Boolean> = listOf(
                 plugin.configs.onInvite,

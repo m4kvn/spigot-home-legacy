@@ -9,7 +9,6 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class SetNameCommand(setCommand: SetCommand) : SubCommand(setCommand), PlayerCommand {
-    override val fee: Double = plugin.fee.SET_NAME
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_set_name
@@ -17,6 +16,8 @@ class SetNameCommand(setCommand: SetCommand) : SubCommand(setCommand), PlayerCom
     override fun configs(): List<Boolean> = listOf(
             plugin.configs.onNamedHome
     )
+
+    override fun fee(): Double = plugin.fee.SET_NAME
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 

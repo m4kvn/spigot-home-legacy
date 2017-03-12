@@ -13,7 +13,6 @@ import org.bukkit.entity.Player
 
 class SetCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "set"
-    override val fee: Double = plugin.fee.SET
     override val description: String = "Set your home or named home"
     override val permissions: List<String> = listOf(
             Permission.home_command,
@@ -26,6 +25,8 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
     override val commands: List<BaseCommand> = listOf(
             SetNameCommand(this)
     )
+
+    override fun fee(): Double = plugin.fee.SET
 
     override fun configs(): List<Boolean> = listOf()
 

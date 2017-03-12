@@ -9,11 +9,12 @@ import com.masahirosaito.spigot.homes.teleportDefaultHome
 import org.bukkit.entity.Player
 
 class HomePlayerCommand(homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
-    override val fee: Double = plugin.fee.HOME_PLAYER
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_player
     )
+
+    override fun fee(): Double = plugin.fee.HOME_PLAYER
 
     override fun configs(): List<Boolean> = listOf(
             plugin.configs.onFriendHome

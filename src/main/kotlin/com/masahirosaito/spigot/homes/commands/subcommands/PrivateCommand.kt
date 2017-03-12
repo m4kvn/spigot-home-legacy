@@ -13,7 +13,6 @@ import org.bukkit.entity.Player
 
 class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "private"
-    override val fee: Double = plugin.fee.PRIVATE
     override val description: String = "Set your home private or public"
     override val permissions: List<String> = listOf(
             Permission.home_command,
@@ -26,6 +25,8 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     override val commands: List<BaseCommand> = listOf(
             PrivateNameCommand(this)
     )
+
+    override fun fee(): Double = plugin.fee.PRIVATE
 
     override fun configs(): List<Boolean> = listOf(
             plugin.configs.onPrivate
@@ -44,11 +45,12 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCommand), PlayerCommand {
-        override val fee: Double = plugin.fee.PRIVATE_NAME
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_private_name
         )
+
+        override fun fee(): Double = plugin.fee.PRIVATE_NAME
 
         override fun configs(): List<Boolean> = listOf(
                 plugin.configs.onPrivate,

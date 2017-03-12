@@ -10,7 +10,6 @@ import org.bukkit.entity.Player
 class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
     override val plugin: Homes = mainCommand.plugin
     override val name: String = "help"
-    override val fee: Double = plugin.fee.HELP
     override val description: String = "Homes Help Command"
     override val permissions: List<String> = listOf(
             Permission.home_command,
@@ -23,6 +22,8 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
     override val commands: List<BaseCommand> = listOf(
             HelpUsageCommand(this)
     )
+
+    override fun fee(): Double = plugin.fee.HELP
 
     override fun configs(): List<Boolean> = listOf()
 
@@ -43,11 +44,12 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
     }
 
     class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), PlayerCommand {
-        override val fee: Double = plugin.fee.HELP_USAGE
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_help_command
         )
+
+        override fun fee(): Double = plugin.fee.HELP_USAGE
 
         override fun configs(): List<Boolean> = listOf()
 

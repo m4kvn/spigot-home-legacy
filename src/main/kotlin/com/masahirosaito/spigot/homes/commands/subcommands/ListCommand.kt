@@ -16,7 +16,6 @@ import org.bukkit.entity.Player
 
 class ListCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "list"
-    override val fee: Double = plugin.fee.LIST
     override val description: String = "Display the list of your homes"
     override val permissions: List<String> = listOf(
             Permission.home_command,
@@ -30,6 +29,8 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
             ListPlayerCommand(this)
     )
 
+    override fun fee(): Double = plugin.fee.LIST
+
     override fun configs(): List<Boolean> = listOf()
 
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
@@ -39,11 +40,12 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand), PlayerCommand {
-        override val fee: Double = plugin.fee.LIST_PLAYER
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_list_player
         )
+
+        override fun fee(): Double = plugin.fee.LIST_PLAYER
 
         override fun configs(): List<Boolean> = listOf(
                 plugin.configs.onFriendHome

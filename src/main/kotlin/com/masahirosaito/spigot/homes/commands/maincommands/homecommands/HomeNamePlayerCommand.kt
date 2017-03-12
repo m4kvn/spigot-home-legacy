@@ -9,11 +9,12 @@ import com.masahirosaito.spigot.homes.teleportNamedHome
 import org.bukkit.entity.Player
 
 class HomeNamePlayerCommand(homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
-    override val fee: Double = plugin.fee.HOME_NAME_PLAYER
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_player_name
     )
+
+    override fun fee(): Double = plugin.fee.HOME_NAME_PLAYER
 
     override fun configs(): List<Boolean> = listOf(
             plugin.configs.onNamedHome,

@@ -12,7 +12,6 @@ import org.bukkit.entity.Player
 
 class DeleteCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "delete"
-    override val fee: Double = plugin.fee.DELETE
     override val description: String = "Delete your homes"
     override val permissions: List<String> = listOf(
             Permission.home_command,
@@ -25,6 +24,9 @@ class DeleteCommand(override val plugin: Homes) : PlayerCommand {
     override val commands: List<BaseCommand> = listOf(
             DeleteNameCommand(this)
     )
+
+    override fun fee(): Double = plugin.fee.DELETE
+
     override fun configs(): List<Boolean> = listOf()
 
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
@@ -35,11 +37,13 @@ class DeleteCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand), PlayerCommand {
-        override val fee: Double = plugin.fee.DELETE_NAME
         override val permissions: List<String> = listOf(
                 Permission.home_command,
                 Permission.home_command_delete_name
         )
+
+        override fun fee(): Double = plugin.fee.DELETE_NAME
+
         override fun configs(): List<Boolean> = listOf(
                 plugin.configs.onNamedHome
         )

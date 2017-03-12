@@ -5,7 +5,8 @@ import org.bukkit.entity.Player
 
 interface PlayerCommand : BaseCommand {
     val permissions: List<String>
-    val fee: Double
+
+    fun fee(): Double
 
     fun execute(player: Player, args: List<String>)
 
@@ -20,7 +21,7 @@ interface PlayerCommand : BaseCommand {
 
     private fun payFee(player: Player) {
         plugin.econ?.let { economy ->
-            val r = economy.depositPlayer(player, fee)
+            val r = economy.depositPlayer(player, fee())
             if (r.transactionSuccess()) {
                 send(player, buildString {
                     append("You were given ${economy.format(r.amount)}")
@@ -34,8 +35,8 @@ interface PlayerCommand : BaseCommand {
 
     private fun checkBalance(player: Player) {
         plugin.econ?.let {
-            if (it.getBalance(player) - fee < 0)
-                throw Exception("You have not enough money to execute this command (fee: $fee)")
+            if (it.getBalance(player) - fee() < 0)
+                throw Exception("You have not enough money to execute this command (fee: ${fee()})")
         }
     }
 
