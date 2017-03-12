@@ -37,22 +37,32 @@ class MyEconomy : Economy {
     }
 
     override fun isBankOwner(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
-        val bank = myBanks.find { it.name == bankName }
-        var res = EconomyResponse.ResponseType.SUCCESS
-        var error: String? = null
 
-        when {
-            bank == null -> {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "The bank is not exists"
-            }
-            bank.owner != offlinePlayer?.uniqueId -> {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "You are not bank owner"
-            }
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
-        return EconomyResponse(0.0, bank?.balance ?: 0.0, res, error)
+        if (offlinePlayer == null) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is null")
+        }
+
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is null")
+
+        if (bank.owner == offlinePlayer.uniqueId) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "You are not bank owner")
+        } else {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.SUCCESS, null)
+        }
     }
 
     override fun has(playerName: String?, amount: Double): Boolean {
@@ -72,64 +82,72 @@ class MyEconomy : Economy {
     }
 
     override fun bankDeposit(bankName: String?, amount: Double): EconomyResponse {
-        val bank = myBanks.find { it.name == bankName }
-        var res = EconomyResponse.ResponseType.SUCCESS
-        var error: String? = null
 
-        if (bank == null) {
-            res = EconomyResponse.ResponseType.FAILURE
-            error = "The bank is not exists"
-        } else {
-            if (amount < 0) {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "Please enter a value of 0 or more"
-            } else {
-                bank.balance += amount
-            }
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
-        return EconomyResponse(amount, bank?.balance ?: 0.0, res, error)
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is null")
+
+        if (amount < 0) {
+            return EconomyResponse(amount, bank.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Please enter a value of 0 or more")
+        }
+
+        bank.balance += amount
+
+        return EconomyResponse(amount, bank.balance,
+                EconomyResponse.ResponseType.SUCCESS, null)
     }
 
     override fun bankWithdraw(bankName: String?, amount: Double): EconomyResponse {
-        val bank = myBanks.find { it.name == bankName }
-        var res = EconomyResponse.ResponseType.SUCCESS
-        var error: String? = null
 
-        if (bank == null) {
-            res = EconomyResponse.ResponseType.FAILURE
-            error = "The bank is not exists"
-        } else {
-            if (amount < 0) {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "Please enter a value of 0 or more"
-            } else if (bank.balance - amount < 0) {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "The bank's deposit is insufficient"
-            } else {
-                bank.balance -= amount
-            }
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
-        return EconomyResponse(amount, bank?.balance ?: 0.0, res, error)
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is null")
+
+        if (amount < 0) {
+            return EconomyResponse(amount, bank.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Please enter a value of 0 or more")
+        }
+
+        bank.balance -= amount
+
+        return EconomyResponse(amount, bank.balance,
+                EconomyResponse.ResponseType.SUCCESS, null)
     }
 
     override fun deleteBank(bankName: String?): EconomyResponse {
-        val bank = myBanks.find { it.name == bankName }
-        var res = EconomyResponse.ResponseType.SUCCESS
-        var error: String? = null
 
-        if (bank != null) {
-            if (!myBanks.remove(bank)) {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "Can not remove the bank"
-            }
-        } else {
-            res = EconomyResponse.ResponseType.FAILURE
-            error = "The bank is not exists"
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
-        return EconomyResponse(0.0, bank?.balance ?: 0.0, res, error)
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is null")
+
+        myBanks.remove(bank)
+
+        return EconomyResponse(0.0, bank.balance,
+                EconomyResponse.ResponseType.SUCCESS, null)
     }
 
     override fun depositPlayer(playerName: String?, amount: Double): EconomyResponse {
@@ -137,25 +155,28 @@ class MyEconomy : Economy {
     }
 
     override fun depositPlayer(offlinePlayer: OfflinePlayer?, amount: Double): EconomyResponse {
-        val player = myPlayers.find { it.uuid == offlinePlayer?.uniqueId }
-        var res = EconomyResponse.ResponseType.SUCCESS
-        var error: String? = null
 
-        when {
-            player == null -> {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "Player is not exists"
-            }
-            amount < 0 -> {
-                res = EconomyResponse.ResponseType.FAILURE
-                error = "Please enter a value of 0 or more"
-            }
-            else -> {
-                player.balance += amount
-            }
+        if (offlinePlayer == null) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is null")
         }
 
-        return EconomyResponse(amount, player?.balance ?: 0.0, res, error)
+        val player = myPlayers.find { it.uuid == offlinePlayer.uniqueId } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Player is not exists")
+
+        if (amount < 0) {
+            return EconomyResponse(amount, player.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Please enter a value of 0 or more")
+        }
+
+        player.balance += amount
+
+        return EconomyResponse(amount, player.balance,
+                EconomyResponse.ResponseType.SUCCESS, null)
     }
 
     override fun depositPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
@@ -167,22 +188,33 @@ class MyEconomy : Economy {
     }
 
     override fun createBank(bankName: String?, playerName: String?): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return createBank(bankName, Bukkit.getOfflinePlayer(playerName))
     }
 
     override fun createBank(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
-        val error: String= when {
-            bankName == null || bankName.isBlank() -> "Bank name is null or blank"
-            offlinePlayer == null                  -> "Player is null"
-            myBanks.any { it.name == bankName }    -> "Bank name <$bankName> is already exists"
-            else -> {
-                val bank = MyBank(bankName, offlinePlayer.uniqueId)
-                val res = EconomyResponse.ResponseType.SUCCESS
-                return EconomyResponse(0.0, bank.balance, res, null)
-            }
+
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
-        return EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, error)
+        if (offlinePlayer == null) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is null")
+        }
+
+        if (myBanks.any { it.name == bankName }) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name <$bankName> is already exists")
+        } else {
+            val bank = MyBank(bankName, offlinePlayer.uniqueId)
+            myBanks.add(bank)
+            return EconomyResponse(0.0, bank.balance,
+                    EconomyResponse.ResponseType.SUCCESS, null)
+        }
     }
 
     override fun hasAccount(playerName: String?): Boolean {
@@ -190,7 +222,8 @@ class MyEconomy : Economy {
     }
 
     override fun hasAccount(offlinePlayer: OfflinePlayer?): Boolean {
-        return if (offlinePlayer == null) false else myPlayers.any { it.uuid == offlinePlayer.uniqueId }
+        if (offlinePlayer == null) return false
+        return myPlayers.any { it.uuid == offlinePlayer.uniqueId }
     }
 
     override fun hasAccount(playerName: String?, worldName: String?): Boolean {
@@ -208,90 +241,148 @@ class MyEconomy : Economy {
     override fun isBankMember(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
 
         if (bankName == null || bankName.isBlank()) {
-            return EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Bank name is null or blank")
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
 
         if (offlinePlayer == null) {
-            return EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Player is null")
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is null")
         }
 
         val bank = myBanks.find { it.name == bankName } ?:
-                return EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Bank is not exists")
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is not exists")
 
         if (bank.members.contains(offlinePlayer.uniqueId)) {
-            return EconomyResponse(0.0, bank.balance, EconomyResponse.ResponseType.SUCCESS, null)
+            return EconomyResponse(0.0, bank.balance,
+                    EconomyResponse.ResponseType.SUCCESS, null)
         } else {
-            return EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Player is not bank member")
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is not bank member")
         }
     }
 
-    override fun createPlayerAccount(p0: String?): Boolean {
-        val op = Bukkit.getOfflinePlayer(p0) ?: return false
-        return true.apply { players.put(op, 0.0) }
+    override fun createPlayerAccount(playerName: String?): Boolean {
+        return createPlayerAccount(Bukkit.getOfflinePlayer(playerName))
     }
 
-    override fun createPlayerAccount(p0: OfflinePlayer?): Boolean {
-        return true.apply { players.put(p0!!, 0.0) }
+    override fun createPlayerAccount(offlinePlayer: OfflinePlayer?): Boolean {
+        if (offlinePlayer == null) return false
+        return myPlayers.add(MyPlayer(offlinePlayer.uniqueId))
     }
 
-    override fun createPlayerAccount(p0: String?, p1: String?): Boolean {
-        return createPlayerAccount(p0)
+    override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {
+        return createPlayerAccount(playerName)
     }
 
-    override fun createPlayerAccount(p0: OfflinePlayer?, p1: String?): Boolean {
-        return createPlayerAccount(p0)
+    override fun createPlayerAccount(offlinePlayer: OfflinePlayer?, worldName: String?): Boolean {
+        return createPlayerAccount(offlinePlayer)
     }
 
-    override fun currencyNameSingular(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun currencyNameSingular(): String = ""
+
+    override fun withdrawPlayer(playerName: String?, amount: Double): EconomyResponse {
+        return withdrawPlayer(Bukkit.getOfflinePlayer(playerName), amount)
     }
 
-    override fun withdrawPlayer(p0: String?, p1: Double): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun withdrawPlayer(offlinePlayer: OfflinePlayer?, amount: Double): EconomyResponse {
+
+        if (offlinePlayer == null) {
+            return EconomyResponse(amount, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Player is null")
+        }
+
+        val player = myPlayers.find { it.uuid == offlinePlayer.uniqueId } ?:
+                return EconomyResponse(amount, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "player is null")
+
+        if (amount < 0) {
+            return EconomyResponse(amount, player.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Please enter a value of 0 or more")
+        }
+
+        if (player.balance - amount < 0) {
+            return EconomyResponse(amount, player.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Players do not have enough money")
+        } else {
+            player.balance -= amount
+            return EconomyResponse(amount, player.balance,
+                    EconomyResponse.ResponseType.SUCCESS, null)
+        }
     }
 
-    override fun withdrawPlayer(p0: OfflinePlayer?, p1: Double): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun withdrawPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
+        return withdrawPlayer(playerName, amount)
     }
 
-    override fun withdrawPlayer(p0: String?, p1: String?, p2: Double): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun withdrawPlayer(offlinePlayer: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
+        return withdrawPlayer(offlinePlayer, amount)
     }
 
-    override fun withdrawPlayer(p0: OfflinePlayer?, p1: String?, p2: Double): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun bankHas(bankName: String?, amount: Double): EconomyResponse {
+
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(amount, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
+        }
+
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(amount, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is not exists")
+
+        if (amount < 0) {
+            return EconomyResponse(amount, bank.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Please enter a value of 0 or more")
+        }
+
+        if (bank.balance - amount < 0) {
+            return EconomyResponse(amount, bank.balance,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "The bank's deposit is insufficient")
+        } else {
+            return EconomyResponse(amount, bank.balance,
+                    EconomyResponse.ResponseType.SUCCESS, null)
+        }
     }
 
-    override fun bankHas(p0: String?, p1: Double): EconomyResponse {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun currencyNamePlural(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun currencyNamePlural(): String = ""
 
     override fun isEnabled(): Boolean = true
 
-    override fun fractionalDigits(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun fractionalDigits(): Int = -1
 
     override fun bankBalance(bankName: String?): EconomyResponse {
-        val bank = myBanks.find { it.name == bankName }
-        return if (bank != null) {
-            EconomyResponse(0.0, bank.amount, EconomyResponse.ResponseType.SUCCESS, null)
-        } else {
-            EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Bank is not exists")
+
+        if (bankName == null || bankName.isBlank()) {
+            return EconomyResponse(0.0, 0.0,
+                    EconomyResponse.ResponseType.FAILURE,
+                    "Bank name is null or blank")
         }
+
+        val bank = myBanks.find { it.name == bankName } ?:
+                return EconomyResponse(0.0, 0.0,
+                        EconomyResponse.ResponseType.FAILURE,
+                        "Bank is not exists")
+
+        return EconomyResponse(0.0, bank.balance,
+                EconomyResponse.ResponseType.SUCCESS, null)
     }
 
-    override fun format(p0: Double): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun format(amount: Double): String = amount.toString()
 
-    override fun hasBankSupport(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun hasBankSupport(): Boolean = false
 
     data class MyBank(
             var name: String,
@@ -300,5 +391,5 @@ class MyEconomy : Economy {
             val members: MutableList<UUID> = mutableListOf()
     )
 
-    data class MyPlayer(val uuid: UUID, var balance: Double)
+    data class MyPlayer(val uuid: UUID, var balance: Double = 0.0)
 }
