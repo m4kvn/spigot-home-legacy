@@ -1,69 +1,99 @@
 package com.masahirosaito.spigot.homes.tests.utils
 
 import com.masahirosaito.spigot.homes.Homes
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Server
-import org.bukkit.command.CommandSender
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.command.PluginCommand
-import org.bukkit.plugin.Plugin
-import org.bukkit.plugin.PluginDescriptionFile
-import org.bukkit.plugin.PluginManager
+import org.bukkit.plugin.*
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.easymock.ConstructorArgs
 import org.junit.Assert
 import org.mockito.Matchers.any
-import org.mockito.Matchers.anyString
 import org.powermock.api.easymock.PowerMock
 import org.powermock.api.easymock.PowerMock.createMock
 import org.powermock.api.mockito.PowerMockito
-import org.powermock.api.mockito.PowerMockito.doAnswer
-import org.powermock.api.mockito.PowerMockito.mock
+import org.powermock.api.mockito.PowerMockito.*
+import org.powermock.api.support.membermodification.MemberMatcher.constructor
 import org.powermock.reflect.Whitebox
 import java.io.File
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
+import org.powermock.api.mockito.PowerMockito.`when` as pwhen
 
 object TestInstanceCreator {
     lateinit var mockServer: Server
     lateinit var homes: Homes
+    lateinit var javaPluginLoader: JavaPluginLoader
+    lateinit var vault: JavaPlugin
+    lateinit var mockServicesManager: ServicesManager
+    lateinit var mockPluginManager: PluginManager
+    lateinit var homeConsoleCommandSender: HomesConsoleCommandSender
+    lateinit var registeredServiceProvider: RegisteredServiceProvider<Economy>
+    lateinit var pluginCommand: PluginCommand
+
+    lateinit var economy: Economy
     lateinit var spyLogger: SpyLogger
 
     val pluginFolder = File("bin/test/server/plugins/homestest")
     val pluginFile = File(pluginFolder, "testPluginFile")
     val configFile = File(pluginFolder, "configs.json")
     val playerhomesFile = File(pluginFolder, "playerhomes.json")
+    val feeFile = File(pluginFolder, "fee.json")
+
+    val vaultFolder = File("bin/test/server/plugins/vaulttest")
+    val vaultFile = File(pluginFolder, "testPluginFile")
 
     fun setUp(): Boolean {
+        economy = MyEconomy()
+        spyLogger = SpyLogger(Logger.getLogger("Homes"))
+
         try {
+            mockPluginManager = mock(PluginManager::class.java)
+            mockServicesManager = mock(ServicesManager::class.java)
             mockServer = mock(Server::class.java).apply {
-                PowerMockito.`when`(logger).thenReturn(SpyLogger(Logger.getLogger("Homes")))
-                PowerMockito.`when`(pluginManager).thenReturn(createPluginManager())
-                PowerMockito.`when`(consoleSender).thenReturn(HomesConsoleCommandSender(this))
+                homeConsoleCommandSender = HomesConsoleCommandSender(this)
+                pwhen(logger).thenReturn(spyLogger)
+                pwhen(pluginManager).thenReturn(mockPluginManager)
+                pwhen(consoleSender).thenReturn(homeConsoleCommandSender)
+                pwhen(servicesManager).thenReturn(mockServicesManager)
             }
-            homes = TestInstanceCreator.createHomes(mockServer).apply {
-                PowerMockito.`when`(name).thenReturn("Homes")
-                PowerMockito.`when`(dataFolder).thenReturn(pluginFolder)
-                PowerMockito.`when`(getCommand("home")).thenReturn(createPluginCommand(this))
-                PowerMockito.`when`(server).thenReturn(mockServer)
+            javaPluginLoader = PowerMock.createMock(JavaPluginLoader::class.java).apply {
+                Whitebox.setInternalState(this, "server", mockServer)
             }
-            spyLogger = (mockServer.logger as SpyLogger)
+            vault = mock(JavaPlugin::class.java)
+            homes = spy(Homes(javaPluginLoader, createHomesDescriptionFile(), pluginFolder, pluginFile)).apply {
+                pluginCommand = createMock(PluginCommand::class.java, ConstructorArgs(
+                        constructor(PluginCommand::class.java, String::class.java, Plugin::class.java), "home", this))
+                pwhen(name).thenReturn("Homes")
+                pwhen(dataFolder).thenReturn(pluginFolder)
+                pwhen(getCommand("home")).thenReturn(pluginCommand)
+                pwhen(server).thenReturn(mockServer)
+            }
+            registeredServiceProvider = spy(RegisteredServiceProvider<Economy>(
+                    economy.javaClass, economy, ServicePriority.Normal, vault)
+            )
+
+            doReturn(registeredServiceProvider).`when`(mockServicesManager).getRegistration(Economy::class.java)
+            doReturn(vault).`when`(mockPluginManager).getPlugin("Vault")
+
             Bukkit.setServer(mockServer)
 
-            PowerMockito.`when`(Bukkit.getOfflinePlayers()).thenAnswer {
+            pwhen(Bukkit.getOfflinePlayers()).thenAnswer {
                 MockPlayerFactory.offlinePlayers.values.toTypedArray()
             }
-            PowerMockito.`when`(Bukkit.getOnlinePlayers()).thenAnswer {
+            pwhen(Bukkit.getOnlinePlayers()).thenAnswer {
                 MockPlayerFactory.players.values
             }
-            PowerMockito.`when`(Bukkit.getOfflinePlayer(any(UUID::class.java))).thenAnswer { invocation ->
+            pwhen(Bukkit.getOfflinePlayer(any(UUID::class.java))).thenAnswer { invocation ->
                 MockPlayerFactory.offlinePlayers[invocation.getArgumentAt(0, UUID::class.java)]
             }
-            PowerMockito.`when`(Bukkit.getPlayer(any(UUID::class.java))).thenAnswer { invocation ->
+            pwhen(Bukkit.getPlayer(any(UUID::class.java))).thenAnswer { invocation ->
                 MockPlayerFactory.players[invocation.getArgumentAt(0, UUID::class.java)]
             }
-            PowerMockito.`when`(Bukkit.getWorld(any(UUID::class.java))).thenAnswer { invocation ->
+            pwhen(Bukkit.getWorld(any(UUID::class.java))).thenAnswer { invocation ->
                 MockWorldFactory.worlds[invocation.getArgumentAt(0, UUID::class.java)]
             }
 
@@ -103,24 +133,15 @@ object TestInstanceCreator {
         return true
     }
 
-    private fun createHomes(server: Server) = PowerMockito.spy(
-            Homes(createJavaPluginLoader(server), createDescriptionFile(), pluginFolder, pluginFile)
-    )
-
-    private fun createJavaPluginLoader(server: Server) = PowerMock.createMock(
-            JavaPluginLoader::class.java).apply {
-        Whitebox.setInternalState(this, "server", server)
-    }
-
-    private fun createDescriptionFile() = PowerMockito.spy(
-            PluginDescriptionFile("Homes", "0.6", "com.masahirosaito.spigot.homes.Homes")).apply {
+    private fun createHomesDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(
+            "Homes", "test-version", "com.masahirosaito.spigot.homes.Homes")).apply {
         PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
         PowerMockito.`when`(authors).thenReturn(listOf())
     }
 
-    private fun createPluginCommand(homes: Homes) = createMock(PluginCommand::class.java, ConstructorArgs(
-            PowerMock.constructor(PluginCommand::class.java, String::class.java, Plugin::class.java), "home", homes)
-    )
-
-    private fun createPluginManager() = mock(PluginManager::class.java)
+    private fun createVaultDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(
+            "Vault", "test-version", "com.masahirosaito.spigot.homes.tests.utils.MyVault")).apply {
+        PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
+        PowerMockito.`when`(authors).thenReturn(listOf())
+    }
 }
