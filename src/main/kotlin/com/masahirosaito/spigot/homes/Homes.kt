@@ -22,7 +22,7 @@ class Homes : JavaPlugin {
 
     constructor() : super()
 
-    constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
+    constructor(loader: JavaPluginLoader,description: PluginDescriptionFile, dataFolder: File, file: File) :
             super(loader, description, dataFolder, file)
 
     override fun onEnable() {
@@ -31,6 +31,7 @@ class Homes : JavaPlugin {
         messenger = Messenger(this, configs.onDebug)
         homeManager = loadData()
         fee = FeeData.load(File(dataFolder, "fee.json").load())
+        econ = loadEconomy()
 
         getCommand("home").executor = HomeCommand(this)
         PlayerRespawnListener(this).register()
@@ -63,5 +64,10 @@ class Homes : JavaPlugin {
             save(playerHomeDataFile)
             oldHomeDataFile.delete()
         }
+    }
+
+    private fun loadEconomy(): Economy? {
+        server.pluginManager.getPlugin("Vault") ?: return null
+        return server.servicesManager.getRegistration(Economy::class.java)?.provider
     }
 }
