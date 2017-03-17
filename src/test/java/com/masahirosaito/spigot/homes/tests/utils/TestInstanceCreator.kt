@@ -43,9 +43,6 @@ object TestInstanceCreator {
     val playerhomesFile = File(pluginFolder, "playerhomes.json")
     val feeFile = File(pluginFolder, "fee.json")
 
-    val vaultFolder = File("bin/test/server/plugins/vaulttest")
-    val vaultFile = File(pluginFolder, "testPluginFile")
-
     fun setUp(): Boolean {
         economy = MyEconomy()
         spyLogger = SpyLogger(Logger.getLogger("Homes"))
@@ -135,12 +132,6 @@ object TestInstanceCreator {
 
     private fun createHomesDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(
             "Homes", "test-version", "com.masahirosaito.spigot.homes.Homes")).apply {
-        PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
-        PowerMockito.`when`(authors).thenReturn(listOf())
-    }
-
-    private fun createVaultDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(
-            "Vault", "test-version", "com.masahirosaito.spigot.homes.tests.utils.MyVault")).apply {
         PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
         PowerMockito.`when`(authors).thenReturn(listOf())
     }
