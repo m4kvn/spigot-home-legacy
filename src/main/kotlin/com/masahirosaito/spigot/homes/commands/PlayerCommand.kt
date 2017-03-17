@@ -21,7 +21,7 @@ interface PlayerCommand : BaseCommand {
 
     private fun payFee(player: Player) {
         plugin.econ?.let { economy ->
-            val r = economy.depositPlayer(player, fee())
+            val r = economy.withdrawPlayer(player, fee())
             if (r.transactionSuccess()) {
                 send(player, buildString {
                     append("You were given ${economy.format(r.amount)}")
