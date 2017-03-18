@@ -24,7 +24,7 @@ interface PlayerCommand : BaseCommand {
             val r = economy.withdrawPlayer(player, fee())
             if (r.transactionSuccess()) {
                 send(player, buildString {
-                    append("You were given ${economy.format(r.amount)}")
+                    append("You paid ${economy.format(r.amount)}")
                     append(" and now have ${economy.format(r.balance)}")
                 })
             } else {
