@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.commands
 
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException
 import org.bukkit.entity.Player
 
@@ -20,6 +21,7 @@ interface PlayerCommand : BaseCommand {
     }
 
     private fun payFee(player: Player) {
+        if (fee() <= 0) return
         plugin.econ?.let { economy ->
             val r = economy.withdrawPlayer(player, fee())
             if (r.transactionSuccess()) {
@@ -28,15 +30,20 @@ interface PlayerCommand : BaseCommand {
                     append(" and now have ${economy.format(r.balance)}")
                 })
             } else {
-                throw Exception("An error occurred: ${r.errorMessage}")
+                throw HomesException("An error occurred: ${r.errorMessage}")
             }
         }
     }
 
     private fun checkBalance(player: Player) {
+        if (fee() <= 0) return
         plugin.econ?.let {
-            if (it.getBalance(player) - fee() < 0)
-                throw Exception("You have not enough money to execute this command (fee: ${fee()})")
+            if (!it.hasAccount(player)) {
+                throw HomesException("You are not registered as Economy")
+            }
+            if (!it.has(player, fee())) {
+                throw HomesException("You have not enough money to execute this command (fee: ${fee()})")
+            }
         }
     }
 
