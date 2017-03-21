@@ -15,7 +15,7 @@ class MyEconomy : Economy {
     }
 
     override fun getBalance(playerName: String?): Double {
-        return getBalance(Bukkit.getOfflinePlayer(playerName))
+        return getBalance(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun getBalance(offlinePlayer: OfflinePlayer?): Double {
@@ -23,7 +23,7 @@ class MyEconomy : Economy {
     }
 
     override fun getBalance(playerName: String?, worldName: String?): Double {
-        return getBalance(playerName)
+        return getBalance(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun getBalance(offlinePlayer: OfflinePlayer?, worldName: String?): Double {
@@ -33,7 +33,7 @@ class MyEconomy : Economy {
     override fun getName(): String = "Homes Economy"
 
     override fun isBankOwner(bankName: String?, playerName: String?): EconomyResponse {
-        return isBankOwner(bankName, Bukkit.getOfflinePlayer(playerName))
+        return isBankOwner(bankName, Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun isBankOwner(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
@@ -66,7 +66,7 @@ class MyEconomy : Economy {
     }
 
     override fun has(playerName: String?, amount: Double): Boolean {
-        return has(Bukkit.getOfflinePlayer(playerName), amount)
+        return has(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun has(offlinePlayer: OfflinePlayer?, amount: Double): Boolean {
@@ -151,7 +151,7 @@ class MyEconomy : Economy {
     }
 
     override fun depositPlayer(playerName: String?, amount: Double): EconomyResponse {
-        return depositPlayer(Bukkit.getOfflinePlayer(playerName), amount)
+        return depositPlayer(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun depositPlayer(offlinePlayer: OfflinePlayer?, amount: Double): EconomyResponse {
@@ -180,7 +180,7 @@ class MyEconomy : Economy {
     }
 
     override fun depositPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
-        return depositPlayer(playerName, amount)
+        return depositPlayer(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun depositPlayer(offlinePlayer: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
@@ -188,7 +188,7 @@ class MyEconomy : Economy {
     }
 
     override fun createBank(bankName: String?, playerName: String?): EconomyResponse {
-        return createBank(bankName, Bukkit.getOfflinePlayer(playerName))
+        return createBank(bankName, Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun createBank(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
@@ -218,7 +218,7 @@ class MyEconomy : Economy {
     }
 
     override fun hasAccount(playerName: String?): Boolean {
-        return hasAccount(Bukkit.getOfflinePlayer(playerName))
+        return hasAccount(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun hasAccount(offlinePlayer: OfflinePlayer?): Boolean {
@@ -227,7 +227,7 @@ class MyEconomy : Economy {
     }
 
     override fun hasAccount(playerName: String?, worldName: String?): Boolean {
-        return hasAccount(playerName)
+        return hasAccount(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun hasAccount(offlinePlayer: OfflinePlayer?, worldName: String?): Boolean {
@@ -235,7 +235,7 @@ class MyEconomy : Economy {
     }
 
     override fun isBankMember(bankName: String?, playerName: String?): EconomyResponse {
-        return isBankMember(bankName, Bukkit.getOfflinePlayer(playerName))
+        return isBankMember(bankName, Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun isBankMember(bankName: String?, offlinePlayer: OfflinePlayer?): EconomyResponse {
@@ -268,7 +268,7 @@ class MyEconomy : Economy {
     }
 
     override fun createPlayerAccount(playerName: String?): Boolean {
-        return createPlayerAccount(Bukkit.getOfflinePlayer(playerName))
+        return createPlayerAccount(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun createPlayerAccount(offlinePlayer: OfflinePlayer?): Boolean {
@@ -277,7 +277,7 @@ class MyEconomy : Economy {
     }
 
     override fun createPlayerAccount(playerName: String?, worldName: String?): Boolean {
-        return createPlayerAccount(playerName)
+        return createPlayerAccount(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName })
     }
 
     override fun createPlayerAccount(offlinePlayer: OfflinePlayer?, worldName: String?): Boolean {
@@ -287,7 +287,7 @@ class MyEconomy : Economy {
     override fun currencyNameSingular(): String = ""
 
     override fun withdrawPlayer(playerName: String?, amount: Double): EconomyResponse {
-        return withdrawPlayer(Bukkit.getOfflinePlayer(playerName), amount)
+        return withdrawPlayer(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun withdrawPlayer(offlinePlayer: OfflinePlayer?, amount: Double): EconomyResponse {
@@ -321,7 +321,7 @@ class MyEconomy : Economy {
     }
 
     override fun withdrawPlayer(playerName: String?, worldName: String?, amount: Double): EconomyResponse {
-        return withdrawPlayer(playerName, amount)
+        return withdrawPlayer(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun withdrawPlayer(offlinePlayer: OfflinePlayer?, worldName: String?, amount: Double): EconomyResponse {
