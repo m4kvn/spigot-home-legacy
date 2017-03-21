@@ -1,15 +1,12 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
+import com.masahirosaito.spigot.homes.tests.utils.*
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.economy
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.feeFile
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.mockServer
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.pluginCommand
-import com.masahirosaito.spigot.homes.tests.utils.logger
-import com.masahirosaito.spigot.homes.tests.utils.setOps
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -20,10 +17,10 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -36,6 +33,7 @@ class FeeDataTest {
     lateinit var logs: MutableList<String>
     lateinit var command: CommandExecutor
     lateinit var nepian: Player
+    lateinit var minene: Player
 
     @Before
     fun setUp() {
@@ -47,11 +45,20 @@ class FeeDataTest {
         nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
         nepian.setOps()
 
+        minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
+        nepian.setOps()
+
         economy.createPlayerAccount(nepian)
         assertThat(economy.hasAccount(nepian), `is`(true))
 
+        economy.createPlayerAccount(minene)
+        assertThat(economy.hasAccount(minene), `is`(true))
+
         economy.depositPlayer(nepian, 1000.0)
         assertThat(economy.getBalance(nepian), `is`(1000.0))
+
+        economy.depositPlayer(minene, 1000.0)
+        assertThat(economy.getBalance(minene), `is`(1000.0))
     }
 
     @After
@@ -89,7 +96,7 @@ class FeeDataTest {
 
     @Test
     fun ホームコマンド実行時に料金が支払われる() {
-        homes.fee.copy(HOME = 2.0).save(feeFile)
+        homes.fee.copy(HOME = 2.0, HOME_NAME = 2.0, HOME_PLAYER = 2.0, HOME_NAME_PLAYER = 2.0).save(feeFile)
         homes.onDisable()
         homes.onEnable()
         assertThat(homes.fee.HOME, `is`(2.0))
@@ -97,7 +104,76 @@ class FeeDataTest {
         homes.homeManager.findPlayerHome(nepian).setDefaultHome(nepian)
         assertThat(homes.homeManager.findDefaultHome(nepian).location(), `is`(nepian.location))
 
-        command.onCommand(nepian, pluginCommand, "home", null)
-        assertThat(economy.getBalance(nepian), `is`(998.0))
+        homes.homeManager.findPlayerHome(nepian).setNamedHome(nepian, "home1", -1)
+        assertThat(homes.homeManager.findNamedHome(nepian, "home1").location(), `is`(nepian.location))
+
+        "[Homes] You paid 2.0 and now have 998.0".apply {
+
+            nepian.teleport(MockWorldFactory.makeRandomLocation())
+            assertThat(nepian.location, `is`(not(homes.homeManager.findDefaultHome(nepian).location())))
+
+            command.onCommand(nepian, pluginCommand, "home", null)
+            assertThat(nepian.location, `is`(homes.homeManager.findDefaultHome(nepian).location()))
+            assertThat(economy.getBalance(nepian), `is`(998.0))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+
+        "[Homes] You paid 2.0 and now have 996.0".apply {
+
+            nepian.teleport(MockWorldFactory.makeRandomLocation())
+            assertThat(nepian.location, `is`(not(homes.homeManager.findNamedHome(nepian, "home1").location())))
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("home1"))
+            assertThat(nepian.location, `is`(homes.homeManager.findNamedHome(nepian, "home1").location()))
+            assertThat(economy.getBalance(nepian), `is`(996.0))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+
+        "[Homes] You paid 2.0 and now have 998.0".apply {
+
+            minene.teleport(MockWorldFactory.makeRandomLocation())
+            assertThat(minene.location, `is`(not(homes.homeManager.findDefaultHome(nepian).location())))
+
+            command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
+            assertThat(minene.location, `is`(homes.homeManager.findDefaultHome(nepian).location()))
+            assertThat(economy.getBalance(minene), `is`(998.0))
+            assertThat(minene.lastMsg(), `is`(this))
+        }
+
+        "[Homes] You paid 2.0 and now have 996.0".apply {
+
+            minene.teleport(MockWorldFactory.makeRandomLocation())
+            assertThat(minene.location, `is`(not(homes.homeManager.findNamedHome(nepian, "home1").location())))
+
+            command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
+            assertThat(minene.location, `is`(homes.homeManager.findNamedHome(nepian, "home1").location()))
+            assertThat(economy.getBalance(minene), `is`(996.0))
+            assertThat(minene.lastMsg(), `is`(this))
+        }
+    }
+
+    @Test
+    fun セットコマンド実行時に料金が支払われる() {
+        homes.fee.copy(SET = 2.0, SET_NAME = 2.0).save(feeFile)
+        homes.onDisable()
+        homes.onEnable()
+        assertThat(homes.fee.SET, `is`(2.0))
+        assertThat(homes.fee.SET_NAME, `is`(2.0))
+
+        "[Homes] You paid 2.0 and now have 998.0".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+            assertThat(homes.homeManager.findDefaultHome(nepian).location(), `is`(nepian.location))
+            assertThat(economy.getBalance(nepian), `is`(998.0))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
+
+        "[Homes] You paid 2.0 and now have 996.0".apply {
+
+            command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+            assertThat(homes.homeManager.findNamedHome(nepian, "home1").location(), `is`(nepian.location))
+            assertThat(economy.getBalance(nepian), `is`(996.0))
+            assertThat(nepian.lastMsg(), `is`(this))
+        }
     }
 }
