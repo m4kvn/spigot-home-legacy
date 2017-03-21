@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands
 
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -20,12 +20,10 @@ interface MainCommand : CommandExecutor, BaseCommand {
             } else {
                 executeCommand(sender!!, argsList)
             }
-        } catch(e: Exception) {
-            send(sender!!, buildString {
-                append(ChatColor.RED)
-                append(e.message)
-                append(ChatColor.RESET)
-            })
+        } catch (e: HomesException) {
+            send(sender!!, e.getColorMsg())
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         return true
