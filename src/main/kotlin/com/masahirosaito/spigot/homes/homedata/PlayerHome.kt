@@ -8,8 +8,8 @@ import org.bukkit.entity.Player
 
 data class PlayerHome(
         var defaultHomeData: HomeData? = null,
-        val namedHomeData: MutableList<HomeData> = mutableListOf()
-) {
+        val namedHomeData: MutableList<HomeData> = mutableListOf()) {
+
     fun findNamedHome(player: OfflinePlayer, name: String) = namedHomeData.find { it.name == name } ?:
             throw CanNotFindNamedHomeException(player, name)
 
