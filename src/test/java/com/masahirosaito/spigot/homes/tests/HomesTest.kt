@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.tests
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.tests.utils.MyVault
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -9,6 +10,9 @@ import org.bukkit.World
 import org.bukkit.command.PluginCommand
 import org.bukkit.entity.Player
 import org.bukkit.plugin.PluginDescriptionFile
+import org.bukkit.plugin.PluginManager
+import org.bukkit.plugin.RegisteredServiceProvider
+import org.bukkit.plugin.ServicesManager
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -23,7 +27,8 @@ import java.io.File
 
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
-        Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class)
+        Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
+        PluginManager::class, ServicesManager::class, MyVault::class, RegisteredServiceProvider::class)
 class HomesTest {
     lateinit var mockServer: Server
     lateinit var homes: Homes
@@ -55,5 +60,10 @@ class HomesTest {
     @Test
     fun コマンドの登録() {
         assertThat(homes.getCommand("home").executor, `is`(notNullValue()))
+    }
+
+    @Test
+    fun 料金設定ファイルの生成() {
+        assertThat(File(TestInstanceCreator.pluginFolder, "fee.json").exists(), `is`(true))
     }
 }

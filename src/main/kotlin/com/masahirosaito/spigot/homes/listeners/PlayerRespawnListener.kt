@@ -12,9 +12,10 @@ class PlayerRespawnListener(override val plugin: Homes) : HomesListener {
 
         if (!plugin.configs.onDefaultHomeRespawn) return
 
-        val playerHome = plugin.homeManager.playerHomes[event.player.uniqueId] ?: return
-        val defaultHomeData = playerHome.defaultHomeData ?: return
+        try {
+            event.respawnLocation = plugin.homeManager.findDefaultHome(event.player).location()
+        } catch (e: Exception) {
 
-        event.respawnLocation = defaultHomeData.locationData.toLocation()
+        }
     }
 }

@@ -1,6 +1,7 @@
-package com.masahirosaito.spigot.homes.tests
+package com.masahirosaito.spigot.homes.tests.commands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -120,8 +121,6 @@ class DeleteCommandTest {
         "[Homes] You don't have permission <homes.command.delete>".apply {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("delete"))
-            assertThat(nepian.lastMsg(), `is`(this))
-            command.onCommand(nepian, pluginCommand, "home", arrayOf("delete", "home1"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
 

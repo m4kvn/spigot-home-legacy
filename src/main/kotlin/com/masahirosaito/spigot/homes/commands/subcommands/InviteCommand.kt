@@ -1,48 +1,46 @@
 package com.masahirosaito.spigot.homes.commands.subcommands
 
-import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.*
+import com.masahirosaito.spigot.homes.commands.BaseCommand
+import com.masahirosaito.spigot.homes.commands.CommandUsage
+import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.findOfflinePlayer
-import com.masahirosaito.spigot.homes.findOnlinePlayer
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
-class InviteCommand(override val plugin: Homes) : SubCommand {
-    private val meta = "homes.invite"
-
-    override fun name(): String = "invite"
-
-    override fun permission(): String = ""
-
-    override fun description(): String = "Invite the other player to your home"
-
-    override fun usages(): List<Pair<String, String>> = listOf(
+class InviteCommand(override val plugin: Homes) : PlayerCommand {
+    private val INVITE_META = "homes.invite"
+    override val name: String = "invite"
+    override val description: String = "Invite the other player to your home"
+    override val permissions: List<String> = listOf(
+            Permission.home_command
+    )
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home invite" to "Accept the invitation",
             "/home invite <player_name>" to "Invite to your default home",
             "/home invite <player_name> <home_name>" to "Invite to your named home"
+    ))
+    override val commands: List<BaseCommand> = listOf(
+            InvitePlayerCommand(this),
+            InvitePlayerNameCommand(this)
     )
 
-    override fun configs(): List<Boolean> = listOf(plugin.configs.onInvite)
+    override fun fee(): Double = plugin.fee.INVITE
 
-    override fun isInValidArgs(args: List<String>): Boolean = args.size > 2
+    override fun configs(): List<Boolean> = listOf(
+            plugin.configs.onInvite
+    )
+
+    override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        when (args.size) {
-            0 -> allowInvitation(player)
-            1 -> inviteDefaultHome(player, args.first())
-            2 -> inviteNamedHome(player, args.first(), args.last())
-        }
-    }
-
-    private fun allowInvitation(player: Player) {
-        if (!player.hasMetadata(meta)) {
+        if (!player.hasMetadata(INVITE_META)) {
             throw Exception("You have not received an invitation")
         } else {
-            val th = player.getMetadata(meta).first().value() as Thread
+            val th = player.getMetadata(INVITE_META).first().value() as Thread
             if (th.isAlive) {
                 th.interrupt()
                 th.join()
@@ -50,35 +48,72 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
         }
     }
 
+    class InvitePlayerCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand {
+        override val permissions: List<String> = listOf(
+                Permission.home_command,
+                Permission.home_command_invite
+        )
+
+        override fun fee(): Double = plugin.fee.INVITE_PLAYER
+
+        override fun configs(): List<Boolean> = listOf(
+                plugin.configs.onInvite,
+                plugin.configs.onFriendHome
+        )
+
+        override fun isValidArgs(args: List<String>): Boolean = args.size == 1
+
+        override fun execute(player: Player, args: List<String>) {
+            inviteCommand.inviteDefaultHome(player, args[0])
+        }
+    }
+
+    class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand{
+        override val permissions: List<String> = listOf(
+                Permission.home_command,
+                Permission.home_command_invite_name
+        )
+
+        override fun fee(): Double = plugin.fee.INVITE_PLAYER_NAME
+
+        override fun configs(): List<Boolean> = listOf(
+                plugin.configs.onInvite,
+                plugin.configs.onNamedHome,
+                plugin.configs.onFriendHome
+        )
+
+        override fun isValidArgs(args: List<String>): Boolean = args.size == 2
+
+        override fun execute(player: Player, args: List<String>) {
+            inviteCommand.inviteNamedHome(player, args[0], args[1])
+        }
+    }
+
     private fun inviteDefaultHome(player: Player, playerName: String) {
-        checkPermission(player, Permission.home_command_invite)
-        val data = plugin.homeManager.findDefaultHome(player)
+        val data = player.findDefaultHome(plugin)
         inviteHome(data, player, playerName, msgReceiveInvitationFrom(player.name))
         send(player, msgInvite(playerName))
     }
 
     private fun inviteNamedHome(player: Player, playerName: String, homeName: String) {
-        checkConfig(plugin.configs.onNamedHome)
-        checkPermission(player, Permission.home_command_invite)
-        checkPermission(player, Permission.home_command_invite_name)
-        val data = plugin.homeManager.findNamedHome(player, homeName)
+        val data = player.findNamedHome(plugin, homeName)
         inviteHome(data, player, playerName, msgReceiveInvitationFrom(player.name, homeName))
         send(player, msgInvite(playerName, homeName))
     }
 
     private fun inviteHome(homeData: HomeData, player: Player, playerName: String, message: String) {
         val op = findOnlinePlayer(playerName).apply {
-            if (hasMetadata(meta)) {
+            if (hasMetadata(INVITE_META)) {
                 throw Exception("$name already has another invitation")
             }
             send(this, message)
         }
-        val th = thread(name = "$meta.${player.name}.$playerName") {
+        val th = thread(name = "$INVITE_META.${player.name}.$playerName") {
             try {
                 Thread.sleep(30000)
                 val target = findOnlinePlayer(playerName)
-                if (target.hasMetadata(meta)) {
-                    target.removeMetadata(meta, plugin)
+                if (target.hasMetadata(INVITE_META)) {
+                    target.removeMetadata(INVITE_META, plugin)
                     send(target, msgCancelInvitationFrom(player.name))
                     send(player, msgCanceledInvitationTo(target.name))
                 }
@@ -86,7 +121,7 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
                 try {
                     val target = findOnlinePlayer(playerName)
                     target.teleport(homeData.location())
-                    target.removeMetadata(meta, plugin)
+                    target.removeMetadata(INVITE_META, plugin)
                     send(target, msgAcceptInvitationFrom(findOfflinePlayer(homeData.ownerUid).name))
                     try {
                         val owner = findOnlinePlayer(homeData.ownerUid)
@@ -99,7 +134,7 @@ class InviteCommand(override val plugin: Homes) : SubCommand {
                 e.message?.let { send(player, it) }
             }
         }
-        op.setMetadata(meta, FixedMetadataValue(plugin, th))
+        op.setMetadata(INVITE_META, FixedMetadataValue(plugin, th))
     }
 
     private fun msgCancelInvitationFrom(playerName: String) = buildString {
