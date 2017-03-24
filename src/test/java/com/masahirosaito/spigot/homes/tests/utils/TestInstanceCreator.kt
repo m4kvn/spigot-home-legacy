@@ -142,6 +142,8 @@ object TestInstanceCreator {
     }
 
     fun tearDown(): Boolean {
+        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
+        minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
         MockPlayerFactory.clear()
         MockWorldFactory.clear()
