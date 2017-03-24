@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes.tests.homedata
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.exceptions.PlayerHomeIsPrivateException
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.tests.utils.MockPlayerFactory
@@ -17,7 +16,6 @@ import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -55,17 +53,6 @@ class HomeDataTest {
     @Test
     fun location() {
         assertThat(homeData.location(), `is`(location))
-    }
-
-    @Test(expected = PlayerHomeIsPrivateException::class)
-    fun checkPrivate() {
-        try {
-            homeData.checkPrivate(nepian)
-        } catch (e: Exception) {
-            Assert.fail()
-        }
-        homeData.isPrivate = true
-        homeData.checkPrivate(nepian)
     }
 
     @Test

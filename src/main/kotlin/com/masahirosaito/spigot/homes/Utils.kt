@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOfflinePlayerException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOnlinePlayerException
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -24,3 +25,23 @@ fun findOfflinePlayer(uuid: UUID): OfflinePlayer {
 fun findOnlinePlayer(uuid: UUID): Player {
     return Bukkit.getPlayer(uuid) ?: throw Exception("Player is not online")
 }
+
+fun Player.teleportDefaultHome(plugin: Homes, offlinePlayer: OfflinePlayer) {
+    val homeData = offlinePlayer.findDefaultHome(plugin)
+    if (uniqueId != homeData.ownerUid && homeData.isPrivate)
+        throw HomesException("${offlinePlayer.name}'s default home is PRIVATE")
+    teleport(homeData.location())
+}
+
+fun Player.teleportNamedHome(plugin: Homes, offlinePlayer: OfflinePlayer, homeName: String) {
+    val homeData = offlinePlayer.findNamedHome(plugin, homeName)
+    if (uniqueId != homeData.ownerUid && homeData.isPrivate)
+        throw HomesException("${offlinePlayer.name}'s home named <${homeData.name}> is PRIVATE")
+    teleport(homeData.location())
+}
+
+fun OfflinePlayer.findDefaultHome(plugin: Homes) = plugin.homeManager.findDefaultHome(this)
+
+fun OfflinePlayer.findNamedHome(plugin: Homes, homeName: String) = plugin.homeManager.findNamedHome(this, homeName)
+
+fun OfflinePlayer.findPlayerHome(plugin: Homes) = plugin.homeManager.findPlayerHome(this)

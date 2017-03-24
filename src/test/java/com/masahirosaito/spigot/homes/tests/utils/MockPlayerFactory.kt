@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.tests.utils
 
+import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.tests.utils.MockWorldFactory.makeRandomLocation
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
@@ -69,6 +70,14 @@ object MockPlayerFactory {
             }
 
             register(this)
+        }
+    }
+
+    fun makeNewMockPlayer(playerName: String, homes: Homes): Player {
+        return makeNewMockPlayer(playerName, homes.server).apply {
+            homes.econ?.let { econ ->
+                econ.createPlayerAccount(this)
+            }
         }
     }
 

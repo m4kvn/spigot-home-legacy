@@ -17,11 +17,9 @@ object MockWorldFactory {
         }
     }
 
-    fun makeRandomLocation(): Location {
-        return Random().run {
-            Location(makeNewMockWorld("world"), nextDouble(), nextDouble(), nextDouble(), nextFloat(), nextFloat())
-        }
-    }
+    fun makeRandomLocation() = Location(makeNewMockWorld("world"),
+            randomDouble(), randomDouble(), randomDouble(),
+            randomFloat(), randomFloat())
 
     private fun register(world: World) {
         MockWorldFactory.worlds.put(world.uid, world)
@@ -30,4 +28,8 @@ object MockWorldFactory {
     fun clear() {
         MockWorldFactory.worlds.clear()
     }
+
+    private fun randomDouble(): Double = Random().nextDouble() * 100
+
+    private fun randomFloat(): Float = Random().nextFloat() * 100
 }

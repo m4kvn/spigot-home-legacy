@@ -124,15 +124,6 @@ class PrivateCommandTest {
     }
 
     @Test
-    fun 名前付きホームのプライベート化にはプライベート権限が必要() {
-        nepian.setOps(false)
-        nepian.set(Permission.HOME)
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] You don't have permission <homes.command.private>"))
-    }
-
-    @Test
     fun 名前付きホームのプライベート化には名前付きプライベート権限が必要() {
         nepian.setOps(false)
         nepian.set(Permission.HOME, Permission.HOME_PRIVATE)
@@ -156,7 +147,7 @@ class PrivateCommandTest {
         nepian.set(Permission.HOME, Permission.HOME_PRIVATE, Permission.HOME_PRIVATE_NAME)
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named home1 PRIVATE"))
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named <home1> PRIVATE"))
     }
 
     @Test
@@ -228,6 +219,6 @@ class PrivateCommandTest {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "on", "home1"))
         command.onCommand(nepian, pluginCommand, "home", arrayOf("private", "off", "home1"))
 
-        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named home1 PUBLIC"))
+        assertThat(nepian.lastMsg(), `is`("[Homes] Set your home named <home1> PUBLIC"))
     }
 }

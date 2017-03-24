@@ -2,47 +2,38 @@ package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.commands.BaseCommand
+import com.masahirosaito.spigot.homes.commands.CommandUsage
+import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetNameCommand
+import com.masahirosaito.spigot.homes.findPlayerHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
-class SetCommand(override val plugin: Homes) : SubCommand {
-
-    override fun name(): String = "set"
-
-    override fun permission(): String = Permission.home_command_set
-
-    override fun description(): String = "Set your home or named home"
-
-    override fun usages(): List<Pair<String, String>> = listOf(
+class SetCommand(override val plugin: Homes) : PlayerCommand {
+    override val name: String = "set"
+    override val description: String = "Set your home or named home"
+    override val permissions: List<String> = listOf(
+            Permission.home_command,
+            Permission.home_command_set
+    )
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home set" to "Set your location to your default home",
             "/home set <home_name>" to "Set your location to your named home"
+    ))
+    override val commands: List<BaseCommand> = listOf(
+            SetNameCommand(this)
     )
 
-    override fun isInValidArgs(args: List<String>): Boolean = args.size > 1
+    override fun fee(): Double = plugin.fee.SET
+
+    override fun configs(): List<Boolean> = listOf()
+
+    override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        when (args.size) {
-            0 -> setDefaultHome(player)
-            1 -> setNamedHome(player, args[0])
-        }
-    }
-
-    private fun setDefaultHome(player: Player) {
-        plugin.homeManager.findPlayerHome(player).setDefaultHome(player)
-        send(player, getResultMessage())
-    }
-
-    private fun setNamedHome(player: Player, name: String) {
-        checkConfig(plugin.configs.onNamedHome)
-        checkPermission(player, Permission.home_command_set_name)
-        plugin.homeManager.findPlayerHome(player).setNamedHome(player, name, plugin.configs.homeLimit)
-        send(player, getResultMessage(name))
-    }
-
-    private fun getResultMessage(name: String? = null) = buildString {
-        append("${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}")
-        append(if (name.isNullOrBlank()) "default home" else "home named <${ChatColor.RESET}$name${ChatColor.GOLD}>")
-        append(ChatColor.RESET)
+        player.findPlayerHome(plugin).setDefaultHome(player)
+        send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
     }
 }
