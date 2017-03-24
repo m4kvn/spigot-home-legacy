@@ -28,14 +28,14 @@ fun findOnlinePlayer(uuid: UUID): Player {
 
 fun Player.teleportDefaultHome(plugin: Homes, offlinePlayer: OfflinePlayer) {
     val homeData = offlinePlayer.findDefaultHome(plugin)
-    if (uniqueId != homeData.ownerUid && homeData.isPrivate)
+    if (!homeData.isOwner(this) && homeData.isPrivate)
         throw HomesException("${offlinePlayer.name}'s default home is PRIVATE")
     teleport(homeData.location())
 }
 
 fun Player.teleportNamedHome(plugin: Homes, offlinePlayer: OfflinePlayer, homeName: String) {
     val homeData = offlinePlayer.findNamedHome(plugin, homeName)
-    if (uniqueId != homeData.ownerUid && homeData.isPrivate)
+    if (!homeData.isOwner(this) && homeData.isPrivate)
         throw HomesException("${offlinePlayer.name}'s home named <${homeData.name}> is PRIVATE")
     teleport(homeData.location())
 }
