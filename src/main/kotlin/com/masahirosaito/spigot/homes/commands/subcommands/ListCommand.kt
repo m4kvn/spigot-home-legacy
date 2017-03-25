@@ -6,6 +6,7 @@ import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import com.masahirosaito.spigot.homes.findPlayerHome
 import com.masahirosaito.spigot.homes.homedata.HomeData
@@ -89,7 +90,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
         if (isPlayerHomeList
                 .and(playerHome.defaultHomeData != null && playerHome.defaultHomeData!!.isPrivate)
                 .and(playerHome.namedHomeData.all { it.isPrivate })) {
-            throw Exception("No homes")
+            throw HomesException("No homes")
         }
         append("Home List")
         playerHome.defaultHomeData?.let {
