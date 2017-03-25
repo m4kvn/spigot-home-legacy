@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetNameCommand
 import com.masahirosaito.spigot.homes.tests.utils.MyVault
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator

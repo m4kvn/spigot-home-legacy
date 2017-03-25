@@ -3,7 +3,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands.setcommands
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SetCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import com.masahirosaito.spigot.homes.findPlayerHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
