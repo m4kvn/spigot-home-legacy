@@ -1,12 +1,12 @@
 package com.masahirosaito.spigot.homes.commands.subcommands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetNameCommand
 import com.masahirosaito.spigot.homes.tests.utils.MyVault
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.tests.utils.lastMsg
-import com.masahirosaito.spigot.homes.tests.utils.setOps
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -20,8 +20,7 @@ import org.bukkit.plugin.ServicesManager
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,6 +43,52 @@ class SetCommandTest {
     @After
     fun tearDown() {
         assertTrue(TestInstanceCreator.tearDown())
+    }
+
+    @Test
+    fun コマンドの名前が適切である() {
+        assertThat(setCommand.name, `is`("set"))
+    }
+
+    @Test
+    fun コマンドの説明文が記述されている() {
+        assertTrue(setCommand.description.isNotBlank())
+    }
+
+    @Test
+    fun 権限が適切に返される() {
+        setCommand.permissions.containsAll(listOf(
+                "homes.command",
+                "homes.command.set"
+        ))
+    }
+
+    @Test
+    fun コマンドの使い方が記述されている() {
+        assertTrue(setCommand.usage.usage.isNotEmpty())
+    }
+
+    @Test
+    fun 設定した料金を返す() {
+        assertThat(setCommand.fee(), `is`(0.0))
+        homes.fee = homes.fee.copy(SET = 2.0)
+        assertThat(setCommand.fee(), `is`(2.0))
+    }
+
+    @Test
+    fun 設定が空である() {
+        assertTrue(setCommand.configs().isEmpty())
+    }
+
+    @Test
+    fun 引数の確認が適正に行われる() {
+        assertTrue(setCommand.isValidArgs(listOf()))
+        assertFalse(setCommand.isValidArgs(listOf("home1")))
+    }
+
+    @Test
+    fun サブコマンドに名前付きホームを設定するコマンドを持っている() {
+        assertTrue(setCommand.commands.any { it is SetNameCommand })
     }
 
     @Test
