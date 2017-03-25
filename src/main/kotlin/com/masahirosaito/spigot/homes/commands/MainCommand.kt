@@ -1,46 +1,31 @@
 package com.masahirosaito.spigot.homes.commands
 
-import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.exceptions.InValidCommandSenderException
-import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
-abstract class MainCommand(override val plugin: Homes) : SubCommand, CommandExecutor {
+interface MainCommand : CommandExecutor, BaseCommand {
+    val subCommands: List<BaseCommand>
 
-    abstract val subCommands: List<SubCommand>
+    override fun onCommand(sender: CommandSender?, command: Command?,
+                           label: String?, args: Array<out String>?): Boolean {
+        val argsList = args?.toList() ?: emptyList()
 
-    override fun onCommand(sender: CommandSender?, command: Command?, label: String?, args: Array<out String>?): Boolean {
-        val list = args?.toList() ?: emptyList()
-        if (sender !is Player) throw InValidCommandSenderException()
         try {
-            when {
-                haveSubCommand(list) -> onSubCommand(sender, list)
-                else -> onCommand(sender, list)
+            if (argsList.isNotEmpty() && subCommands.any { it.name == argsList[0] }) {
+                subCommands.find { it.name == argsList[0] }!!.let {
+                    it.executeCommand(sender!!, argsList.drop(1))
+                }
+            } else {
+                executeCommand(sender!!, argsList)
             }
+        } catch (e: HomesException) {
+            send(sender!!, e.getColorMsg())
         } catch (e: Exception) {
-            send(sender, buildString {
-                append(ChatColor.RED)
-                append(e.message)
-                append(ChatColor.RESET)
-            })
+            e.printStackTrace()
         }
+
         return true
-    }
-
-    fun onSubCommand(player: Player, args: List<String>) {
-        findSubCommand(args[0]).onCommand(player, args.drop(1))
-    }
-
-    fun findSubCommand(name: String): SubCommand {
-        return subCommands.find { it.name() == name } ?: throw NoSuchCommandException(name)
-    }
-
-    fun haveSubCommand(args: List<String>): Boolean {
-        return if (args.isEmpty()) false else subCommands.any { it.name() == args.first() }
     }
 }
