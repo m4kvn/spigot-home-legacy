@@ -19,7 +19,7 @@ object MockPlayerFactory {
     val locations: MutableMap<UUID, Location> = mutableMapOf()
     val permissions: MutableMap<UUID, MutableList<String>> = mutableMapOf()
     val offlinePlayers: MutableMap<UUID, OfflinePlayer> = mutableMapOf()
-    val ops: MutableList<UUID> = mutableListOf()
+    val ops: MutableMap<UUID, Boolean> = mutableMapOf()
     val metadatas: MutableMap<UUID, MutableMap<String, MutableList<MetadataValue>>> = mutableMapOf()
     val loggers: MutableMap<UUID, SpyLogger> = mutableMapOf()
 
@@ -33,8 +33,7 @@ object MockPlayerFactory {
 
             /* TODO: hasPermission(permission: String): Boolean */
             PowerMockito.`when`(hasPermission(anyString())).thenAnswer { invocation ->
-                if (isOps()) true
-                else permissions[uniqueId]?.contains(invocation.getArgumentAt(0, String::class.java)) ?: false
+                if (ops[uniqueId]!!) true else permissions[uniqueId]!!.contains(invocation.getArgumentAt(0, String::class.java))
             }
 
             /* TODO: getMetadata(metadataKey: String): List<MetadataValue> */
@@ -75,9 +74,7 @@ object MockPlayerFactory {
 
     fun makeNewMockPlayer(playerName: String, homes: Homes): Player {
         return makeNewMockPlayer(playerName, homes.server).apply {
-            homes.econ?.let { econ ->
-                econ.createPlayerAccount(this)
-            }
+            homes.econ?.createPlayerAccount(this)
         }
     }
 
@@ -86,6 +83,7 @@ object MockPlayerFactory {
         locations.put(player.uniqueId, makeRandomLocation())
         permissions.put(player.uniqueId, mutableListOf())
         offlinePlayers.put(player.uniqueId, player)
+        ops.put(player.uniqueId, false)
         metadatas.put(player.uniqueId, mutableMapOf())
         loggers.put(player.uniqueId, SpyLogger(Logger.getLogger(player.name)))
     }

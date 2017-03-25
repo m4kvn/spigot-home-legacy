@@ -2,10 +2,14 @@ package com.masahirosaito.spigot.homes.tests.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.HelpCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.InviteCommand
 import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.nepian
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.pluginCommand
 import org.bukkit.*
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
@@ -25,12 +29,6 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class)
 class HelpCommandTest {
-    lateinit var mockServer: Server
-    lateinit var homes: Homes
-    lateinit var pluginCommand: PluginCommand
-    lateinit var command: CommandExecutor
-    lateinit var nepian: Player
-
     lateinit var homeCommand: HomeCommand
     lateinit var helpCommand: HelpCommand
     lateinit var inviteCommand: InviteCommand
@@ -41,28 +39,19 @@ class HelpCommandTest {
         homeCommand.subCommands.forEach {
             append("  ${it.name} : ${it.description}\n")
         }
+        append("  ${homeCommand.name} : ${homeCommand.description}\n")
     }
 
     @Before
     fun setUp() {
         assertThat(TestInstanceCreator.setUp(), `is`(true))
-
-        mockServer = TestInstanceCreator.mockServer
-        homes = TestInstanceCreator.homes
-        pluginCommand = homes.getCommand("home")
-        command = pluginCommand.executor
         homeCommand = HomeCommand(homes)
         helpCommand = HelpCommand(homeCommand)
         inviteCommand = InviteCommand(homes)
-        nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
-
-        nepian.setOps()
     }
 
     @After
     fun tearDown() {
-        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
-
         assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 

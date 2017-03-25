@@ -1,9 +1,11 @@
-package com.masahirosaito.spigot.homes.commands.subcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.helpcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.commands.*
-import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
+import com.masahirosaito.spigot.homes.commands.BaseCommand
+import com.masahirosaito.spigot.homes.commands.CommandUsage
+import com.masahirosaito.spigot.homes.commands.MainCommand
+import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -41,24 +43,6 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
         mainCommand.subCommands.forEach {
             append("  ${ChatColor.AQUA}${it.name}${ChatColor.RESET} : ${it.description}\n")
         }
-    }
-
-    class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), PlayerCommand {
-        override val permissions: List<String> = listOf(
-                Permission.home_command,
-                Permission.home_command_help_command
-        )
-
-        override fun fee(): Double = plugin.fee.HELP_USAGE
-
-        override fun configs(): List<Boolean> = listOf()
-
-        override fun isValidArgs(args: List<String>): Boolean = args.size == 1
-
-        override fun execute(player: Player, args: List<String>) {
-            helpCommand.mainCommand.subCommands.find { it.name == args[0] }?.let {
-                send(player, it.usage)
-            } ?: throw NoSuchCommandException(args[0])
-        }
+        append("  ${ChatColor.AQUA}${mainCommand.name}${ChatColor.RESET} : ${mainCommand.description}\n")
     }
 }

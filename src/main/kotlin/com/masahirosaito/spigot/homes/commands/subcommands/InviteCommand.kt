@@ -5,6 +5,7 @@ import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -38,7 +39,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         if (!player.hasMetadata(INVITE_META)) {
-            throw Exception("You have not received an invitation")
+            throw HomesException("You have not received an invitation")
         } else {
             val th = player.getMetadata(INVITE_META).first().value() as Thread
             if (th.isAlive) {
@@ -104,7 +105,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
     private fun inviteHome(homeData: HomeData, player: Player, playerName: String, message: String) {
         val op = findOnlinePlayer(playerName).apply {
             if (hasMetadata(INVITE_META)) {
-                throw Exception("$name already has another invitation")
+                throw HomesException("$name already has another invitation")
             }
             send(this, message)
         }

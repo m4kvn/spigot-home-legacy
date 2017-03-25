@@ -67,7 +67,15 @@ class Homes : JavaPlugin {
     }
 
     private fun loadEconomy(): Economy? {
-        server.pluginManager.getPlugin("Vault") ?: return null
-        return server.servicesManager.getRegistration(Economy::class.java)?.provider
+        if (server.pluginManager.getPlugin("Vault") == null) {
+            messenger.log("Fee function stopped because Vault can not be found.")
+            return null
+        }
+        server.servicesManager.getRegistration(Economy::class.java).let {
+            if (it == null) {
+                messenger.log("Fee function stopped because the Economy plugin can not be found.")
+            }
+            return it.provider
+        }
     }
 }

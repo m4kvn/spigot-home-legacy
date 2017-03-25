@@ -3,6 +3,14 @@ package com.masahirosaito.spigot.homes.tests.commands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.defaultLocation
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.minene
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.mockServer
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.namedLocation
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.nepian
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.pluginCommand
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -26,78 +34,29 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class)
 class InviteCommandTest {
-    lateinit var mockServer: Server
-    lateinit var homes: Homes
-    lateinit var pluginCommand: PluginCommand
-    lateinit var command: CommandExecutor
-    lateinit var logs: MutableList<String>
-    lateinit var nepian: Player
-    lateinit var minene: Player
-
-    lateinit var defaultLocation: Location
-    lateinit var namedLocation: Location
-
-    lateinit var nepianLocation: Location
-    lateinit var mineneLocation: Location
-
     val metadata = "homes.invite"
 
     private fun Player.acceptInvitation() {
-        if (this.hasMetadata("homes.invite")) {
-            val th = (this.getMetadata("homes.invite")[0].value() as Thread)
+        if (this.hasMetadata(metadata)) {
+            val th = (this.getMetadata(metadata)[0].value() as Thread)
             if (th.isAlive) {
                 th.interrupt()
                 th.join()
             }
             assertThat(th.isAlive, `is`(false))
         }
-        assertThat(this.hasMetadata("homes.invite"), `is`(false))
+        assertThat(this.hasMetadata(metadata), `is`(false))
     }
 
     @Before
     fun setUp() {
         assertThat(TestInstanceCreator.setUp(), `is`(true))
-
-        mockServer = TestInstanceCreator.mockServer
-        homes = TestInstanceCreator.homes
-        pluginCommand = homes.getCommand("home")
-        command = pluginCommand.executor
-        logs = TestInstanceCreator.spyLogger.logs
-        nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
-        minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
-
-        nepian.setOps()
-        minene.setOps()
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        defaultLocation = nepian.location
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as default home"))
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        namedLocation = nepian.location
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
-
-        assertThat(nepian.lastMsg(), `is`("[Homes] Successfully set as home named <home1>"))
-
-        nepian.teleport(MockWorldFactory.makeRandomLocation())
-        assertThat(nepian.location, `is`(not(namedLocation)))
-
-        minene.teleport(MockWorldFactory.makeRandomLocation())
-        assertThat(minene.location, `is`(not(namedLocation)))
-
-        nepianLocation = nepian.location
-        mineneLocation = minene.location
     }
 
     @After
     fun tearDown() {
         nepian.acceptInvitation()
         minene.acceptInvitation()
-        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
-        minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
-
         assertThat(TestInstanceCreator.tearDown(), `is`(true))
     }
 
@@ -180,7 +139,7 @@ class InviteCommandTest {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
             assertThat(nepian.lastMsg(), `is`(this))
-            assertThat(minene.hasMetadata("homes.invite"), `is`(false))
+            assertThat(minene.hasMetadata(metadata), `is`(false))
         }
     }
 
