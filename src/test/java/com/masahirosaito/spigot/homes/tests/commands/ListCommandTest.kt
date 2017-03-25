@@ -1,9 +1,16 @@
 package com.masahirosaito.spigot.homes.tests.commands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.homedata.HomeData
+import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.minene
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.nepian
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.pluginCommand
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -28,32 +35,28 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class)
 class ListCommandTest {
-    lateinit var mockServer: Server
-    lateinit var homes: Homes
-    lateinit var pluginCommand: PluginCommand
-    lateinit var command: CommandExecutor
-    lateinit var nepian: Player
-    lateinit var minene: Player
+
+    private fun getText(homeData: HomeData): String {
+        val ld = homeData.locationData
+        return buildString {
+            append("${Bukkit.getWorld(ld.worldUid).name}, ")
+            append("{${ld.x.toInt()}, ${ld.y.toInt()}, ${ld.z.toInt()}}, ")
+            append(if (homeData.isPrivate) "PRIVATE" else "PUBLIC")
+        }
+    }
 
     @Before
     fun setUp() {
         Assert.assertThat(TestInstanceCreator.setUp(), CoreMatchers.`is`(true))
 
-        mockServer = TestInstanceCreator.mockServer
-        homes = TestInstanceCreator.homes
-        pluginCommand = homes.getCommand("home")
-        command = pluginCommand.executor
-        nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", mockServer)
-        minene = MockPlayerFactory.makeNewMockPlayer("Minene", mockServer)
-
-        nepian.setOps()
-        minene.setOps()
+        homes.homeManager.findPlayerHome(nepian).apply {
+            setNamedHome(nepian, "home2", -1)
+            setNamedHome(nepian, "home3", -1)
+        }
     }
 
     @After
     fun tearDown() {
-        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
-
         Assert.assertThat(TestInstanceCreator.tearDown(), CoreMatchers.`is`(true))
     }
 
@@ -110,23 +113,16 @@ class ListCommandTest {
 
     @Test
     fun リスト権限を持っている場合はリストコマンドでホームのリストを表示できる() {
-        val playerHome = PlayerHome().apply {
-            setDefaultHome(nepian.apply { teleport(MockWorldFactory.makeRandomLocation()) })
-            setNamedHome(nepian, "home1", -1)
-            setNamedHome(nepian, "home2", -1)
-            setNamedHome(nepian, "home3", -1)
-        }
-        homes.homeManager.playerHomes.put(nepian.uniqueId, playerHome)
         nepian.set(Permission.HOME, Permission.HOME_LIST)
         nepian.setOps(false)
 
         buildString {
             append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
+            append("  [Default] ${getText(homes.homeManager.findDefaultHome(nepian))}\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home3 : world, {0, 0, 0}, PUBLIC\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
+            append("    home3 : ${getText(homes.homeManager.findNamedHome(nepian, "home3"))}\n")
         }.apply {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
@@ -136,23 +132,16 @@ class ListCommandTest {
 
     @Test
     fun リストプレイヤー権限を持っている場合はリストプレイヤーコマンドでホームのリストを表示できる() {
-        val playerHome = PlayerHome().apply {
-            setDefaultHome(nepian.apply { teleport(MockWorldFactory.makeRandomLocation()) })
-            setNamedHome(nepian, "home1", -1)
-            setNamedHome(nepian, "home2", -1)
-            setNamedHome(nepian, "home3", -1)
-        }
-        homes.homeManager.playerHomes.put(nepian.uniqueId, playerHome)
         minene.set(Permission.HOME, Permission.HOME_LIST_PLAYER)
         minene.setOps(false)
 
         buildString {
             append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
+            append("  [Default] ${getText(homes.homeManager.findDefaultHome(nepian))}\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home3 : world, {0, 0, 0}, PUBLIC\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
+            append("    home3 : ${getText(homes.homeManager.findNamedHome(nepian, "home3"))}\n")
         }.apply {
 
             command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
@@ -162,37 +151,30 @@ class ListCommandTest {
 
     @Test
     fun 自分のホームリストの表示はプライベートホームも表示する() {
-        val playerHome = PlayerHome().apply {
-            setDefaultHome(nepian.apply { teleport(MockWorldFactory.makeRandomLocation()) })
-            setNamedHome(nepian, "home1", -1)
-            setNamedHome(nepian, "home2", -1)
-            setNamedHome(nepian, "home3", -1)
-            findDefaultHome(nepian).isPrivate = true
-            findNamedHome(nepian, "home3").isPrivate = true
-        }
-        homes.homeManager.playerHomes.put(nepian.uniqueId, playerHome)
+        homes.homeManager.findDefaultHome(nepian).isPrivate = true
+        homes.homeManager.findNamedHome(nepian, "home3").isPrivate = true
 
         buildString {
             append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PRIVATE\n")
+            append("  [Default] ${getText(homes.homeManager.findDefaultHome(nepian))}\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home3 : world, {0, 0, 0}, PRIVATE\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
+            append("    home3 : ${getText(homes.homeManager.findNamedHome(nepian, "home3"))}\n")
         }.apply {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
             assertThat(nepian.lastMsg(), `is`(this))
         }
 
-        playerHome.removeDefaultHome(nepian)
+        homes.homeManager.findPlayerHome(nepian).removeDefaultHome(nepian)
 
         buildString {
             append("[Homes] Home List\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home3 : world, {0, 0, 0}, PRIVATE\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
+            append("    home3 : ${getText(homes.homeManager.findNamedHome(nepian, "home3"))}\n")
         }.apply {
 
             command.onCommand(nepian, pluginCommand, "home", arrayOf("list"))
@@ -202,42 +184,35 @@ class ListCommandTest {
 
     @Test
     fun 他人のホームリストの表示にプレイベートホームは含めない() {
-        val playerHome = PlayerHome().apply {
-            setDefaultHome(nepian.apply { teleport(MockWorldFactory.makeRandomLocation()) })
-            setNamedHome(nepian, "home1", -1)
-            setNamedHome(nepian, "home2", -1)
-            setNamedHome(nepian, "home3", -1)
-            findNamedHome(nepian, "home3").isPrivate = true
-        }
-        homes.homeManager.playerHomes.put(nepian.uniqueId, playerHome)
+        homes.homeManager.findNamedHome(nepian, "home3").isPrivate = true
 
         buildString {
             append("[Homes] Home List\n")
-            append("  [Default] world, {0, 0, 0}, PUBLIC\n")
+            append("  [Default] ${getText(homes.homeManager.findDefaultHome(nepian))}\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
         }.apply {
 
             command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
             assertThat(minene.lastMsg(), `is`(this))
         }
 
-        playerHome.findDefaultHome(nepian).isPrivate = true
+        homes.homeManager.findDefaultHome(nepian).isPrivate = true
 
         buildString {
             append("[Homes] Home List\n")
             append("  [Named Home]\n")
-            append("    home1 : world, {0, 0, 0}, PUBLIC\n")
-            append("    home2 : world, {0, 0, 0}, PUBLIC\n")
+            append("    home1 : ${getText(homes.homeManager.findNamedHome(nepian, "home1"))}\n")
+            append("    home2 : ${getText(homes.homeManager.findNamedHome(nepian, "home2"))}\n")
         }.apply {
 
             command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian"))
             assertThat(minene.lastMsg(), `is`(this))
         }
 
-        playerHome.findNamedHome(nepian, "home1").isPrivate = true
-        playerHome.findNamedHome(nepian, "home2").isPrivate = true
+        homes.homeManager.findNamedHome(nepian, "home1").isPrivate = true
+        homes.homeManager.findNamedHome(nepian, "home2").isPrivate = true
 
         buildString {
             append("[Homes] No homes")
