@@ -74,7 +74,7 @@ class MyEconomy : Economy {
     }
 
     override fun has(playerName: String?, worldName: String?, amount: Double): Boolean {
-        return has(playerName, amount)
+        return has(Bukkit.getOfflinePlayers().firstOrNull { it.name == playerName }, amount)
     }
 
     override fun has(offlinePlayer: OfflinePlayer?, worldName: String?, amount: Double): Boolean {
