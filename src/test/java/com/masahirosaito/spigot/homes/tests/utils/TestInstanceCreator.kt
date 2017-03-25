@@ -3,12 +3,16 @@ package com.masahirosaito.spigot.homes.tests.utils
 import com.masahirosaito.spigot.homes.Homes
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Server
+import org.bukkit.command.CommandExecutor
 import org.bukkit.command.PluginCommand
+import org.bukkit.entity.Player
 import org.bukkit.plugin.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.easymock.ConstructorArgs
+import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.mockito.Matchers.any
 import org.powermock.api.easymock.PowerMock
@@ -36,6 +40,11 @@ object TestInstanceCreator {
 
     lateinit var economy: Economy
     lateinit var spyLogger: SpyLogger
+    lateinit var nepian: Player
+    lateinit var minene: Player
+    lateinit var defaultLocation: Location
+    lateinit var namedLocation: Location
+    lateinit var command: CommandExecutor
 
     val pluginFolder = File("bin/test/server/plugins/homestest")
     val pluginFile = File(pluginFolder, "testPluginFile")
@@ -97,6 +106,32 @@ object TestInstanceCreator {
             homes.onLoad()
             homes.onEnable()
 
+            command = pluginCommand.executor
+
+            nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", homes)
+            nepian.setOps()
+
+            minene = MockPlayerFactory.makeNewMockPlayer("Minene", homes)
+            minene.setOps()
+
+            homes.homeManager.findPlayerHome(nepian).apply {
+                setDefaultHome(nepian)
+                defaultLocation = findDefaultHome(nepian).location()
+                setNamedHome(nepian, "home1", -1)
+                namedLocation = findNamedHome(nepian, "home1").location()
+            }
+
+            Assert.assertThat(defaultLocation, CoreMatchers.`is`(nepian.location))
+            Assert.assertThat(namedLocation, CoreMatchers.`is`(nepian.location))
+
+            while (defaultLocation == nepian.location || namedLocation == nepian.location) {
+                nepian.randomTeleport()
+            }
+
+            while (defaultLocation == minene.location || namedLocation == minene.location) {
+                minene.randomTeleport()
+            }
+
             return true
 
         } catch (e: Exception) {
@@ -107,6 +142,8 @@ object TestInstanceCreator {
     }
 
     fun tearDown(): Boolean {
+        nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
+        minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
         MockPlayerFactory.clear()
         MockWorldFactory.clear()

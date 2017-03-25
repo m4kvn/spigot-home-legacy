@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.setcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission

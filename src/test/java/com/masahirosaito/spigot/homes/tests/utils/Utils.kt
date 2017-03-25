@@ -9,16 +9,17 @@ fun Player.set(vararg permissions: Permission) {
 }
 
 fun Player.setOps(boolean: Boolean = true) {
-    if (boolean) MockPlayerFactory.ops.add(uniqueId)
-    else MockPlayerFactory.ops.remove(uniqueId)
+    MockPlayerFactory.ops.put(uniqueId, boolean)
 }
-
-fun Player.isOps() = MockPlayerFactory.ops.contains(uniqueId)
 
 val Player.logger: SpyLogger get() = MockPlayerFactory.loggers[uniqueId]!!
 
-fun Player.lastMsg() = logger.logs.last()
+fun Player.lastMsg() = logger.logs.lastOrNull()
 
 fun Player.remove(vararg permissions: Permission) {
     permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.remove(it.permission) }
+}
+
+fun Player.randomTeleport() {
+    teleport(MockWorldFactory.makeRandomLocation())
 }

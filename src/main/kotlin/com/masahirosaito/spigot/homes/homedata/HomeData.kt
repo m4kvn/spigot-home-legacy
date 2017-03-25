@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.homedata
 
+import org.bukkit.OfflinePlayer
 import java.util.*
 
 data class HomeData(
@@ -9,4 +10,8 @@ data class HomeData(
         var isPrivate: Boolean = false
 ) {
     fun location() = locationData.toLocation()
+
+    fun isOwner(offlinePlayer: OfflinePlayer): Boolean {
+        return offlinePlayer.uniqueId == ownerUid
+    }
 }

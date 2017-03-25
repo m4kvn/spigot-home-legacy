@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.homedata
 
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindDefaultHomeException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindNamedHomeException
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import org.bukkit.ChatColor
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
@@ -40,6 +41,6 @@ data class PlayerHome(
     private fun MutableList<HomeData>.isLimit(limit: Int): Boolean = size >= limit
 
     private fun throwLimitException(limit: Int) {
-        throw Exception("You can not set more homes (Limit: ${ChatColor.RESET}$limit${ChatColor.RED})")
+        throw HomesException("You can not set more homes (Limit: ${ChatColor.RESET}$limit${ChatColor.RED})")
     }
 }

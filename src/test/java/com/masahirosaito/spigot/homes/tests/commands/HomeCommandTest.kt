@@ -3,8 +3,13 @@ package com.masahirosaito.spigot.homes.tests.commands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.tests.Permission
 import com.masahirosaito.spigot.homes.tests.utils.*
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.homes
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.minene
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.mockServer
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.namedLocation
+import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.pluginCommand
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -32,41 +37,10 @@ import org.powermock.modules.junit4.PowerMockRunner
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, MyVault::class, RegisteredServiceProvider::class)
 class HomeCommandTest {
-    lateinit var command: CommandExecutor
-    lateinit var nepian: Player
-    lateinit var minene: Player
-
-    lateinit var defaultLocation: Location
-    lateinit var namedLocation: Location
 
     @Before
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
-
-        command = pluginCommand.executor
-        nepian = MockPlayerFactory.makeNewMockPlayer("Nepian", homes)
-        minene = MockPlayerFactory.makeNewMockPlayer("Minene", homes)
-
-        nepian.setOps()
-        minene.setOps()
-
-        homes.homeManager.findPlayerHome(nepian).apply {
-            setDefaultHome(nepian)
-            defaultLocation = findDefaultHome(nepian).location()
-            setNamedHome(nepian, "home1", -1)
-            namedLocation = findNamedHome(nepian, "home1").location()
-        }
-
-        assertThat(defaultLocation, `is`(nepian.location))
-        assertThat(namedLocation, `is`(nepian.location))
-
-        while (defaultLocation == nepian.location || namedLocation == nepian.location) {
-            nepian.teleport(MockWorldFactory.makeRandomLocation())
-        }
-
-        while (defaultLocation == minene.location || namedLocation == minene.location) {
-            minene.teleport(MockWorldFactory.makeRandomLocation())
-        }
     }
 
     @After
@@ -166,11 +140,11 @@ class HomeCommandTest {
 
     @Test
     fun プレイヤーホーム権限を持っている場合はプレイヤーコマンドで他のプレイヤーのデフォルトホームへ移動できる() {
-        minene.setOps(false)
+        nepian.setOps(false)
         minene.set(Permission.HOME, Permission.HOME_PLAYER)
         command.onCommand(minene, pluginCommand, "home", arrayOf("-p", "Nepian"))
 
-        assertThat(minene.location, `is`(defaultLocation))
+        assertEquals(defaultLocation, minene.location)
     }
 
     @Test
@@ -184,7 +158,7 @@ class HomeCommandTest {
 
     @Test
     fun 名前付きプレイヤーホーム権限を持っている場合は名前付きプレイヤーホームコマンドで他のプレイヤーの名前付きホームへ移動できる() {
-        minene.setOps(false)
+        nepian.setOps(false)
         minene.set(Permission.HOME, Permission.HOME_PLAYER_NAME)
         command.onCommand(minene, pluginCommand, "home", arrayOf("home1", "-p", "Nepian"))
 
