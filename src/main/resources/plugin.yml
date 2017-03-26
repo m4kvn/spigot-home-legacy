@@ -5,7 +5,6 @@ authors: [MasahiroSaito]
 description: This plugin allows each player to set their home point.
 website: https://github.com/MasahiroSaito/Homes
 load: POSTWORLD
-depend: [Vault]
 commands:
   home:
     description: Homes Command
