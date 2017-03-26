@@ -2,7 +2,7 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.command
 import com.masahirosaito.spigot.homes.tests.utils.TestInstanceCreator.defaultLocation

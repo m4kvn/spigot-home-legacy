@@ -3,7 +3,7 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.teleportNamedHome
 import org.bukkit.entity.Player
 

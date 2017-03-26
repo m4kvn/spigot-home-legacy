@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.tests.commands
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.InviteCommand
 import com.masahirosaito.spigot.homes.tests.Permission

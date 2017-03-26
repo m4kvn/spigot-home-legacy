@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.maincommands
+package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
 import com.masahirosaito.spigot.homes.*
 import com.masahirosaito.spigot.homes.commands.BaseCommand

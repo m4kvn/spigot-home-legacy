@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes
 
-import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
