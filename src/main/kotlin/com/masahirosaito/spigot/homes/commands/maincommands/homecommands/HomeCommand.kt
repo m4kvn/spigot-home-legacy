@@ -11,6 +11,7 @@ import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomePla
 import com.masahirosaito.spigot.homes.commands.subcommands.*
 import com.masahirosaito.spigot.homes.commands.subcommands.deletecommands.DeleteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.InviteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import org.bukkit.entity.Player
 
