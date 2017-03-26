@@ -9,6 +9,7 @@ import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeNam
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeNamePlayerCommand
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomePlayerCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.*
+import com.masahirosaito.spigot.homes.commands.subcommands.deletecommands.DeleteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import org.bukkit.entity.Player
