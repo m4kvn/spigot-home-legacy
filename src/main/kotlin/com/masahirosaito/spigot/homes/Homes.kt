@@ -1,9 +1,9 @@
 package com.masahirosaito.spigot.homes
 
-import com.google.gson.Gson
 import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
+import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
 import net.milkbowl.vault.economy.Economy
@@ -11,9 +11,6 @@ import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
-import java.net.URL
-import java.util.*
-import kotlin.concurrent.thread
 
 class Homes : JavaPlugin {
     lateinit var configs: Configs
@@ -39,8 +36,9 @@ class Homes : JavaPlugin {
 
         getCommand("home").executor = HomeCommand(this)
         PlayerRespawnListener(this).register()
+        PlayerJoinListener(this).register()
 
-        checkUpdate()
+        UpdateChecker.checkUpdate(this)
     }
 
     override fun onDisable() {
@@ -84,36 +82,4 @@ class Homes : JavaPlugin {
             return it.provider
         }
     }
-
-    fun checkUpdate() {
-        thread {
-            try {
-                val conn = URL("https://api.curseforge.com/servermods/files?projectids=261377")
-                        .openConnection().apply {
-                    addRequestProperty("User-Agent", "Homes Update Checker")
-                    readTimeout = 5000
-                    doOutput = true
-                }
-                val versionList = Gson().fromJson(conn.getInputStream().bufferedReader().readLine(),
-                        Array<Version>::class.java).filter { server.bukkitVersion.contains(it.gameVersion) }
-
-                if (versionList.isNotEmpty() && !versionList.last().fileName.contains(description.version)) {
-                    messenger.log("Stable version: ${versionList.last().name} is out!" +
-                            " You are still running version: ${description.version}")
-                    messenger.log("Update at: https://dev.bukkit.org/projects/homes-teleportation-plugin")
-                }
-            } catch (e: Exception) {}
-        }
-    }
-
-    data class Version(
-            val downloadUrl: String = "",
-            val fileName: String = "",
-            val fileUrl: String = "",
-            val gameVersion: String = "",
-            val md5: String = "",
-            val name: String = "",
-            val projectId: Long = 0,
-            val releaseType: String = ""
-    )
 }
