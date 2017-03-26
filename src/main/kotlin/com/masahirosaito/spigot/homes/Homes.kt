@@ -3,6 +3,7 @@ package com.masahirosaito.spigot.homes
 import com.masahirosaito.spigot.homes.commands.maincommands.HomeCommand
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
+import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
 import net.milkbowl.vault.economy.Economy
@@ -22,7 +23,7 @@ class Homes : JavaPlugin {
 
     constructor() : super()
 
-    constructor(loader: JavaPluginLoader,description: PluginDescriptionFile, dataFolder: File, file: File) :
+    constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
             super(loader, description, dataFolder, file)
 
     override fun onEnable() {
@@ -35,6 +36,9 @@ class Homes : JavaPlugin {
 
         getCommand("home").executor = HomeCommand(this)
         PlayerRespawnListener(this).register()
+        PlayerJoinListener(this).register()
+
+        UpdateChecker.checkUpdate(this)
     }
 
     override fun onDisable() {
