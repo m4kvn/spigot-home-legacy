@@ -1,5 +1,5 @@
 name: Homes
-version: 0.8
+version: 0.7.1
 main: com.masahirosaito.spigot.homes.Homes
 authors: [MasahiroSaito]
 description: This plugin allows each player to set their home point.
