@@ -49,6 +49,7 @@ dependencies {
     testCompile group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.6'
     testCompile group: 'org.powermock', name: 'powermock-api-easymock', version: '1.6.6'
     testCompile group: 'org.easymock', name: 'easymock', version: '3.4'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 jar {
