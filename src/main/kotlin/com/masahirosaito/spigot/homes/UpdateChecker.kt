@@ -21,7 +21,6 @@ object UpdateChecker {
                 }
                 val versionList = Gson()
                         .fromJson(conn.getInputStream().bufferedReader().readLine(), Array<Version>::class.java)
-                        .filter { homes.server.bukkitVersion.contains(it.gameVersion) }
 
                 if (versionList.isNotEmpty() && !versionList.last().fileName.contains(homes.description.version)) {
                     isUpdate = true
