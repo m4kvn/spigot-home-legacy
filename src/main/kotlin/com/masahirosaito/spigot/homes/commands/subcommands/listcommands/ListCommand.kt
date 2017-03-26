@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
@@ -40,31 +40,8 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
         listHome(player)
     }
 
-    class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand), PlayerCommand {
-        override val permissions: List<String> = listOf(
-                Permission.home_command,
-                Permission.home_command_list_player
-        )
-
-        override fun fee(): Double = plugin.fee.LIST_PLAYER
-
-        override fun configs(): List<Boolean> = listOf(
-                plugin.configs.onFriendHome
-        )
-
-        override fun isValidArgs(args: List<String>): Boolean = args.size == 1
-
-        override fun execute(player: Player, args: List<String>) {
-            listCommand.listPlayerHome(player, args)
-        }
-    }
-
     private fun listHome(player: Player) {
         send(player, getResultMessage(player.findPlayerHome(plugin), false))
-    }
-
-    private fun listPlayerHome(player: Player, args: List<String>) {
-        send(player, getResultMessage(findOfflinePlayer(args[0]).findPlayerHome(plugin), true))
     }
 
     private fun getText(homeData: HomeData): String {
@@ -83,7 +60,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
         }
     }
 
-    private fun getResultMessage(playerHome: PlayerHome, isPlayerHomeList: Boolean) = buildString {
+    fun getResultMessage(playerHome: PlayerHome, isPlayerHomeList: Boolean) = buildString {
         if (playerHome.defaultHomeData == null && playerHome.namedHomeData.isEmpty()) {
             throw Exception("No homes")
         }
@@ -103,7 +80,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
                 if (isNotEmpty()) {
                     append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
                     this.forEach {
-                        append("    ${ChatColor.LIGHT_PURPLE}${it.name}${ChatColor.RESET}")
+                        append("    ${org.bukkit.ChatColor.LIGHT_PURPLE}${it.name}${org.bukkit.ChatColor.RESET}")
                         append(" : ${getText(it)}\n")
                     }
                 }
