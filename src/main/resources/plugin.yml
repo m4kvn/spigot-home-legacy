@@ -1,5 +1,5 @@
 name: Homes
-version: 0.7
+version: 0.7.1
 main: com.masahirosaito.spigot.homes.Homes
 authors: [MasahiroSaito]
 description: This plugin allows each player to set their home point.
@@ -14,6 +14,7 @@ permissions:
     description: Grant all permissions of Homes.
     default: op
     children:
+      homes.update: true
       homes.general: true
   homes.general:
     description: Grant general permissions of Homes.
