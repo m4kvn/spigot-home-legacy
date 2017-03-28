@@ -35,5 +35,6 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
     override fun execute(player: Player, args: List<String>) {
         player.findPlayerHome(plugin).setDefaultHome(player)
         send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
+        plugin.nmsManager.spawnNMSArmorStand(player.location, "${player.name}'s default home")
     }
 }
