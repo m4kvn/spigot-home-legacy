@@ -5,6 +5,9 @@ import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
+import com.masahirosaito.spigot.homes.nms.NMSManager
+import com.masahirosaito.spigot.homes.nms.v1_10_R1.NMSManager_v1_10_R1
+import com.masahirosaito.spigot.homes.nms.v1_11_R1.NMSManager_v1_11_R1
 import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.PluginDescriptionFile
@@ -18,6 +21,7 @@ class Homes : JavaPlugin {
     lateinit var homeManager: HomeManager
     lateinit var fee: FeeData
     lateinit var playerHomeDataFile: File
+    lateinit var nmsManager: NMSManager
 
     var econ: Economy? = null
 
@@ -25,6 +29,15 @@ class Homes : JavaPlugin {
 
     constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
             super(loader, description, dataFolder, file)
+
+    override fun onLoad() {
+        super.onLoad()
+        nmsManager = when (server.bukkitVersion) {
+            "1.10-R0.1-SNAPSHOT", "1.10.2-R0.1-SNAPSHOT" -> NMSManager_v1_10_R1()
+            "1.11-R0.1-SNAPSHOT", "1.11.2-R0.1-SNAPSHOT" -> NMSManager_v1_11_R1()
+            else -> throw Exception()
+        }.apply { setUp() }
+    }
 
     override fun onEnable() {
         playerHomeDataFile = File(dataFolder, "playerhomes.json")
