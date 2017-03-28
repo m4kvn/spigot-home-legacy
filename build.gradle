@@ -56,6 +56,10 @@ jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
 task copyToServer(type: Copy) {
     from "build/libs/Homes-${version}.jar"
     into "server/plugins/"
