@@ -62,7 +62,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
 
     fun getResultMessage(playerHome: PlayerHome, isPlayerHomeList: Boolean) = buildString {
         if (playerHome.defaultHomeData == null && playerHome.namedHomeData.isEmpty()) {
-            throw Exception("No homes")
+            throw HomesException("No homes")
         }
         if (isPlayerHomeList
                 .and(playerHome.defaultHomeData != null && playerHome.defaultHomeData!!.isPrivate)
