@@ -1,6 +1,6 @@
-package com.masahirosaito.spigot.homes.nms.v1_11_R1;
+package com.masahirosaito.spigot.homes.nms.v1_10_R1;
 
-import net.minecraft.server.v1_11_R1.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.entity.EntityType;
 
 import java.util.Set;
@@ -75,3 +75,4 @@ public enum CustomEntities {
         return customClass;
     }
 }
+

@@ -45,3 +45,14 @@ fun OfflinePlayer.findDefaultHome(plugin: Homes) = plugin.homeManager.findDefaul
 fun OfflinePlayer.findNamedHome(plugin: Homes, homeName: String) = plugin.homeManager.findNamedHome(this, homeName)
 
 fun OfflinePlayer.findPlayerHome(plugin: Homes) = plugin.homeManager.findPlayerHome(this)
+
+fun getPrivateStatic(clazz: Class<*>, f: String): Any? {
+    try {
+        val field = clazz.getDeclaredField(f)
+        field.isAccessible = true
+        return field.get(null)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    }
+}
