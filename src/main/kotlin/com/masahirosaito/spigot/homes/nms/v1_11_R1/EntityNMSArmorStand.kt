@@ -1,24 +1,18 @@
 package com.masahirosaito.spigot.homes.nms.v1_11_R1
 
+import com.masahirosaito.spigot.homes.nms.NMSEntityArmorStand
 import net.minecraft.server.v1_11_R1.*
-import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld
 
-class EntityNMSArmorStand(world: World) : EntityArmorStand(world) {
+class EntityNMSArmorStand(world: World) : EntityArmorStand(world), NMSEntityArmorStand {
 
-    constructor(loc: Location, displayName: String) : this((loc.world as CraftWorld).handle) {
-        setArms(false)
-        setBasePlate(true)
-        locX = loc.x
-        locY = loc.y + 0.8
-        locZ = loc.z
-        customName = displayName
-        customNameVisible = true
-        isNoGravity = true
-        isMarker = true
-        isSmall = true
-        collides = false
-        isInvisible = true
+    init {
+        super.setInvisible(true)
+        super.setArms(false)
+        super.setBasePlate(true)
+        super.setNoGravity(true)
+        super.setMarker(true)
+        super.setSmall(true)
+        super.collides = false
     }
 
     override fun a(nbttagcompound: NBTTagCompound?) {}
@@ -39,51 +33,20 @@ class EntityNMSArmorStand(world: World) : EntityArmorStand(world) {
     override fun A_() {}
     override fun a(soundeffect: SoundEffect?, f: Float, f1: Float) {}
     override fun die() {}
-//
-//    override fun getBukkitEntity(): CraftEntity {
-//        return super.bukkitEntity ?: CraftNMSArmorStand(super.world.server, this).apply { super.bukkitEntity = this }
-//    }
-//
-//    override fun getId(): Int {
-//        val element: StackTraceElement = Throwable::class.java
-//                .getDeclaredMethod("getStackTraceElement", Int::class.java).apply { isAccessible = true }
-//                .invoke(Throwable(), 2) as StackTraceElement
-//        if (element.fileName == "EntityTrackerEntry.java" && element.lineNumber in 159..167) return -1
-//        return super.getId()
-//    }
 
-//    fun setCustomNameNMS(name: String) {
-//        if (name.isNullOrBlank()) return
-//        super.setCustomName(name.substring(0, 300))
-//        super.setCustomNameVisible(true)
-//    }
-//
-//    fun getCustomnameNMS(): String = super.getCustomName()
-//
-//    fun killEntityNMS() { super.dead = true }
-//
-//    fun setLocationNMS(x: Double, y: Double, z: Double) {
-//        super.setPosition(x, y, z)
-//
-//        val teleportPacket = PacketPlayOutEntityTeleport(this)
-//
-//        super.world.players.forEach {
-//            if (it is EntityPlayer) {
-//                val dis = square(it.locX - super.locX) + square(it.locZ - super.locZ)
-//                if (dis < 8192 && it.playerConnection != null) {
-//                    it.playerConnection.sendPacket(teleportPacket)
-//                }
-//            }
-//        }
-//    }
-//
-//    fun isDeadNMS(): Boolean = super.dead
-//
-//    fun getIdNMS(): Int = super.getId()
-//
-//    fun forceSetBoundingBox(boundingBox: AxisAlignedBB) {
-//        super.a(boundingBox)
-//    }
-//
-//    private fun square(num: Double) = num * num
+    override fun dead() {
+        super.dead = true
+    }
+
+    override fun setNMSName(name: String) {
+        super.setCustomName(name)
+    }
+
+    override fun setNameVisible(boolean: Boolean) {
+        super.setCustomNameVisible(boolean)
+    }
+
+    override fun setPosition(x: Double, y: Double, z: Double) {
+        super.setPosition(x, y, z)
+    }
 }

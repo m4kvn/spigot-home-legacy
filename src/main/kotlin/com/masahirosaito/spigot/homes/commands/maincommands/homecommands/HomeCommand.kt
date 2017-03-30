@@ -15,6 +15,9 @@ import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.Invite
 import com.masahirosaito.spigot.homes.commands.subcommands.listcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.privatecommands.PrivateCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
+import com.masahirosaito.spigot.homes.exceptions.PrivateHomeException
+import org.bukkit.Location
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
@@ -50,6 +53,18 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        player.teleportDefaultHome(plugin, player)
+        player.teleport(getTeleportLocation(player))
+    }
+
+    fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {
+        if (homeName == null) {
+            return plugin.playerDataManager.findDefaultHome(player).apply {
+                if (isPrivate && !isOwner(player)) throw PrivateHomeException(player)
+            }.location
+        } else {
+            return plugin.playerDataManager.findNamedHome(player, homeName).apply {
+                if (isPrivate && !isOwner(player)) throw PrivateHomeException(player, homeName)
+            }.location
+        }
     }
 }

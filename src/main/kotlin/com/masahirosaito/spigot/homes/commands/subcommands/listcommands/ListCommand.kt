@@ -2,16 +2,12 @@ package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerData
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
-import com.masahirosaito.spigot.homes.findOfflinePlayer
-import com.masahirosaito.spigot.homes.findPlayerHome
-import com.masahirosaito.spigot.homes.homedata.HomeData
-import com.masahirosaito.spigot.homes.homedata.PlayerHome
-import org.bukkit.Bukkit
+import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -41,46 +37,53 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     private fun listHome(player: Player) {
-        send(player, getResultMessage(player.findPlayerHome(plugin), false))
+        send(player, getResultMessage(plugin.playerDataManager.findPlayerData(player), false))
     }
 
-    private fun getText(homeData: HomeData): String {
+    private fun getText(homesEntity: HomesEntity): String {
         val r = ChatColor.RESET
         val g = ChatColor.GREEN
         val a = ChatColor.AQUA
         val y = ChatColor.YELLOW
         val b = ChatColor.BLUE
 
-        val ld = homeData.locationData
+        val loc = homesEntity.location
 
         return buildString {
-            append("$g${Bukkit.getWorld(ld.worldUid).name}$r, ")
-            append("{$a${ld.x.toInt()}$r, $a${ld.y.toInt()}$r, $a${ld.z.toInt()}$r}, ")
-            append(if (homeData.isPrivate) "${y}PRIVATE$r" else "${b}PUBLIC$r")
+            append("$g${loc.world.name}$r, ")
+            append("{$a${loc.x.toInt()}$r, $a${loc.y.toInt()}$r, $a${loc.z.toInt()}$r}, ")
+            append(if (homesEntity.isPrivate) "${y}PRIVATE$r" else "${b}PUBLIC$r")
         }
     }
 
-    fun getResultMessage(playerHome: PlayerHome, isPlayerHomeList: Boolean) = buildString {
-        if (playerHome.defaultHomeData == null && playerHome.namedHomeData.isEmpty()) {
+    fun getResultMessage(playerData: PlayerData, isPlayerHomeList: Boolean) = buildString {
+        val defaultHome = playerData.defaultHome
+        val namedHomes = playerData.namedHomes
+
+        if (defaultHome == null && namedHomes.isEmpty()) {
             throw HomesException("No homes")
         }
+
         if (isPlayerHomeList
-                .and(playerHome.defaultHomeData != null && playerHome.defaultHomeData!!.isPrivate)
-                .and(playerHome.namedHomeData.all { it.isPrivate })) {
+                .and(defaultHome != null && defaultHome.isPrivate)
+                .and(namedHomes.all { it.isPrivate })) {
             throw HomesException("No homes")
         }
+
         append("Home List")
-        playerHome.defaultHomeData?.let {
+
+        defaultHome?.let {
             if (!isPlayerHomeList || !it.isPrivate) {
                 append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}")
             }
         }
+
         if (plugin.configs.onNamedHome) {
-            playerHome.namedHomeData.filter { !isPlayerHomeList || !it.isPrivate }.apply {
+            namedHomes.filter { !isPlayerHomeList || !it.isPrivate }.apply {
                 if (isNotEmpty()) {
                     append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
                     this.forEach {
-                        append("    ${org.bukkit.ChatColor.LIGHT_PURPLE}${it.name}${org.bukkit.ChatColor.RESET}")
+                        append("    ${org.bukkit.ChatColor.LIGHT_PURPLE}${it.homeName}${org.bukkit.ChatColor.RESET}")
                         append(" : ${getText(it)}\n")
                     }
                 }

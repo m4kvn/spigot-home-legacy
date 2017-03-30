@@ -5,9 +5,6 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.findDefaultHome
-import com.masahirosaito.spigot.homes.findNamedHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -36,10 +33,10 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            player.findDefaultHome(plugin).isPrivate = true
+            plugin.playerDataManager.findDefaultHome(player).isPrivate = true
             send(player, "Set your default home ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            player.findDefaultHome(plugin).isPrivate = false
+            plugin.playerDataManager.findDefaultHome(player).isPrivate = false
             send(player, "Set your default home ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }
     }

@@ -1,14 +1,8 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
-import com.masahirosaito.spigot.homes.homedata.HomeData
-import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
-import com.masahirosaito.spigot.homes.nms.NMSManager
-import com.masahirosaito.spigot.homes.nms.v1_10_R1.NMSManager_v1_10_R1
-import com.masahirosaito.spigot.homes.nms.v1_11_R1.NMSManager_v1_11_R1
-import com.masahirosaito.spigot.homes.oldhomedata.OldHomeData
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
@@ -16,71 +10,31 @@ import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
 
 class Homes : JavaPlugin {
-    lateinit var configs: Configs
-    lateinit var messenger: Messenger
-    lateinit var homeManager: HomeManager
-    lateinit var fee: FeeData
-    lateinit var playerHomeDataFile: File
-    lateinit var nmsManager: NMSManager
-
+    val configs: Configs = Configs.load(File(dataFolder, "configs.json").load())
+    val messenger: Messenger = Messenger(this, configs.onDebug)
+    val fee: FeeData = FeeData.load(File(dataFolder, "fee.json").load())
+    val playerDataManager: PlayerDataManager = PlayerDataManager(this)
     var econ: Economy? = null
 
     constructor() : super()
 
-    constructor(loader: JavaPluginLoader, description: PluginDescriptionFile, dataFolder: File, file: File) :
-            super(loader, description, dataFolder, file)
-
-    override fun onLoad() {
-        super.onLoad()
-        nmsManager = when (server.bukkitVersion) {
-            "1.10-R0.1-SNAPSHOT", "1.10.2-R0.1-SNAPSHOT" -> NMSManager_v1_10_R1()
-            "1.11-R0.1-SNAPSHOT", "1.11.2-R0.1-SNAPSHOT" -> NMSManager_v1_11_R1()
-            else -> throw Exception()
-        }.apply { setUp() }
-    }
+    constructor(
+            loader: JavaPluginLoader,
+            description: PluginDescriptionFile,
+            dataFolder: File, file: File
+    ) : super(loader, description, dataFolder, file)
 
     override fun onEnable() {
-        playerHomeDataFile = File(dataFolder, "playerhomes.json")
-        configs = Configs.load(File(dataFolder, "configs.json").load())
-        messenger = Messenger(this, configs.onDebug)
-        homeManager = loadData()
-        fee = FeeData.load(File(dataFolder, "fee.json").load())
+        playerDataManager.load()
         econ = loadEconomy()
-
         getCommand("home").executor = HomeCommand(this)
         PlayerRespawnListener(this).register()
         PlayerJoinListener(this).register()
-
         UpdateChecker.checkUpdate(this)
     }
 
     override fun onDisable() {
-        homeManager.save(playerHomeDataFile)
-    }
-
-    private fun File.load(): File = this.apply {
-        if (!parentFile.exists()) parentFile.mkdirs()
-        if (!exists()) createNewFile()
-    }
-
-    private fun loadData(): HomeManager {
-        val oldHomeDataFile = File(dataFolder, "homedata.json")
-
-        if (!oldHomeDataFile.exists() || playerHomeDataFile.exists()) {
-            return HomeManager.load(playerHomeDataFile.load())
-        }
-
-        return HomeManager().apply {
-            OldHomeData.load(oldHomeDataFile).playerHomes.forEach {
-                val uuid = it.key
-                playerHomes.put(uuid, PlayerHome().apply {
-                    it.value.defaultHome?.let { defaultHomeData = HomeData(uuid, "default", it) }
-                    it.value.namedHomes.forEach { namedHomeData.add(HomeData(uuid, it.key, it.value)) }
-                })
-            }
-            save(playerHomeDataFile)
-            oldHomeDataFile.delete()
-        }
+        playerDataManager.save()
     }
 
     private fun loadEconomy(): Economy? {

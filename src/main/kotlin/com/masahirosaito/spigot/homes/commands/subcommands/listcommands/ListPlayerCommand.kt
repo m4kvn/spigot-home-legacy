@@ -4,7 +4,6 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
-import com.masahirosaito.spigot.homes.findPlayerHome
 import org.bukkit.entity.Player
 
 class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand), PlayerCommand {
@@ -26,6 +25,8 @@ class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand),
     }
 
     private fun listPlayerHome(player: Player, args: List<String>) {
-        send(player, listCommand.getResultMessage(findOfflinePlayer(args[0]).findPlayerHome(plugin), true))
+        val playerData = plugin.playerDataManager.findPlayerData(findOfflinePlayer(args[0]))
+
+        send(player, listCommand.getResultMessage(playerData, true))
     }
 }

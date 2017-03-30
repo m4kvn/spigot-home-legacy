@@ -1,12 +1,14 @@
-package com.masahirosaito.spigot.homes
+package com.masahirosaito.spigot.homes.homedata
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.masahirosaito.spigot.homes.exceptions.CanNotFindDefaultHomeException
-import com.masahirosaito.spigot.homes.exceptions.CanNotFindNamedHomeException
-import com.masahirosaito.spigot.homes.exceptions.CanNotFindPlayerHomeException
+import com.masahirosaito.spigot.homes.PlayerData
+import com.masahirosaito.spigot.homes.PlayerDataManager
+import com.masahirosaito.spigot.homes.findOfflinePlayer
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
+import com.masahirosaito.spigot.homes.nms.HomesEntity
+import com.masahirosaito.spigot.homes.nms.NMSManager
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.io.File
@@ -22,14 +24,13 @@ data class HomeManager(val playerHomes: MutableMap<UUID, PlayerHome> = mutableMa
         fun load(file: File): HomeManager {
             return Gson().fromJson(file.readText().let {
                 if (it.isNullOrBlank()) HomeManager().toJson() else it
-            }, HomeManager::class.java).apply { save(file)}
+            }, HomeManager::class.java).apply { save(file) }
         }
     }
 
-    fun findPlayerHome(player: OfflinePlayer) = playerHomes[player.uniqueId] ?:
-            PlayerHome().apply { playerHomes.put(player.uniqueId, this) }
-
-    fun findDefaultHome(player: OfflinePlayer) = findPlayerHome(player).findDefaultHome(player)
-
-    fun findNamedHome(player: OfflinePlayer, name: String) = findPlayerHome(player).findNamedHome(player, name)
+    fun toPlayerDatas(nmsManager: NMSManager) = mutableListOf<PlayerData>().apply {
+        playerHomes.forEach { uuid, playerData ->
+            add(playerData.toPlayerData(nmsManager, findOfflinePlayer(uuid)))
+        }
+    }
 }

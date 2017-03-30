@@ -1,9 +1,7 @@
 package com.masahirosaito.spigot.homes.tests
 
-import com.masahirosaito.spigot.homes.HomeManager
+import com.masahirosaito.spigot.homes.homedata.HomeManager
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.exceptions.CanNotFindDefaultHomeException
-import com.masahirosaito.spigot.homes.exceptions.CanNotFindNamedHomeException
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
