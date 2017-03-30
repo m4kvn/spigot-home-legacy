@@ -57,6 +57,10 @@ class PlayerDataManager(val homes: Homes) {
                 throw NoNamedHomeException(offlinePlayer, homeName)
     }
 
+    fun hasDefaultHome(offlinePlayer: OfflinePlayer): Boolean {
+        return findPlayerData(offlinePlayer).defaultHome != null
+    }
+
     fun hasNamedHome(offlinePlayer: OfflinePlayer, homeName: String): Boolean {
         return findPlayerData(offlinePlayer).namedHomes.any { it.homeName == homeName }
     }

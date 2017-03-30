@@ -8,28 +8,28 @@ import java.io.File
 data class Configs(
 
         @SerializedName("Allow showing debug messages")
-        val onDebug: Boolean = false,
+        var onDebug: Boolean = false,
 
         @SerializedName("Allow using named home")
-        val onNamedHome: Boolean = true,
+        var onNamedHome: Boolean = true,
 
         @SerializedName("Allow using player home")
-        val onFriendHome: Boolean = true,
+        var onFriendHome: Boolean = true,
 
         @SerializedName("Allow respawning default home")
-        val onDefaultHomeRespawn: Boolean = true,
+        var onDefaultHomeRespawn: Boolean = true,
 
         @SerializedName("Allow checking update")
-        val onUpdateCheck: Boolean = true,
+        var onUpdateCheck: Boolean = true,
 
         @SerializedName("Allow setting home private")
-        val onPrivate: Boolean = true,
+        var onPrivate: Boolean = true,
 
         @SerializedName("Allow invitation")
-        val onInvite: Boolean = true,
+        var onInvite: Boolean = true,
 
         @SerializedName("The limit number of named home")
-        val homeLimit: Int = -1
+        var homeLimit: Int = -1
 
 ) {
     fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)

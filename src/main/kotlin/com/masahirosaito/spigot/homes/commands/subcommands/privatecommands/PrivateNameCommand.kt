@@ -23,11 +23,11 @@ class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCom
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            plugin.playerDataManager.findNamedHome(player, args[1]).isPrivate = true
+            plugin.playerDataManager.findNamedHome(player, args[1]).changePrivate(true)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            plugin.playerDataManager.findNamedHome(player, args[1]).isPrivate = false
+            plugin.playerDataManager.findNamedHome(player, args[1]).changePrivate(false)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }

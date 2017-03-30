@@ -33,10 +33,10 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            plugin.playerDataManager.findDefaultHome(player).isPrivate = true
+            plugin.playerDataManager.findDefaultHome(player).changePrivate(true)
             send(player, "Set your default home ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            plugin.playerDataManager.findDefaultHome(player).isPrivate = false
+            plugin.playerDataManager.findDefaultHome(player).changePrivate(false)
             send(player, "Set your default home ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }
     }
