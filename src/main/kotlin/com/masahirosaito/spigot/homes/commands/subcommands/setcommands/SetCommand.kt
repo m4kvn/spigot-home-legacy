@@ -5,9 +5,6 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetNameCommand
-import com.masahirosaito.spigot.homes.findPlayerHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -33,7 +30,7 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        player.findPlayerHome(plugin).setDefaultHome(player)
+        plugin.playerDataManager.setDefaultHome(player, player.location)
         send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
     }
 }

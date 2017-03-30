@@ -1,10 +1,9 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
 
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.findPlayerHome
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand), PlayerCommand {
@@ -22,8 +21,7 @@ class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 
     override fun execute(player: Player, args: List<String>) {
-        player.findPlayerHome(plugin).removeNamedHome(player, args[0])
-        send(player, "${ChatColor.AQUA}Successfully delete your named home" +
-                " <${ChatColor.RESET}${args[0]}${ChatColor.AQUA}>${ChatColor.RESET}")
+        plugin.playerDataManager.removeNamedHome(player, args[0])
+        send(player, Strings.REMOVE_NAMED_HOME(args[0]))
     }
 }

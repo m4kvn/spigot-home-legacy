@@ -3,11 +3,10 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
-import com.masahirosaito.spigot.homes.teleportNamedHome
+import com.masahirosaito.spigot.homes.exceptions.PrivateHomeException
 import org.bukkit.entity.Player
 
-class HomeNameCommand(homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
+class HomeNameCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_name
@@ -22,6 +21,6 @@ class HomeNameCommand(homeCommand: HomeCommand) : SubCommand(homeCommand), Playe
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 
     override fun execute(player: Player, args: List<String>) {
-        player.teleportNamedHome(plugin, player, args[0])
+        player.teleport(homeCommand.getTeleportLocation(player, args[0]))
     }
 }

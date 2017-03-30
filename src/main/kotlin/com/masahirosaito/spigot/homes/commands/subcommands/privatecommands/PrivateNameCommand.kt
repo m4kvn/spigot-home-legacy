@@ -3,7 +3,6 @@ package com.masahirosaito.spigot.homes.commands.subcommands.privatecommands
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.findNamedHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -24,11 +23,11 @@ class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCom
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            player.findNamedHome(plugin, args[1]).isPrivate = true
+            plugin.playerDataManager.findNamedHome(player, args[1]).changePrivate(true)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            player.findNamedHome(plugin, args[1]).isPrivate = false
+            plugin.playerDataManager.findNamedHome(player, args[1]).changePrivate(false)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }

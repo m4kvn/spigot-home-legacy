@@ -7,6 +7,7 @@ import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.homedata.HomeData
+import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.metadata.FixedMetadataValue
@@ -49,7 +50,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
         }
     }
 
-    fun inviteHome(homeData: HomeData, player: Player, playerName: String, message: String) {
+    fun inviteHome(homesEntity: HomesEntity, player: Player, playerName: String, message: String) {
         val op = findOnlinePlayer(playerName).apply {
             if (hasMetadata(INVITE_META)) {
                 throw HomesException("$name already has another invitation")
@@ -68,11 +69,11 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
             } catch (e: InterruptedException) {
                 try {
                     val target = findOnlinePlayer(playerName)
-                    target.teleport(homeData.location())
+                    target.teleport(homesEntity.location)
                     target.removeMetadata(INVITE_META, plugin)
-                    send(target, msgAcceptInvitationFrom(findOfflinePlayer(homeData.ownerUid).name))
+                    send(target, msgAcceptInvitationFrom(homesEntity.offlinePlayer.name))
                     try {
-                        val owner = findOnlinePlayer(homeData.ownerUid)
+                        val owner = findOnlinePlayer(homesEntity.offlinePlayer.uniqueId)
                         send(owner, msgAcceptedInvitationTo(target.name))
                     } catch(e: Exception) {
                     }

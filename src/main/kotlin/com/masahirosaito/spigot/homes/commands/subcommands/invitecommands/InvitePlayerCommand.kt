@@ -3,7 +3,6 @@ package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.findDefaultHome
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
@@ -27,8 +26,8 @@ class InvitePlayerCommand(val inviteCommand: InviteCommand) : SubCommand(inviteC
     }
 
     private fun inviteDefaultHome(player: Player, playerName: String) {
-        val data = player.findDefaultHome(plugin)
-        inviteCommand.inviteHome(data, player, playerName, msgReceiveInvitationFrom(player.name))
+        val entity = plugin.playerDataManager.findDefaultHome(player)
+        inviteCommand.inviteHome(entity, player, playerName, msgReceiveInvitationFrom(player.name))
         send(player, msgInvite(playerName))
     }
 

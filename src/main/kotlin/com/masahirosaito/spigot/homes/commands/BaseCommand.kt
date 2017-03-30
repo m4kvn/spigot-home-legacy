@@ -33,7 +33,7 @@ interface BaseCommand {
         if (!isValidArgs(args)) throw HomesException("The argument is incorrect\n$usage")
     }
 
-    fun executeCommand(sender: CommandSender,  args: List<String>) {
+    fun executeCommand(sender: CommandSender, args: List<String>) {
         val cmd = findCommand(args)
         when {
             cmd is PlayerCommand && sender is Player -> cmd.onCommand(sender, args)
