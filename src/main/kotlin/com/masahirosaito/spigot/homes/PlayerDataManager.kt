@@ -6,6 +6,7 @@ import com.masahirosaito.spigot.homes.exceptions.NoNamedHomeException
 import com.masahirosaito.spigot.homes.homedata.HomeManager
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import com.masahirosaito.spigot.homes.nms.NMSManager
+import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import java.io.File
@@ -31,7 +32,15 @@ class PlayerDataManager(val homes: Homes) {
         }
     }
 
-    private fun tearDown(): PlayerDataManager = this.apply { playerDatas.forEach { it.tearDown() } }
+    private fun tearDown(): PlayerDataManager = this.apply {
+        playerDatas.forEach { it.tearDown() }
+    }
+
+    fun getHomesEntitiesIn(chunk: Chunk): List<HomesEntity> {
+        return mutableListOf<HomesEntity>().apply {
+            playerDatas.forEach { addAll(it.getHomesEntitiesIn(chunk)) }
+        }
+    }
 
     fun findPlayerData(offlinePlayer: OfflinePlayer): PlayerData {
         return playerDatas.find { it.offlinePlayer.uniqueId == offlinePlayer.uniqueId } ?:

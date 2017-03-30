@@ -1,6 +1,8 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
+import com.masahirosaito.spigot.homes.listeners.ChunkLoadListener
+import com.masahirosaito.spigot.homes.listeners.ChunkUnLoadListener
 import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import net.milkbowl.vault.economy.Economy
@@ -25,12 +27,14 @@ class Homes : JavaPlugin {
     ) : super(loader, description, dataFolder, file)
 
     override fun onEnable() {
-        playerDataManager.load()
-        econ = loadEconomy()
         getCommand("home").executor = HomeCommand(this)
         PlayerRespawnListener(this).register()
         PlayerJoinListener(this).register()
+        ChunkLoadListener(this).register()
+        ChunkUnLoadListener(this).register()
         UpdateChecker.checkUpdate(this)
+        playerDataManager.load()
+        econ = loadEconomy()
     }
 
     override fun onDisable() {
