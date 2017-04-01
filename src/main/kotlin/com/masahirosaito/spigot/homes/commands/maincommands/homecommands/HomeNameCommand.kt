@@ -1,9 +1,9 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import com.masahirosaito.spigot.homes.exceptions.PrivateHomeException
 import org.bukkit.entity.Player
 
 class HomeNameCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
@@ -15,7 +15,7 @@ class HomeNameCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand), P
     override fun fee(): Double = plugin.fee.HOME_NAME
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onNamedHome
+            Configs.onNamedHome
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1

@@ -1,12 +1,13 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
 
-import com.masahirosaito.spigot.homes.*
+import com.masahirosaito.spigot.homes.Configs
+import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
-import com.masahirosaito.spigot.homes.homedata.HomeData
+import com.masahirosaito.spigot.homes.findOnlinePlayer
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
@@ -33,7 +34,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
     override fun fee(): Double = plugin.fee.INVITE
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onInvite
+            Configs.onInvite
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()

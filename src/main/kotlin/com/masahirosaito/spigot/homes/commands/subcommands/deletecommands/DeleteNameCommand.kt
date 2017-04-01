@@ -1,6 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
@@ -15,13 +17,13 @@ class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand
     override fun fee(): Double = plugin.fee.DELETE_NAME
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onNamedHome
+            Configs.onNamedHome
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 
     override fun execute(player: Player, args: List<String>) {
-        plugin.playerDataManager.removeNamedHome(player, args[0])
+        PlayerDataManager.removeNamedHome(player, args[0])
         send(player, Strings.REMOVE_NAMED_HOME(args[0]))
     }
 }

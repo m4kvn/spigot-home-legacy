@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
@@ -15,7 +16,7 @@ class HomePlayerCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand),
     override fun fee(): Double = plugin.fee.HOME_PLAYER
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onFriendHome
+            Configs.onFriendHome
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 2 && args[0] == "-p"

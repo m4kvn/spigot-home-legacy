@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands.setcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
@@ -30,7 +31,7 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        plugin.playerDataManager.setDefaultHome(player, player.location)
+        PlayerDataManager.setDefaultHome(player, player.location)
         send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
     }
 }

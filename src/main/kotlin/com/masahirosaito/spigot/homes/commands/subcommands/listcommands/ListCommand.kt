@@ -1,11 +1,13 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.PlayerData
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.ChatColor
@@ -37,7 +39,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
     }
 
     private fun listHome(player: Player) {
-        send(player, getResultMessage(plugin.playerDataManager.findPlayerData(player), false))
+        send(player, getResultMessage(PlayerDataManager.findPlayerData(player), false))
     }
 
     private fun getText(homesEntity: HomesEntity): String {
@@ -78,7 +80,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
             }
         }
 
-        if (plugin.configs.onNamedHome) {
+        if (Configs.onNamedHome) {
             namedHomes.filter { !isPlayerHomeList || !it.isPrivate }.apply {
                 if (isNotEmpty()) {
                     append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
