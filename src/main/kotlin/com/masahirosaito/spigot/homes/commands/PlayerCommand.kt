@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.exceptions.HomesException
-import com.masahirosaito.spigot.homes.exceptions.NotHavePermissionException
+import com.masahirosaito.spigot.homes.exceptions.NoPermissionException
 import org.bukkit.entity.Player
 
 interface PlayerCommand : BaseCommand {
@@ -50,7 +50,7 @@ interface PlayerCommand : BaseCommand {
     private fun checkPermission(player: Player) {
         if (!permissions.isEmpty()) {
             permissions.forEach {
-                if (!player.hasPermission(it)) throw NotHavePermissionException(it)
+                if (!player.hasPermission(it)) throw NoPermissionException(it)
             }
         }
     }

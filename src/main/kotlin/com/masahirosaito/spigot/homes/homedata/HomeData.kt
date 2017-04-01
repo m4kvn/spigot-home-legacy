@@ -1,17 +1,17 @@
 package com.masahirosaito.spigot.homes.homedata
 
+import com.masahirosaito.spigot.homes.nms.HomesEntity
+import com.masahirosaito.spigot.homes.nms.NMSController
 import org.bukkit.OfflinePlayer
-import java.util.*
 
 data class HomeData(
-        val ownerUid: UUID,
-        val name: String,
+        val name: String?,
         var locationData: LocationData,
         var isPrivate: Boolean = false
 ) {
     fun location() = locationData.toLocation()
 
-    fun isOwner(offlinePlayer: OfflinePlayer): Boolean {
-        return offlinePlayer.uniqueId == ownerUid
+    fun toHomesEntity(op: OfflinePlayer): HomesEntity {
+        return HomesEntity(op, location(), name, isPrivate)
     }
 }
