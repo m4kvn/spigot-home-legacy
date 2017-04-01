@@ -34,12 +34,14 @@ The purpose of using Homes is to make simple move using commands and to set the 
     - the respawn home feature
     - the update checking feature
     - the number of homes can be set
+    - the private home feature
+    - the invitation feature
+    - the home display feature
 - You can set fee for command execution by fee.json file
     - Vault and a Economy Plugin are required
 
 ## Features Coming Soon
 
-- Visualization of homes
 - Delay to Teleport
 - Useful commands for administrators
 - Teleport to the last dead place

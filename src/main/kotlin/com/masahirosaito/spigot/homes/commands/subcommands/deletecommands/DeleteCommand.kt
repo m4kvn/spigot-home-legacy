@@ -1,37 +1,37 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.setcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
+import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
-class SetCommand(override val plugin: Homes) : PlayerCommand {
-    override val name: String = "set"
-    override val description: String = "Set your home or named home"
+class DeleteCommand(override val plugin: Homes) : PlayerCommand {
+    override val name: String = "delete"
+    override val description: String = "Delete your homes"
     override val permissions: List<String> = listOf(
             Permission.home_command,
-            Permission.home_command_set
+            Permission.home_command_delete
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home set" to "Set your location to your default home",
-            "/home set <home_name>" to "Set your location to your named home"
+            "/home delete" to "Delete your default home",
+            "/home delete <home_name>" to "Delete your named home"
     ))
     override val commands: List<BaseCommand> = listOf(
-            SetNameCommand(this)
+            DeleteNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.SET
+    override fun fee(): Double = plugin.fee.DELETE
 
     override fun configs(): List<Boolean> = listOf()
 
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        PlayerDataManager.setDefaultHome(player, player.location)
-        send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
+        PlayerDataManager.removeDefaultHome(player)
+        send(player, Strings.REMOVE_DEFAULT_HOME())
     }
 }
