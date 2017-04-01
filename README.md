@@ -45,6 +45,8 @@ The purpose of using Homes is to make simple move using commands and to set the 
 - Delay to Teleport
 - Useful commands for administrators
 - Teleport to the last dead place
+- Reload Command
+- User group setting
 
 ## Bug Report / Feature Request
 
