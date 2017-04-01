@@ -42,11 +42,4 @@ class HomesEntity(
     fun inChunk(chunk: Chunk): Boolean {
         return chunk.x == location.chunk.x && chunk.z == location.chunk.z
     }
-
-    fun changePrivate(isPrivate: Boolean) {
-        this.isPrivate = isPrivate
-        if (location.chunk.isLoaded) {
-            reSpawnEntities()
-        }
-    }
 }
