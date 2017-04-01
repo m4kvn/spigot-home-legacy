@@ -10,7 +10,7 @@ object UpdateChecker {
     lateinit var urlMessage: String
 
     fun checkUpdate(homes: Homes) {
-        if (!homes.configs.onUpdateCheck) return
+        if (!Configs.onUpdateCheck) return
         thread {
             try {
                 val conn = URL("https://api.curseforge.com/servermods/files?projectids=261377")
@@ -28,10 +28,11 @@ object UpdateChecker {
                             " You are still running version: ${homes.description.version}"
                     urlMessage = "Update at: https://dev.bukkit.org/projects/homes-teleportation-plugin"
 
-                    homes.messenger.log(updateMessage)
-                    homes.messenger.log(urlMessage)
+                    Messenger.log(updateMessage)
+                    Messenger.log(urlMessage)
                 }
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }
     }
 

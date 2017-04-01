@@ -3,11 +3,11 @@ package com.masahirosaito.spigot.homes.nms.v1_11_R1
 import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import com.masahirosaito.spigot.homes.nms.NMSEntityArmorStand
-import com.masahirosaito.spigot.homes.nms.NMSManager
+import com.masahirosaito.spigot.homes.nms.NMSController
 import org.bukkit.craftbukkit.v1_11_R1.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
 
-class NMSManager_v1_11_R1 : NMSManager {
+class NMSController_v1_11_R1 : NMSController {
 
     override fun setUp() {
         CustomEntities.registerEntities()

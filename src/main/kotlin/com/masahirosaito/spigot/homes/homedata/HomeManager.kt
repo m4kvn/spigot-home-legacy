@@ -2,13 +2,13 @@ package com.masahirosaito.spigot.homes.homedata
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.masahirosaito.spigot.homes.PlayerData
+import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.nms.HomesEntity
-import com.masahirosaito.spigot.homes.nms.NMSManager
+import com.masahirosaito.spigot.homes.nms.NMSController
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import java.io.File
@@ -28,9 +28,9 @@ data class HomeManager(val playerHomes: MutableMap<UUID, PlayerHome> = mutableMa
         }
     }
 
-    fun toPlayerDatas(nmsManager: NMSManager) = mutableListOf<PlayerData>().apply {
-        playerHomes.forEach { uuid, playerData ->
-            add(playerData.toPlayerData(nmsManager, findOfflinePlayer(uuid)))
+    fun toPlayerDatas() = mutableListOf<PlayerData>().apply {
+        playerHomes.forEach { uuid, playerHome ->
+            add(playerHome.toPlayerData(findOfflinePlayer(uuid)))
         }
     }
 }

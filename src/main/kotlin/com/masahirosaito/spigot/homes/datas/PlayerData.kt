@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes
+package com.masahirosaito.spigot.homes.datas
 
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.nms.HomesEntity

@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.homedata
 
 import com.masahirosaito.spigot.homes.nms.HomesEntity
-import com.masahirosaito.spigot.homes.nms.NMSManager
+import com.masahirosaito.spigot.homes.nms.NMSController
 import org.bukkit.OfflinePlayer
 
 data class HomeData(
@@ -11,7 +11,7 @@ data class HomeData(
 ) {
     fun location() = locationData.toLocation()
 
-    fun toHomesEntity(nmsManager: NMSManager, op: OfflinePlayer): HomesEntity {
-        return HomesEntity(nmsManager, op, location(), name, isPrivate)
+    fun toHomesEntity(op: OfflinePlayer): HomesEntity {
+        return HomesEntity(op, location(), name, isPrivate)
     }
 }
