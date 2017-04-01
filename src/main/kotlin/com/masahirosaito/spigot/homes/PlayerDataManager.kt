@@ -1,25 +1,24 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.exceptions.LimitHomeException
 import com.masahirosaito.spigot.homes.exceptions.NoDefaultHomeException
 import com.masahirosaito.spigot.homes.exceptions.NoNamedHomeException
 import com.masahirosaito.spigot.homes.homedata.HomeManager
 import com.masahirosaito.spigot.homes.nms.HomesEntity
-import com.masahirosaito.spigot.homes.nms.NMSManager
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import java.io.File
 
-class PlayerDataManager(val homes: Homes) {
-    private val playerHomeDataFile = File(homes.dataFolder, "playerhomes.json").load()
-    private val homeManager = HomeManager.load(playerHomeDataFile)
-    private val nmsManager = NMSManager.load(homes)
+object PlayerDataManager {
+    lateinit private var playerHomeDataFile: File
     private val playerDatas: MutableList<PlayerData> = mutableListOf()
 
-    fun load(): PlayerDataManager = this.apply {
-        nmsManager.setUp()
-        playerDatas.addAll(homeManager.toPlayerDatas(nmsManager))
+    fun load(homes: Homes) {
+        NMSManager.load(homes)
+        playerHomeDataFile = File(homes.dataFolder, "playerhomes.json").load()
+        playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDatas())
     }
 
     fun save(): PlayerDataManager = this.apply {
@@ -70,18 +69,18 @@ class PlayerDataManager(val homes: Homes) {
             if (playerData.defaultHome != null) {
                 removeDefaultHome(offlinePlayer)
             }
-            playerData.defaultHome = HomesEntity(nmsManager, offlinePlayer, location)
+            playerData.defaultHome = HomesEntity(offlinePlayer, location)
         }
     }
 
     fun setNamedHome(offlinePlayer: OfflinePlayer, location: Location, homeName: String) {
         findPlayerData(offlinePlayer).let { playerData ->
             if (hasNamedHome(offlinePlayer, homeName)) {
-                val limit = homes.configs.homeLimit
+                val limit = Configs.homeLimit
                 if (limit != -1 && playerData.namedHomes.size >= limit) throw LimitHomeException(limit)
                 removeNamedHome(offlinePlayer, homeName)
             }
-            playerData.namedHomes.add(HomesEntity(nmsManager, offlinePlayer, location, homeName))
+            playerData.namedHomes.add(HomesEntity(offlinePlayer, location, homeName))
         }
     }
 

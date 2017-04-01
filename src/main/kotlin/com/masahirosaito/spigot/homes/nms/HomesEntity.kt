@@ -1,5 +1,7 @@
 package com.masahirosaito.spigot.homes.nms
 
+import com.masahirosaito.spigot.homes.Configs
+import com.masahirosaito.spigot.homes.NMSManager
 import com.masahirosaito.spigot.homes.homedata.HomeData
 import com.masahirosaito.spigot.homes.toData
 import org.bukkit.Chunk
@@ -7,13 +9,12 @@ import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 
 class HomesEntity(
-        val nmsManager: NMSManager,
         val offlinePlayer: OfflinePlayer,
         val location: Location,
         var homeName: String? = null,
         var isPrivate: Boolean = false
 ) {
-    var entities: List<NMSEntityArmorStand> = nmsManager.spawn(this)
+    var entities: List<NMSEntityArmorStand> = emptyList()
 
     fun isOwner(offlinePlayer: OfflinePlayer): Boolean {
         return this.offlinePlayer.uniqueId == offlinePlayer.uniqueId
@@ -29,7 +30,13 @@ class HomesEntity(
 
     fun reSpawnEntities() {
         despawnEntities()
-        entities = nmsManager.spawn(this)
+        spawnEntities()
+    }
+
+    fun spawnEntities() {
+        if (Configs.onHomeDisplay) {
+            entities = NMSManager.spawn(this)
+        }
     }
 
     fun inChunk(chunk: Chunk): Boolean {

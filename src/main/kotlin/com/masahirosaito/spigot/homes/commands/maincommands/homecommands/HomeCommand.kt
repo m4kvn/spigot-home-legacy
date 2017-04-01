@@ -1,14 +1,12 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
-import com.masahirosaito.spigot.homes.*
+import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.MainCommand
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeNameCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeNamePlayerCommand
-import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomePlayerCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.*
 import com.masahirosaito.spigot.homes.commands.subcommands.deletecommands.DeleteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.InviteCommand
@@ -58,11 +56,11 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
 
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {
         if (homeName == null) {
-            return plugin.playerDataManager.findDefaultHome(player).apply {
+            return PlayerDataManager.findDefaultHome(player).apply {
                 if (isPrivate && !isOwner(player)) throw PrivateHomeException(player)
             }.location
         } else {
-            return plugin.playerDataManager.findNamedHome(player, homeName).apply {
+            return PlayerDataManager.findNamedHome(player, homeName).apply {
                 if (isPrivate && !isOwner(player)) throw PrivateHomeException(player, homeName)
             }.location
         }

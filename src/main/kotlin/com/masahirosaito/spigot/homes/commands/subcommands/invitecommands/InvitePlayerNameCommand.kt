@@ -1,6 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
 import org.bukkit.ChatColor
@@ -15,9 +17,9 @@ class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inv
     override fun fee(): Double = plugin.fee.INVITE_PLAYER_NAME
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onInvite,
-            plugin.configs.onNamedHome,
-            plugin.configs.onFriendHome
+            Configs.onInvite,
+            Configs.onNamedHome,
+            Configs.onFriendHome
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 2
@@ -27,7 +29,7 @@ class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inv
     }
 
     private fun inviteNamedHome(player: Player, playerName: String, homeName: String) {
-        val entity = plugin.playerDataManager.findNamedHome(player, homeName)
+        val entity = PlayerDataManager.findNamedHome(player, homeName)
         inviteCommand.inviteHome(entity, player, playerName, msgReceiveInvitationFrom(player.name, homeName))
         send(player, msgInvite(playerName, homeName))
     }

@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
@@ -30,7 +31,7 @@ class DeleteCommand(override val plugin: Homes) : PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        plugin.playerDataManager.removeDefaultHome(player)
+        PlayerDataManager.removeDefaultHome(player)
         send(player, Strings.REMOVE_DEFAULT_HOME())
     }
 }

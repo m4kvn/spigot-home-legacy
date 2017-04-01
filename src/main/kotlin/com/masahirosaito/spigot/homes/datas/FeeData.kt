@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes
+package com.masahirosaito.spigot.homes.datas
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

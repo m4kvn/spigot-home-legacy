@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Messenger
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
@@ -18,7 +19,7 @@ interface BaseCommand {
     fun isValidArgs(args: List<String>): Boolean
 
     fun send(sender: CommandSender, message: String) {
-        if (!message.isNullOrBlank()) plugin.messenger.send(sender, message)
+        if (!message.isNullOrBlank()) Messenger.send(sender, message)
     }
 
     fun send(sender: CommandSender, obj: Any) {

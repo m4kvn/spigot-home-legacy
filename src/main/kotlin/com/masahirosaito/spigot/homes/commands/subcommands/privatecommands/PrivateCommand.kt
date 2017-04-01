@@ -1,7 +1,9 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.privatecommands
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
@@ -26,17 +28,17 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     override fun fee(): Double = plugin.fee.PRIVATE
 
     override fun configs(): List<Boolean> = listOf(
-            plugin.configs.onPrivate
+            Configs.onPrivate
     )
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1 && (args[0] == "on" || args[0] == "off")
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            plugin.playerDataManager.findDefaultHome(player).changePrivate(true)
+            PlayerDataManager.findDefaultHome(player).changePrivate(true)
             send(player, "Set your default home ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            plugin.playerDataManager.findDefaultHome(player).changePrivate(false)
+            PlayerDataManager.findDefaultHome(player).changePrivate(false)
             send(player, "Set your default home ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }
     }
