@@ -25,11 +25,11 @@ class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCom
 
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
-            PlayerDataManager.findNamedHome(player, args[1]).changePrivate(true)
+            PlayerDataManager.setNamedHomePrivate(player, args[1], true)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
         } else {
-            PlayerDataManager.findNamedHome(player, args[1]).changePrivate(false)
+            PlayerDataManager.setNamedHomePrivate(player, args[1], false)
             send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
                     " ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
         }
