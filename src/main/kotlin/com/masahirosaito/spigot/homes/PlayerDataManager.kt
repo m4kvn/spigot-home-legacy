@@ -43,7 +43,7 @@ object PlayerDataManager {
 
     fun findPlayerData(offlinePlayer: OfflinePlayer): PlayerData {
         return playerDatas.find { it.offlinePlayer.uniqueId == offlinePlayer.uniqueId } ?:
-                PlayerData(offlinePlayer, null, mutableListOf())
+                PlayerData(offlinePlayer, null, mutableListOf()).apply { playerDatas.add(this) }
     }
 
     fun findDefaultHome(offlinePlayer: OfflinePlayer): HomesEntity {
@@ -116,4 +116,6 @@ object PlayerDataManager {
             }
         }
     }
+
+    fun getPlayerDataList(): List<PlayerData> = playerDatas
 }
