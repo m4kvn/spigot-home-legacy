@@ -18,7 +18,7 @@ interface NMSController {
             return when (homes.server.bukkitVersion) {
                 "1.10-R0.1-SNAPSHOT", "1.10.2-R0.1-SNAPSHOT" -> NMSController_v1_10_R1()
                 "1.11-R0.1-SNAPSHOT", "1.11.2-R0.1-SNAPSHOT" -> NMSController_v1_11_R1()
-                else -> throw Exception()
+                else -> DummyNMSController()
             }
         }
     }
