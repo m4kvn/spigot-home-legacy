@@ -117,7 +117,6 @@ object TestInstanceCreator {
 
             PlayerDataManager.setDefaultHome(nepian, nepian.location)
             PlayerDataManager.setNamedHome(nepian, nepian.location, "home1")
-            println(PlayerDataManager.getPlayerDataList())
             defaultLocation = PlayerDataManager.findDefaultHome(nepian).location
             namedLocation = PlayerDataManager.findNamedHome(nepian, "home1").location
 
