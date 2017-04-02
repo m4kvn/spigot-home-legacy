@@ -69,7 +69,9 @@ object PlayerDataManager {
             if (playerData.defaultHome != null) {
                 removeDefaultHome(offlinePlayer)
             }
-            playerData.defaultHome = HomesEntity(offlinePlayer, location)
+            playerData.defaultHome = HomesEntity(offlinePlayer, location).apply {
+                spawnEntities()
+            }
         }
     }
 
@@ -80,7 +82,9 @@ object PlayerDataManager {
                 if (limit != -1 && playerData.namedHomes.size >= limit) throw LimitHomeException(limit)
                 removeNamedHome(offlinePlayer, homeName)
             }
-            playerData.namedHomes.add(HomesEntity(offlinePlayer, location, homeName))
+            playerData.namedHomes.add(HomesEntity(offlinePlayer, location, homeName).apply {
+                spawnEntities()
+            })
         }
     }
 
@@ -92,6 +96,24 @@ object PlayerDataManager {
     fun removeNamedHome(offlinePlayer: OfflinePlayer, homeName: String) {
         findNamedHome(offlinePlayer, homeName).apply { despawnEntities() }.apply {
             findPlayerData(offlinePlayer).namedHomes.remove(this)
+        }
+    }
+
+    fun setDefaultHomePrivate(offlinePlayer: OfflinePlayer, isPrivate: Boolean) {
+        findDefaultHome(offlinePlayer).let {
+            it.isPrivate = isPrivate
+            if (it.location.chunk.isLoaded) {
+                it.reSpawnEntities()
+            }
+        }
+    }
+
+    fun setNamedHomePrivate(offlinePlayer: OfflinePlayer, homeName: String, isPrivate: Boolean) {
+        findNamedHome(offlinePlayer, homeName).let {
+            it.isPrivate = isPrivate
+            if (it.location.chunk.isLoaded) {
+                it.reSpawnEntities()
+            }
         }
     }
 }
