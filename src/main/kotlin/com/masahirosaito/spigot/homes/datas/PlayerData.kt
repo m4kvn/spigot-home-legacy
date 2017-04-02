@@ -5,7 +5,7 @@ import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.Chunk
 import org.bukkit.OfflinePlayer
 
-class PlayerData(
+data class PlayerData(
         val offlinePlayer: OfflinePlayer,
         var defaultHome: HomesEntity? = null,
         val namedHomes: MutableList<HomesEntity> = mutableListOf()

@@ -8,7 +8,7 @@ import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 
-class HomesEntity(
+data class HomesEntity(
         val offlinePlayer: OfflinePlayer,
         val location: Location,
         var homeName: String? = null,
