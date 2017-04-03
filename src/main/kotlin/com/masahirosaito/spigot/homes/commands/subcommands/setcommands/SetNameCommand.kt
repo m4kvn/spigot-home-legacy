@@ -18,7 +18,7 @@ class SetNameCommand(setCommand: SetCommand) : SubCommand(setCommand), PlayerCom
             Configs.onNamedHome
     )
 
-    override fun fee(): Double = plugin.fee.SET_NAME
+    override fun fee(): Double = homes.fee.SET_NAME
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 

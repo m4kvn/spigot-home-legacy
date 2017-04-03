@@ -12,7 +12,7 @@ import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAG
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAGE_DELETE_NAME
 import org.bukkit.entity.Player
 
-class DeleteCommand(override val plugin: Homes) : PlayerCommand {
+class DeleteCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "delete"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -27,7 +27,7 @@ class DeleteCommand(override val plugin: Homes) : PlayerCommand {
             DeleteNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.DELETE
+    override fun fee(): Double = homes.fee.DELETE
 
     override fun configs(): List<Boolean> = listOf()
 

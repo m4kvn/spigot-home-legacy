@@ -12,7 +12,7 @@ import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_S
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_SET_NAME
 import org.bukkit.entity.Player
 
-class SetCommand(override val plugin: Homes) : PlayerCommand {
+class SetCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "set"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -27,7 +27,7 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
             SetNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.SET
+    override fun fee(): Double = homes.fee.SET
 
     override fun configs(): List<Boolean> = listOf()
 

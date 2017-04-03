@@ -14,7 +14,7 @@ class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand
             Permission.home_command_delete_name
     )
 
-    override fun fee(): Double = plugin.fee.DELETE_NAME
+    override fun fee(): Double = homes.fee.DELETE_NAME
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onNamedHome

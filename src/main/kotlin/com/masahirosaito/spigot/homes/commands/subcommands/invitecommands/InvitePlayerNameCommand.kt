@@ -15,7 +15,7 @@ class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inv
             Permission.home_command_invite_name
     )
 
-    override fun fee(): Double = plugin.fee.INVITE_PLAYER_NAME
+    override fun fee(): Double = homes.fee.INVITE_PLAYER_NAME
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onInvite,

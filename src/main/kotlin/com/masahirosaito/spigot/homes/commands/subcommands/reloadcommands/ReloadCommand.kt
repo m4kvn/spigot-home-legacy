@@ -6,9 +6,9 @@ import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.ConsoleCommand
 import org.bukkit.command.ConsoleCommandSender
 
-class ReloadCommand(override val plugin: Homes) : ConsoleCommand {
+class ReloadCommand(override val homes: Homes) : ConsoleCommand {
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
-        
+
     }
 
     override val name: String

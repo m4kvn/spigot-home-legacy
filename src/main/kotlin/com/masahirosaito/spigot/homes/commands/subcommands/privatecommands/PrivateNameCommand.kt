@@ -15,7 +15,7 @@ class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCom
             Permission.home_command_private_name
     )
 
-    override fun fee(): Double = plugin.fee.PRIVATE_NAME
+    override fun fee(): Double = homes.fee.PRIVATE_NAME
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onPrivate,

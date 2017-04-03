@@ -14,7 +14,7 @@ class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand),
             Permission.home_command_list_player
     )
 
-    override fun fee(): Double = plugin.fee.LIST_PLAYER
+    override fun fee(): Double = homes.fee.LIST_PLAYER
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onFriendHome

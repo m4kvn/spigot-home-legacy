@@ -13,7 +13,7 @@ import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
-    override val plugin: Homes = mainCommand.plugin
+    override val homes: Homes = mainCommand.homes
     override val name: String = "help"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -28,7 +28,7 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand {
             HelpUsageCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.HELP
+    override fun fee(): Double = homes.fee.HELP
 
     override fun configs(): List<Boolean> = listOf()
 

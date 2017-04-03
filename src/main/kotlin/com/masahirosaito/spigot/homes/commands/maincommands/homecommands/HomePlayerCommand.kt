@@ -13,7 +13,7 @@ class HomePlayerCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand),
             Permission.home_command_player
     )
 
-    override fun fee(): Double = plugin.fee.HOME_PLAYER
+    override fun fee(): Double = homes.fee.HOME_PLAYER
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onFriendHome

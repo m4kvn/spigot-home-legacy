@@ -12,7 +12,7 @@ class HomeNameCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand), P
             Permission.home_command_name
     )
 
-    override fun fee(): Double = plugin.fee.HOME_NAME
+    override fun fee(): Double = homes.fee.HOME_NAME
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onNamedHome

@@ -12,7 +12,7 @@ class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), 
             Permission.home_command_help_command
     )
 
-    override fun fee(): Double = plugin.fee.HELP_USAGE
+    override fun fee(): Double = homes.fee.HELP_USAGE
 
     override fun configs(): List<Boolean> = listOf()
 

@@ -16,7 +16,7 @@ import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
-class ListCommand(override val plugin: Homes) : PlayerCommand {
+class ListCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "list"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -31,7 +31,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
             ListPlayerCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.LIST
+    override fun fee(): Double = homes.fee.LIST
 
     override fun configs(): List<Boolean> = listOf()
 

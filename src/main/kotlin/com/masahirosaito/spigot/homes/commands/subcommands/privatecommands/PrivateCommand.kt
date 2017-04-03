@@ -14,7 +14,7 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USA
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USAGE_PRIVATE_NAME
 import org.bukkit.entity.Player
 
-class PrivateCommand(override val plugin: Homes) : PlayerCommand {
+class PrivateCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "private"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -29,7 +29,7 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
             PrivateNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.PRIVATE
+    override fun fee(): Double = homes.fee.PRIVATE
 
     override fun configs(): List<Boolean> = listOf(
             Configs.onPrivate
