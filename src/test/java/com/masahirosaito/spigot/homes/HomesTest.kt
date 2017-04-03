@@ -3,6 +3,7 @@ package com.masahirosaito.spigot.homes
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.datas.FeeData
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
+import com.masahirosaito.spigot.homes.strings.Strings
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
@@ -21,17 +22,12 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocat
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.minene
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.mockPluginManager
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.mockServicesManager
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.namedLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.registeredServiceProvider
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
 import com.masahirosaito.spigot.homes.testutils.acceptInvitation
 import com.masahirosaito.spigot.homes.testutils.lastMsg
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -49,11 +45,8 @@ import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.powermock.api.mockito.PowerMockito
-import org.powermock.api.mockito.PowerMockito.doReturn
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.io.File
@@ -96,18 +89,33 @@ class HomesTest {
     }
 
     @Test
-    fun ホームコマンドが登録されている() {
-        assertTrue(homes.getCommand("home").executor is HomeCommand)
-    }
-
-    @Test
     fun 料金設定ファイルが読み込まれている() {
         assertThat(homes.fee, `is`(loadData(feeFile, FeeData::class.java)))
     }
 
     @Test
-    fun エコノミーが読み込まれている() {
+    fun 設定ファイルが読み込まれている() {
+        assertTrue(Configs.homes is Homes)
+    }
+
+    @Test
+    fun 言語ファイルが読み込まれている() {
+        assertTrue(Strings.homes is Homes)
+    }
+
+    @Test
+    fun メッセンジャーが読み込まれている() {
+        assertTrue(Messenger.plugin is Homes)
+    }
+
+    @Test
+    fun 経済プラグインが読み込まれている() {
         assertThat(homes.econ, `is`(notNullValue()))
+    }
+
+    @Test
+    fun ホームコマンドが登録されている() {
+        assertTrue(homes.getCommand("home").executor is HomeCommand)
     }
 
     @Test

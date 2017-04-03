@@ -5,6 +5,7 @@ import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.strings.commands.*
 
 object Strings {
+    lateinit var homes: Homes
     val PLAYER_NAME = "[player-name]"
     val PERMISSION_NAME = "[permission-name]"
     val HOME_NAME = "[home-name]"
@@ -12,6 +13,8 @@ object Strings {
     val COMMAND_NAME = "[command-name]"
 
     fun load(homes: Homes) {
+        this.homes = homes
+
         "${homes.dataFolder}/languages/${Configs.language}".apply {
             ErrorStrings.load(this)
             HomeDisplayStrings.load(this)

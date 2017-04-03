@@ -35,9 +35,6 @@ class Homes : JavaPlugin {
     }
 
     override fun onEnable() {
-//        Configs.load(this)
-//        Strings.load(this)
-//        Messenger.load(this)
         PlayerDataManager.load(this)
         UpdateChecker.checkUpdate(this)
 
@@ -49,6 +46,12 @@ class Homes : JavaPlugin {
 
     override fun onDisable() {
         PlayerDataManager.save()
+    }
+
+    fun reload() {
+        onDisable()
+        onLoad()
+        onEnable()
     }
 
     private fun loadFeeData() : FeeData {
