@@ -5,7 +5,12 @@ import com.masahirosaito.spigot.homes.datas.FeeData
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.mockPluginManager
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.mockServicesManager
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.registeredServiceProvider
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -23,8 +28,11 @@ import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.api.mockito.PowerMockito.doReturn
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import java.io.File
@@ -73,11 +81,32 @@ class HomesTest {
 
     @Test
     fun 料金設定ファイルが読み込まれている() {
-        assertThat(homes.fee, `is`(FeeData.load(feeFile)))
+        assertThat(homes.fee, `is`(loadData(feeFile, FeeData::class.java)))
     }
 
     @Test
     fun エコノミーが読み込まれている() {
         assertThat(homes.econ, `is`(notNullValue()))
+    }
+
+    @Ignore
+    @Test
+    fun 経済プラグインがない場合はコマンド料金機能の設定停止メッセージを表示する() {
+
+        "Fee function stopped because the Economy plugin can not be found.".apply {
+
+            doReturn(null).`when`(mockServicesManager).getRegistration(Economy::class.java)
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(spyLogger.logs.lastOrNull(), `is`(this))
+        }
+
+        "Fee function stopped because Vault can not be found.".apply {
+
+            doReturn(null).`when`(mockPluginManager).getPlugin("Vault")
+            homes.onDisable()
+            homes.onEnable()
+            assertThat(spyLogger.logs.lastOrNull(), `is`(this))
+        }
     }
 }
