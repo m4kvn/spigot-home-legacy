@@ -6,19 +6,22 @@ import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.DESCRIPTION
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_SET
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_SET_NAME
 import org.bukkit.entity.Player
 
 class SetCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "set"
-    override val description: String = "Set your home or named home"
+    override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_set
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home set" to "Set your location to your default home",
-            "/home set <home_name>" to "Set your location to your named home"
+            "/home set" to USAGE_SET(),
+            "/home set <home_name>" to USAGE_SET_NAME()
     ))
     override val commands: List<BaseCommand> = listOf(
             SetNameCommand(this)
@@ -32,6 +35,6 @@ class SetCommand(override val plugin: Homes) : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.setDefaultHome(player, player.location)
-        send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}default home${ChatColor.RESET}")
+        send(player, SET_DEFAULT_HOME())
     }
 }

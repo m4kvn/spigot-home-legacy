@@ -12,7 +12,7 @@ object Messenger {
         plugin = homes
     }
 
-    fun prefix(obj: Any) = "[${plugin.name}] $obj"
+    fun prefix(obj: Any): String = ChatColor.translateAlternateColorCodes('&', "[${plugin.name}] $obj")
 
     fun log(obj: Any) = Bukkit.getServer().consoleSender.sendMessage(prefix(obj))
 

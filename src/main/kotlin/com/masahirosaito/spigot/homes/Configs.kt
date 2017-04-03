@@ -4,6 +4,9 @@ import com.masahirosaito.spigot.homes.datas.ConfigData
 import java.io.File
 
 object Configs {
+    lateinit var homes: Homes
+
+    var language: String = "en"
 
     var onDebug: Boolean = false
 
@@ -24,7 +27,10 @@ object Configs {
     var onHomeDisplay: Boolean = true
 
     fun load(homes: Homes) {
-        ConfigData.load(File(homes.dataFolder, "configs.json").load()).let {
+        this.homes = homes
+
+        loadData(File(homes.dataFolder, "configs.json").load(), ConfigData::class.java).let {
+            language = it.language
             onDebug = it.onDebug
             onNamedHome = it.onNamedHome
             onFriendHome = it.onFriendHome

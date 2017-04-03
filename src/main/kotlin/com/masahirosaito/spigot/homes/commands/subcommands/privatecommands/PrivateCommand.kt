@@ -7,19 +7,23 @@ import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.DESCRIPTION
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PRIVATE
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PUBLIC
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USAGE_PRIVATE
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USAGE_PRIVATE_NAME
 import org.bukkit.entity.Player
 
 class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "private"
-    override val description: String = "Set your home private or public"
+    override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_private
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home private (on/off)" to "Set your default home private or public",
-            "/home private (on/off) <home_name>" to "Set your named home private or public"
+            "/home private (on/off)" to USAGE_PRIVATE(),
+            "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME()
     ))
     override val commands: List<BaseCommand> = listOf(
             PrivateNameCommand(this)
@@ -36,10 +40,10 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
             PlayerDataManager.setDefaultHomePrivate(player, true)
-            send(player, "Set your default home ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
+            send(player, SET_DEFAULT_HOME_PRIVATE())
         } else {
             PlayerDataManager.setDefaultHomePrivate(player, false)
-            send(player, "Set your default home ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
+            send(player, SET_DEFAULT_HOME_PUBLIC())
         }
     }
 }

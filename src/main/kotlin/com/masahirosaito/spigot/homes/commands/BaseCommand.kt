@@ -22,7 +22,7 @@ interface BaseCommand {
         if (!message.isNullOrBlank()) Messenger.send(sender, message)
     }
 
-    fun send(sender: CommandSender, obj: Any) {
+    fun send(sender: CommandSender, obj: Any?) {
         send(sender, obj.toString())
     }
 
