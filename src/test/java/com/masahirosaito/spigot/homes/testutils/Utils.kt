@@ -1,8 +1,5 @@
 package com.masahirosaito.spigot.homes.testutils
 
-import com.masahirosaito.spigot.homes.testutils.MockPlayerFactory
-import com.masahirosaito.spigot.homes.testutils.MockWorldFactory
-import com.masahirosaito.spigot.homes.testutils.SpyLogger
 import org.bukkit.entity.Player
 import java.io.File
 
@@ -31,5 +28,15 @@ object FileUtil {
         if (!file.exists()) return
         if (file.isDirectory) file.listFiles().forEach { FileUtil.delete(it) }
         file.delete()
+    }
+}
+
+fun Player.acceptInvitation() {
+    if (this.hasMetadata("homes.invite")) {
+        val th = (this.getMetadata("homes.invite")[0].value() as Thread)
+        if (th.isAlive) {
+            th.interrupt()
+            th.join()
+        }
     }
 }

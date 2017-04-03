@@ -1,10 +1,10 @@
 package com.masahirosaito.spigot.homes.strings
 
-import com.masahirosaito.spigot.homes.Strings.COMMAND_NAME
-import com.masahirosaito.spigot.homes.Strings.HOME_LIMIT_NUM
-import com.masahirosaito.spigot.homes.Strings.HOME_NAME
-import com.masahirosaito.spigot.homes.Strings.PERMISSION_NAME
-import com.masahirosaito.spigot.homes.Strings.PLAYER_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.COMMAND_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_LIMIT_NUM
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.PERMISSION_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.PLAYER_NAME
 import com.masahirosaito.spigot.homes.datas.strings.ErrorStringData
 import com.masahirosaito.spigot.homes.load
 import com.masahirosaito.spigot.homes.loadData

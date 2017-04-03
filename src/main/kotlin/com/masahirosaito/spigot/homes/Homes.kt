@@ -8,6 +8,7 @@ import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_ECONOMY
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_VAULT
+import com.masahirosaito.spigot.homes.strings.Strings
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin

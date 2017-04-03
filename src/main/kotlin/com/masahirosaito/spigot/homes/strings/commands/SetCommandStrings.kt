@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.strings.commands
 
-import com.masahirosaito.spigot.homes.Strings.HOME_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
 import com.masahirosaito.spigot.homes.datas.strings.commands.SetCommandStringData
 import com.masahirosaito.spigot.homes.load
 import com.masahirosaito.spigot.homes.loadData

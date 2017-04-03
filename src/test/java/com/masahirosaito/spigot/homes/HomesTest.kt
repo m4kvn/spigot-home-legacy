@@ -2,8 +2,13 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.datas.FeeData
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_NAMED_HOME_INVITATION_FROM
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_DEFAULT_HOME_INVITATION_TO
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_NAMED_HOME_INVITATION_TO
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PRIVATE
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PUBLIC
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
@@ -24,6 +29,7 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginComman
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.registeredServiceProvider
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
+import com.masahirosaito.spigot.homes.testutils.acceptInvitation
 import com.masahirosaito.spigot.homes.testutils.lastMsg
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
@@ -184,5 +190,27 @@ class HomesTest {
     @Test
     fun 他の人の設定されたホームの一覧を表示するコマンドの実行ができる() {
         assertTrue(command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian")))
+    }
+
+    @Test
+    fun 他の人を自分のホームに招待するコマンドの実行ができる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene"))
+        assertThat(nepian.lastMsg(), `is`(SEND_DEFAULT_HOME_INVITATION_TO("Minene")))
+        assertThat(minene.lastMsg(), `is`(RECEIVE_DEFAULT_HOME_INVITATION_FROM("Nepian")))
+        minene.acceptInvitation()
+    }
+
+    @Test
+    fun 他の人を自分の名前付きホームに招待するコマンドの実行ができる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite", "Minene", "home1"))
+        assertThat(nepian.lastMsg(), `is`(SEND_NAMED_HOME_INVITATION_TO("Minene", "home1")))
+        assertThat(minene.lastMsg(), `is`(RECEIVE_NAMED_HOME_INVITATION_FROM("Nepian", "home1")))
+        minene.acceptInvitation()
+    }
+
+    @Test
+    fun 他の人からの招待を受けるコマンドの実行ができる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
+        assertThat(nepian.lastMsg(), `is`(NO_RECEIVED_INVITATION()))
     }
 }
