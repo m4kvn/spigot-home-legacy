@@ -20,7 +20,7 @@ interface PlayerCommand : BaseCommand {
         payFee(player)
     }
 
-    private fun payFee(player: Player) {
+    fun payFee(player: Player) {
         if (fee() <= 0) return
         homes.econ?.let { economy ->
             val r = economy.withdrawPlayer(player, fee())
@@ -35,7 +35,7 @@ interface PlayerCommand : BaseCommand {
         }
     }
 
-    private fun checkBalance(player: Player) {
+    fun checkBalance(player: Player) {
         if (fee() <= 0) return
         homes.econ?.let {
             if (!it.hasAccount(player)) {
@@ -47,11 +47,16 @@ interface PlayerCommand : BaseCommand {
         }
     }
 
-    private fun checkPermission(player: Player) {
+    fun checkPermission(player: Player) {
         if (!permissions.isEmpty()) {
             permissions.forEach {
                 if (!player.hasPermission(it)) throw NoPermissionException(it)
             }
         }
+    }
+
+    fun hasPermission(player: Player): Boolean {
+        permissions.forEach { if (!player.hasPermission(it)) return false }
+        return true
     }
 }

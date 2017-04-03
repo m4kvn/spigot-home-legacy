@@ -2,7 +2,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
 import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Permission.home_command_list
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
@@ -19,10 +19,7 @@ import org.bukkit.entity.Player
 class ListCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "list"
     override val description: String = DESCRIPTION()
-    override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_list
-    )
+    override val permissions: List<String> = listOf(home_command_list)
     override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home list" to USAGE_LIST(),
             "/home list <player_name>" to USAGE_LIST_PLAYER()

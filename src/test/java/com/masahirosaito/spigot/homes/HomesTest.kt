@@ -17,7 +17,8 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
+import com.masahirosaito.spigot.homes.testutils.*
+import com.masahirosaito.spigot.homes.testutils.Permission
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.configFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
@@ -29,8 +30,6 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.namedLocatio
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
-import com.masahirosaito.spigot.homes.testutils.acceptInvitation
-import com.masahirosaito.spigot.homes.testutils.lastMsg
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -226,8 +225,13 @@ class HomesTest {
     }
 
     @Test
-    fun コマンドの説明一覧を表示するコマンドの実行ができる() {
+    fun プレイヤーからコマンドの説明一覧を表示するコマンドの実行ができる() {
         assertTrue(command.onCommand(nepian, pluginCommand, "home", arrayOf("help")))
+    }
+
+    @Test
+    fun コンソールからコマンドの説明一覧を表示するコマンドの実行ができる() {
+        command.onCommand(homeConsoleCommandSender, pluginCommand, "home", arrayOf("help"))
     }
 
     @Test
