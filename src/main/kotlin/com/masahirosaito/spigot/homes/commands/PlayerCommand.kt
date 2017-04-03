@@ -20,9 +20,9 @@ interface PlayerCommand : BaseCommand {
         payFee(player)
     }
 
-    private fun payFee(player: Player) {
+    fun payFee(player: Player) {
         if (fee() <= 0) return
-        plugin.econ?.let { economy ->
+        homes.econ?.let { economy ->
             val r = economy.withdrawPlayer(player, fee())
             if (r.transactionSuccess()) {
                 send(player, buildString {
@@ -35,9 +35,9 @@ interface PlayerCommand : BaseCommand {
         }
     }
 
-    private fun checkBalance(player: Player) {
+    fun checkBalance(player: Player) {
         if (fee() <= 0) return
-        plugin.econ?.let {
+        homes.econ?.let {
             if (!it.hasAccount(player)) {
                 throw HomesException("You are not registered as Economy")
             }
@@ -47,11 +47,16 @@ interface PlayerCommand : BaseCommand {
         }
     }
 
-    private fun checkPermission(player: Player) {
+    fun checkPermission(player: Player) {
         if (!permissions.isEmpty()) {
             permissions.forEach {
                 if (!player.hasPermission(it)) throw NoPermissionException(it)
             }
         }
+    }
+
+    fun hasPermission(player: Player): Boolean {
+        permissions.forEach { if (!player.hasPermission(it)) return false }
+        return true
     }
 }

@@ -19,6 +19,7 @@ object PlayerDataManager {
         NMSManager.load(homes)
         playerHomeDataFile = File(homes.dataFolder, "playerhomes.json").load()
         playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDatas())
+        playerDatas.forEach { it.load() }
     }
 
     fun save(): PlayerDataManager = this.apply {

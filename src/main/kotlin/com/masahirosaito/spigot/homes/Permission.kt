@@ -18,4 +18,5 @@ object Permission {
     val home_command_private_name = home_command_private + ".name"
     val home_command_invite = home_command + ".invite"
     val home_command_invite_name = home_command_invite + ".name"
+    val home_command_reload = home_command + ".reload"
 }

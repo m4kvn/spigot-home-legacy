@@ -1,8 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
 
-import com.masahirosaito.spigot.homes.Configs
+import com.masahirosaito.spigot.homes.Configs.onInvite
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
@@ -22,13 +21,11 @@ import org.bukkit.entity.Player
 import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
-class InviteCommand(override val plugin: Homes) : PlayerCommand {
+class InviteCommand(override val homes: Homes) : PlayerCommand {
     private val INVITE_META = "homes.invite"
     override val name: String = "invite"
     override val description: String = InviteCommandStrings.DESCRIPTION()
-    override val permissions: List<String> = listOf(
-            Permission.home_command
-    )
+    override val permissions: List<String> = listOf()
     override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home invite" to USAGE_INVITE(),
             "/home invite <player_name>" to USAGE_INVITE_PLAYER(),
@@ -39,11 +36,9 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
             InvitePlayerNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.INVITE
+    override fun fee(): Double = homes.fee.INVITE
 
-    override fun configs(): List<Boolean> = listOf(
-            Configs.onInvite
-    )
+    override fun configs(): List<Boolean> = listOf(onInvite)
 
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
@@ -71,7 +66,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
                 Thread.sleep(30000)
                 val target = findOnlinePlayer(playerName)
                 if (target.hasMetadata(INVITE_META)) {
-                    target.removeMetadata(INVITE_META, plugin)
+                    target.removeMetadata(INVITE_META, homes)
                     send(target, CANCEL_INVITATION_FROM(player.name))
                     send(player, CANCEL_INVITATION_TO(target.name))
                 }
@@ -79,7 +74,7 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
                 try {
                     val target = findOnlinePlayer(playerName)
                     target.teleport(homesEntity.location)
-                    target.removeMetadata(INVITE_META, plugin)
+                    target.removeMetadata(INVITE_META, homes)
                     send(target, ACCEPT_INVITATION_FROM(homesEntity.offlinePlayer.name))
                     try {
                         val owner = findOnlinePlayer(homesEntity.offlinePlayer.uniqueId)
@@ -92,6 +87,6 @@ class InviteCommand(override val plugin: Homes) : PlayerCommand {
                 e.message?.let { send(player, it) }
             }
         }
-        op.setMetadata(INVITE_META, FixedMetadataValue(plugin, th))
+        op.setMetadata(INVITE_META, FixedMetadataValue(homes, th))
     }
 }

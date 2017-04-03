@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.helpcommands
 
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Permission.home_command_help
+import com.masahirosaito.spigot.homes.Permission.home_command_help_command
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
@@ -8,11 +9,11 @@ import org.bukkit.entity.Player
 
 class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_help_command
+            home_command_help,
+            home_command_help_command
     )
 
-    override fun fee(): Double = plugin.fee.HELP_USAGE
+    override fun fee(): Double = homes.fee.HELP_USAGE
 
     override fun configs(): List<Boolean> = listOf()
 

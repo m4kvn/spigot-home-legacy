@@ -8,7 +8,7 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
 interface BaseCommand {
-    val plugin: Homes
+    val homes: Homes
     val name: String
     val description: String
     val usage: CommandUsage

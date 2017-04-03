@@ -1,7 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
 
-import com.masahirosaito.spigot.homes.Configs
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Configs.onNamedHome
+import com.masahirosaito.spigot.homes.Permission.home_command_delete
+import com.masahirosaito.spigot.homes.Permission.home_command_delete_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
@@ -10,15 +11,13 @@ import org.bukkit.entity.Player
 
 class DeleteNameCommand(deleteCommand: DeleteCommand) : SubCommand(deleteCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_delete_name
+            home_command_delete,
+            home_command_delete_name
     )
 
-    override fun fee(): Double = plugin.fee.DELETE_NAME
+    override fun fee(): Double = homes.fee.DELETE_NAME
 
-    override fun configs(): List<Boolean> = listOf(
-            Configs.onNamedHome
-    )
+    override fun configs(): List<Boolean> = listOf(onNamedHome)
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 

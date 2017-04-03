@@ -32,26 +32,30 @@ class Homes : JavaPlugin {
         Configs.load(this)
         Strings.load(this)
         Messenger.load(this)
+        Messenger.debug("&bLoading is complete&r")
     }
 
     override fun onEnable() {
+        Messenger.debug("&6Starting Homes onEnable&r")
         PlayerDataManager.load(this)
         UpdateChecker.checkUpdate(this)
-
         registerCommands()
         registerListeners()
-
         econ = loadEconomy()
+        Messenger.debug("&bPlugin Homes onEnable&r")
     }
 
     override fun onDisable() {
+        Messenger.debug("&6Starting Homes onDisable&r")
         PlayerDataManager.save()
+        Messenger.debug("&bPlugin Homes onDisable&r")
     }
 
     fun reload() {
         onDisable()
         onLoad()
         onEnable()
+        Messenger.log("&bReloading is complete&r")
     }
 
     private fun loadFeeData() : FeeData {

@@ -12,6 +12,7 @@ import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpComm
 import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.InviteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.listcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.privatecommands.PrivateCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.reloadcommands.ReloadCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import com.masahirosaito.spigot.homes.exceptions.DefaultHomePrivateException
 import com.masahirosaito.spigot.homes.exceptions.NamedHomePrivateException
@@ -24,7 +25,7 @@ import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
-class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
+class HomeCommand(override val homes: Homes) : MainCommand, PlayerCommand {
     override val name: String = "home"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -37,12 +38,13 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
             "/home <home_name> -p <player_name>" to USAGE_HOME_NAME_PLAYER()
     ))
     override val subCommands: List<BaseCommand> = listOf(
-            SetCommand(plugin),
-            DeleteCommand(plugin),
-            PrivateCommand(plugin),
-            InviteCommand(plugin),
-            ListCommand(plugin),
-            HelpCommand(this)
+            SetCommand(homes),
+            DeleteCommand(homes),
+            PrivateCommand(homes),
+            InviteCommand(homes),
+            ListCommand(homes),
+            HelpCommand(this),
+            ReloadCommand(homes)
     )
     override val commands: List<BaseCommand> = listOf(
             HomeNameCommand(this),
@@ -50,7 +52,7 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
             HomeNamePlayerCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.HOME
+    override fun fee(): Double = homes.fee.HOME
 
     override fun configs(): List<Boolean> = listOf()
 

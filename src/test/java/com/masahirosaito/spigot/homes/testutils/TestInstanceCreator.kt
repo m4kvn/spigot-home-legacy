@@ -55,6 +55,7 @@ object TestInstanceCreator {
     val feeFile = File(pluginFolder, "fee.json")
 
     fun setUp(): Boolean {
+        refresh()
         economy = MyEconomy()
         spyLogger = SpyLogger(Logger.getLogger("Homes"))
 
@@ -148,8 +149,6 @@ object TestInstanceCreator {
         nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
         minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
-        MockPlayerFactory.clear()
-        MockWorldFactory.clear()
 
         try {
             Bukkit::class.java.getDeclaredField("server").let {
@@ -165,9 +164,15 @@ object TestInstanceCreator {
         }
 
         homes.onDisable()
-        FileUtil.delete(pluginFolder)
+        refresh()
 
         return true
+    }
+
+    private fun refresh() {
+        MockPlayerFactory.clear()
+        MockWorldFactory.clear()
+        FileUtil.delete(pluginFolder)
     }
 
     private fun createHomesDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(

@@ -1,7 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
-import com.masahirosaito.spigot.homes.Configs
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Configs.onFriendHome
+import com.masahirosaito.spigot.homes.Permission.home_command_list
+import com.masahirosaito.spigot.homes.Permission.home_command_list_player
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
@@ -9,16 +10,11 @@ import com.masahirosaito.spigot.homes.findOfflinePlayer
 import org.bukkit.entity.Player
 
 class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand), PlayerCommand {
-    override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_list_player
-    )
+    override val permissions: List<String> = listOf(home_command_list, home_command_list_player)
 
-    override fun fee(): Double = plugin.fee.LIST_PLAYER
+    override fun fee(): Double = homes.fee.LIST_PLAYER
 
-    override fun configs(): List<Boolean> = listOf(
-            Configs.onFriendHome
-    )
+    override fun configs(): List<Boolean> = listOf(onFriendHome)
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 

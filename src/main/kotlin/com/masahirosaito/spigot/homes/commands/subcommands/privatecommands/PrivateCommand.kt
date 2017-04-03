@@ -1,8 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.privatecommands
 
-import com.masahirosaito.spigot.homes.Configs
+import com.masahirosaito.spigot.homes.Configs.onPrivate
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Permission.home_command_private
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
@@ -14,13 +14,10 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USA
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USAGE_PRIVATE_NAME
 import org.bukkit.entity.Player
 
-class PrivateCommand(override val plugin: Homes) : PlayerCommand {
+class PrivateCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "private"
     override val description: String = DESCRIPTION()
-    override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_private
-    )
+    override val permissions: List<String> = listOf(home_command_private)
     override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home private (on/off)" to USAGE_PRIVATE(),
             "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME()
@@ -29,11 +26,9 @@ class PrivateCommand(override val plugin: Homes) : PlayerCommand {
             PrivateNameCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.PRIVATE
+    override fun fee(): Double = homes.fee.PRIVATE
 
-    override fun configs(): List<Boolean> = listOf(
-            Configs.onPrivate
-    )
+    override fun configs(): List<Boolean> = listOf(onPrivate)
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1 && (args[0] == "on" || args[0] == "off")
 

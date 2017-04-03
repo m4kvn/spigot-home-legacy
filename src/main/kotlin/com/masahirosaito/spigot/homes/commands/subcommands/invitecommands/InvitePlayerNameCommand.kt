@@ -1,7 +1,10 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
 
-import com.masahirosaito.spigot.homes.Configs
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Configs.onFriendHome
+import com.masahirosaito.spigot.homes.Configs.onInvite
+import com.masahirosaito.spigot.homes.Configs.onNamedHome
+import com.masahirosaito.spigot.homes.Permission.home_command_invite
+import com.masahirosaito.spigot.homes.Permission.home_command_invite_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
@@ -10,18 +13,11 @@ import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND
 import org.bukkit.entity.Player
 
 class InvitePlayerNameCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand {
-    override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_invite_name
-    )
+    override val permissions: List<String> = listOf(home_command_invite, home_command_invite_name)
 
-    override fun fee(): Double = plugin.fee.INVITE_PLAYER_NAME
+    override fun fee(): Double = homes.fee.INVITE_PLAYER_NAME
 
-    override fun configs(): List<Boolean> = listOf(
-            Configs.onInvite,
-            Configs.onNamedHome,
-            Configs.onFriendHome
-    )
+    override fun configs(): List<Boolean> = listOf(onInvite, onNamedHome, onFriendHome)
 
     override fun isValidArgs(args: List<String>): Boolean = args.size == 2
 

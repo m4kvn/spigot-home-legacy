@@ -2,7 +2,7 @@ package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
 import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Permission
+import com.masahirosaito.spigot.homes.Permission.home_command_list
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
@@ -16,13 +16,10 @@ import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
-class ListCommand(override val plugin: Homes) : PlayerCommand {
+class ListCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "list"
     override val description: String = DESCRIPTION()
-    override val permissions: List<String> = listOf(
-            Permission.home_command,
-            Permission.home_command_list
-    )
+    override val permissions: List<String> = listOf(home_command_list)
     override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home list" to USAGE_LIST(),
             "/home list <player_name>" to USAGE_LIST_PLAYER()
@@ -31,7 +28,7 @@ class ListCommand(override val plugin: Homes) : PlayerCommand {
             ListPlayerCommand(this)
     )
 
-    override fun fee(): Double = plugin.fee.LIST
+    override fun fee(): Double = homes.fee.LIST
 
     override fun configs(): List<Boolean> = listOf()
 
