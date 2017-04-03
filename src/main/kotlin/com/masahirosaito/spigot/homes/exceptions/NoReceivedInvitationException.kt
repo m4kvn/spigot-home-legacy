@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.Strings
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
 
 class NoReceivedInvitationException :
-        HomesException(Strings.INVITE_NO_RECEIVED())
+        HomesException(NO_RECEIVED_INVITATION())

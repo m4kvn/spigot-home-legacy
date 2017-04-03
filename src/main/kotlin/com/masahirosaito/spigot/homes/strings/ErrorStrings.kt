@@ -25,6 +25,14 @@ object ErrorStrings {
             error.NO_PERMISSION
                     .replace(PERMISSION_NAME, permission)
 
+    fun NO_ONLINE_PLAYER(playerName: String) =
+            error.NO_ONLINE_PLAYER
+                    .replace(PLAYER_NAME, playerName)
+
+    fun NO_OFFLINE_PLAYER(playerName: String) =
+            error.NO_OFFLINE_PLAYER
+                    .replace(PLAYER_NAME, playerName)
+
     fun NO_VAULT() =
             error.NO_VAULT
 

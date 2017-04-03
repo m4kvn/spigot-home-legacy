@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.Strings
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.HOME_LIMIT
 
 class LimitHomeException(limit: Int) :
-        HomesException(Strings.HOME_LIMIT(limit))
+        HomesException(HOME_LIMIT(limit))

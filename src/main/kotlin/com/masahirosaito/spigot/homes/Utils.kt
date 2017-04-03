@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOfflinePlayerException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOnlinePlayerException
+import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.homedata.LocationData
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -23,11 +24,11 @@ fun findOnlinePlayer(name: String): Player {
 }
 
 fun findOfflinePlayer(uuid: UUID): OfflinePlayer {
-    return Bukkit.getOfflinePlayer(uuid) ?: throw  Exception("Player is not exist")
+    return Bukkit.getOfflinePlayer(uuid) ?: throw  HomesException("Player is not exist")
 }
 
 fun findOnlinePlayer(uuid: UUID): Player {
-    return Bukkit.getPlayer(uuid) ?: throw Exception("Player is not online")
+    return Bukkit.getPlayer(uuid) ?: throw HomesException("Player is not online")
 }
 
 fun getPrivateStatic(clazz: Class<*>, f: String): Any? {
@@ -59,5 +60,5 @@ fun <T> toJson(data: T): String {
 }
 
 fun <T> saveData(file: File, data: T) {
-    file.writeText(toJson(data))
+    file.writeText(toJson(data), Charsets.UTF_8)
 }

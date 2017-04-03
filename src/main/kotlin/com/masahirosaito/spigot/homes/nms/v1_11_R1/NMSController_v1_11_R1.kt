@@ -1,9 +1,10 @@
 package com.masahirosaito.spigot.homes.nms.v1_11_R1
 
-import com.masahirosaito.spigot.homes.Strings
 import com.masahirosaito.spigot.homes.nms.HomesEntity
-import com.masahirosaito.spigot.homes.nms.NMSEntityArmorStand
 import com.masahirosaito.spigot.homes.nms.NMSController
+import com.masahirosaito.spigot.homes.nms.NMSEntityArmorStand
+import com.masahirosaito.spigot.homes.strings.HomeDisplayStrings.DEFAULT_HOME_DISPLAY_NAME
+import com.masahirosaito.spigot.homes.strings.HomeDisplayStrings.NAMED_HOME_DISPLAY_NAME
 import org.bukkit.craftbukkit.v1_11_R1.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
 
@@ -15,9 +16,9 @@ class NMSController_v1_11_R1 : NMSController {
 
     override fun spawn(homesEntity: HomesEntity): List<NMSEntityArmorStand> {
         val texts = if (homesEntity.homeName == null) {
-            Strings.DEFAULT_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name).split("\n")
+            DEFAULT_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name).split("\n")
         } else {
-            Strings.NAMED_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name, homesEntity.homeName!!).split("\n")
+            NAMED_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name, homesEntity.homeName!!).split("\n")
         }
         val list: MutableList<NMSEntityArmorStand> = mutableListOf()
         val location = homesEntity.location

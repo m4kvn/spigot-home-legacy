@@ -23,6 +23,7 @@ object Strings {
                 HelpCommandStrings.load(this)
                 PrivateCommandStrings.load(this)
                 SetCommandStrings.load(this)
+                ListCommandStrings.load(this)
             }
         }
     }
