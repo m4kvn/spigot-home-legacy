@@ -2,8 +2,6 @@ package com.masahirosaito.spigot.homes.strings
 
 import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.strings.ErrorStrings
-import com.masahirosaito.spigot.homes.strings.HomeDisplayStrings
 import com.masahirosaito.spigot.homes.strings.commands.*
 
 object Strings {

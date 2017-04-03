@@ -21,7 +21,7 @@ interface MainCommand : CommandExecutor, BaseCommand {
                 executeCommand(sender!!, argsList)
             }
         } catch (e: HomesException) {
-            send(sender!!, e.getColorMsg())
+            send(sender!!, e.message)
         } catch (e: Exception) {
             e.printStackTrace()
         }

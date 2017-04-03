@@ -27,10 +27,17 @@ class Homes : JavaPlugin {
             dataFolder: File, file: File
     ) : super(loader, description, dataFolder, file)
 
-    override fun onEnable() {
+    override fun onLoad() {
+        super.onLoad()
         Configs.load(this)
         Strings.load(this)
         Messenger.load(this)
+    }
+
+    override fun onEnable() {
+//        Configs.load(this)
+//        Strings.load(this)
+//        Messenger.load(this)
         PlayerDataManager.load(this)
         UpdateChecker.checkUpdate(this)
 

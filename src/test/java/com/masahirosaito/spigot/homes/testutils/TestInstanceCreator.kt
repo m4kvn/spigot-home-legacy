@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.testutils
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import net.milkbowl.vault.economy.Economy
@@ -105,6 +106,9 @@ object TestInstanceCreator {
             }
 
             homes.onLoad()
+
+            Configs.onUpdateCheck = false
+
             homes.onEnable()
 
             command = pluginCommand.executor

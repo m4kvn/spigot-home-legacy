@@ -213,4 +213,14 @@ class HomesTest {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("invite"))
         assertThat(nepian.lastMsg(), `is`(NO_RECEIVED_INVITATION()))
     }
+
+    @Test
+    fun コマンドの説明一覧を表示するコマンドの実行ができる() {
+        assertTrue(command.onCommand(nepian, pluginCommand, "home", arrayOf("help")))
+    }
+
+    @Test
+    fun コマンドの使い方を表示するコマンドの実行ができる() {
+        assertTrue(command.onCommand(nepian, pluginCommand, "home", arrayOf("help", "home")))
+    }
 }
