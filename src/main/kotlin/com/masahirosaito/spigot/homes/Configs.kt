@@ -5,6 +5,8 @@ import java.io.File
 
 object Configs {
 
+    var language: String = "en"
+
     var onDebug: Boolean = false
 
     var onNamedHome: Boolean = true
@@ -24,7 +26,8 @@ object Configs {
     var onHomeDisplay: Boolean = true
 
     fun load(homes: Homes) {
-        ConfigData.load(File(homes.dataFolder, "configs.json").load()).let {
+        loadData(File(homes.dataFolder, "configs.json").load(), ConfigData::class.java).let {
+            language = it.language
             onDebug = it.onDebug
             onNamedHome = it.onNamedHome
             onFriendHome = it.onFriendHome
