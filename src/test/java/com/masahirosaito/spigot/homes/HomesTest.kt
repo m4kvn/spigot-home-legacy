@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
+import com.masahirosaito.spigot.homes.datas.ConfigData
 import com.masahirosaito.spigot.homes.datas.FeeData
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
 import com.masahirosaito.spigot.homes.strings.Strings
@@ -18,8 +19,10 @@ import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEF
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.configFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.minene
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.namedLocation
@@ -230,5 +233,15 @@ class HomesTest {
     @Test
     fun コマンドの使い方を表示するコマンドの実行ができる() {
         assertTrue(command.onCommand(nepian, pluginCommand, "home", arrayOf("help", "home")))
+    }
+
+    @Test
+    fun コンソールからプラグインをリロードするコマンドの実行ができる() {
+        command.onCommand(homeConsoleCommandSender, pluginCommand, "home", arrayOf("reload"))
+    }
+
+    @Test
+    fun プレイヤーからプラグインをリロードするコマンドの実行ができる() {
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("reload"))
     }
 }

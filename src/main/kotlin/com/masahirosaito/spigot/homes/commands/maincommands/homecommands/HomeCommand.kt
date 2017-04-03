@@ -12,6 +12,7 @@ import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpComm
 import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.InviteCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.listcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.privatecommands.PrivateCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.reloadcommands.ReloadCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
 import com.masahirosaito.spigot.homes.exceptions.DefaultHomePrivateException
 import com.masahirosaito.spigot.homes.exceptions.NamedHomePrivateException
@@ -42,7 +43,8 @@ class HomeCommand(override val homes: Homes) : MainCommand, PlayerCommand {
             PrivateCommand(homes),
             InviteCommand(homes),
             ListCommand(homes),
-            HelpCommand(this)
+            HelpCommand(this),
+            ReloadCommand(homes)
     )
     override val commands: List<BaseCommand> = listOf(
             HomeNameCommand(this),

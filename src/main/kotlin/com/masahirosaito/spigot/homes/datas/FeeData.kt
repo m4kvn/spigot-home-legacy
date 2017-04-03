@@ -53,5 +53,8 @@ data class FeeData(
         var INVITE_PLAYER: Double = 0.0,
 
         @SerializedName("Invite Player Name Command Fee")
-        var INVITE_PLAYER_NAME: Double = 0.0
+        var INVITE_PLAYER_NAME: Double = 0.0,
+
+        @SerializedName("Reload Command Fee")
+        var RELOAD: Double = 0.0
 )

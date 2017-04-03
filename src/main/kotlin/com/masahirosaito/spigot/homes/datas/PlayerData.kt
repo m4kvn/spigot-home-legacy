@@ -26,4 +26,9 @@ data class PlayerData(
             namedHomes.forEach { if (it.inChunk(chunk)) add(it) }
         }
     }
+
+    fun load(): PlayerData = this.apply {
+        defaultHome?.let { if (it.location.chunk.isLoaded) it.spawnEntities() }
+        namedHomes.forEach { if (it.location.chunk.isLoaded) it.spawnEntities() }
+    }
 }

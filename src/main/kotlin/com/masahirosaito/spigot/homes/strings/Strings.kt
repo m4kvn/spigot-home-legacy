@@ -27,6 +27,7 @@ object Strings {
                 PrivateCommandStrings.load(this)
                 SetCommandStrings.load(this)
                 ListCommandStrings.load(this)
+                ReloadCommandStrings.load(this)
             }
         }
     }
