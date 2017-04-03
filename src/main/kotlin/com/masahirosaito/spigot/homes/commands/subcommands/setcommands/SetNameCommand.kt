@@ -5,7 +5,7 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
 import org.bukkit.entity.Player
 
 class SetNameCommand(setCommand: SetCommand) : SubCommand(setCommand), PlayerCommand {
@@ -24,7 +24,6 @@ class SetNameCommand(setCommand: SetCommand) : SubCommand(setCommand), PlayerCom
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.setNamedHome(player, player.location, args[0])
-        send(player, "${ChatColor.AQUA}Successfully set as ${ChatColor.GOLD}home named" +
-                " <${ChatColor.RESET}${args[0]}${ChatColor.GOLD}>${ChatColor.RESET}")
+        send(player, SET_NAMED_HOME(args[0]))
     }
 }

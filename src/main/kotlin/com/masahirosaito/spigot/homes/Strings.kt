@@ -2,8 +2,7 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.strings.ErrorStrings
 import com.masahirosaito.spigot.homes.strings.HomeDisplayStrings
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings
-import com.masahirosaito.spigot.homes.strings.commands.RemoveCommandStrings
+import com.masahirosaito.spigot.homes.strings.commands.*
 
 object Strings {
     val PLAYER_NAME = "[player-name]"
@@ -18,8 +17,12 @@ object Strings {
             HomeDisplayStrings.load(this)
 
             "$this/commands".apply {
-                RemoveCommandStrings.load(this)
+                HomeCommandStrings.load(this)
+                DeleteCommandStrings.load(this)
                 InviteCommandStrings.load(this)
+                HelpCommandStrings.load(this)
+                PrivateCommandStrings.load(this)
+                SetCommandStrings.load(this)
             }
         }
     }

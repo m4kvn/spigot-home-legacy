@@ -5,7 +5,8 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_DEFAULT_HOME_INVITATION_TO
 import org.bukkit.entity.Player
 
 class InvitePlayerCommand(val inviteCommand: InviteCommand) : SubCommand(inviteCommand), PlayerCommand {
@@ -29,20 +30,8 @@ class InvitePlayerCommand(val inviteCommand: InviteCommand) : SubCommand(inviteC
 
     private fun inviteDefaultHome(player: Player, playerName: String) {
         val entity = PlayerDataManager.findDefaultHome(player)
-        inviteCommand.inviteHome(entity, player, playerName, msgReceiveInvitationFrom(player.name))
-        send(player, msgInvite(playerName))
-    }
-
-    private fun msgReceiveInvitationFrom(playerName: String) = buildString {
-        append("${ChatColor.YELLOW}You have been invited from")
-        append(" ${ChatColor.RESET}$playerName${ChatColor.YELLOW} to default home.\n")
-        append("To accept an invitation, please run ${ChatColor.AQUA}/home invite")
-        append(" ${ChatColor.YELLOW}within ${ChatColor.LIGHT_PURPLE}30 seconds${ChatColor.RESET}")
-    }
-
-    private fun msgInvite(playerName: String) = buildString {
-        append("${ChatColor.YELLOW}You invited")
-        append(" ${ChatColor.RESET}$playerName${ChatColor.YELLOW}")
-        append(" to your default home")
+        inviteCommand.inviteHome(entity, player, playerName,
+                RECEIVE_DEFAULT_HOME_INVITATION_FROM(player.name))
+        send(player, SEND_DEFAULT_HOME_INVITATION_TO(playerName))
     }
 }

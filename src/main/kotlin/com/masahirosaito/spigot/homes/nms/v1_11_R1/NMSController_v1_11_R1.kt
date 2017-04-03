@@ -14,7 +14,11 @@ class NMSController_v1_11_R1 : NMSController {
     }
 
     override fun spawn(homesEntity: HomesEntity): List<NMSEntityArmorStand> {
-        val texts = Strings.HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name, homesEntity.homeName).split("\n")
+        val texts = if (homesEntity.homeName == null) {
+            Strings.DEFAULT_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name).split("\n")
+        } else {
+            Strings.NAMED_HOME_DISPLAY_NAME(homesEntity.offlinePlayer.name, homesEntity.homeName!!).split("\n")
+        }
         val list: MutableList<NMSEntityArmorStand> = mutableListOf()
         val location = homesEntity.location
 

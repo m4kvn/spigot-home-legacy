@@ -10,19 +10,22 @@ import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.nms.HomesEntity
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.DESCRIPTION
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST_PLAYER
 import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 
 class ListCommand(override val plugin: Homes) : PlayerCommand {
     override val name: String = "list"
-    override val description: String = "Display the list of your homes"
+    override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
             Permission.home_command,
             Permission.home_command_list
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home list" to "Display the list of homes",
-            "/home list <player_name>" to "Display the list of player's homes"
+            "/home list" to USAGE_LIST(),
+            "/home list <player_name>" to USAGE_LIST_PLAYER()
     ))
     override val commands: List<BaseCommand> = listOf(
             ListPlayerCommand(this)

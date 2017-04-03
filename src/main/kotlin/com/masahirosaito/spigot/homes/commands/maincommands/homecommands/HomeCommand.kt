@@ -13,22 +13,28 @@ import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.Invite
 import com.masahirosaito.spigot.homes.commands.subcommands.listcommands.ListCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.privatecommands.PrivateCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
-import com.masahirosaito.spigot.homes.exceptions.PrivateHomeException
+import com.masahirosaito.spigot.homes.exceptions.DefaultHomePrivateException
+import com.masahirosaito.spigot.homes.exceptions.NamedHomePrivateException
+import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.DESCRIPTION
+import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.USAGE_HOME
+import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.USAGE_HOME_NAME
+import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.USAGE_HOME_NAME_PLAYER
+import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.USAGE_HOME_PLAYER
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
     override val name: String = "home"
-    override val description: String = "Homes Command"
+    override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
             Permission.home_command
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home" to "Teleport to your default home",
-            "/home <home_name>" to "Teleport to your named home",
-            "/home -p <player_name>" to "Teleport to player's default home",
-            "/home <home_name> -p <player_name>" to "Teleport to player's named home"
+            "/home" to USAGE_HOME(),
+            "/home <home_name>" to USAGE_HOME_NAME(),
+            "/home -p <player_name>" to USAGE_HOME_PLAYER(),
+            "/home <home_name> -p <player_name>" to USAGE_HOME_NAME_PLAYER()
     ))
     override val subCommands: List<BaseCommand> = listOf(
             SetCommand(plugin),
@@ -57,11 +63,11 @@ class HomeCommand(override val plugin: Homes) : MainCommand, PlayerCommand {
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {
         if (homeName == null) {
             return PlayerDataManager.findDefaultHome(player).apply {
-                if (isPrivate && !isOwner(player)) throw PrivateHomeException(player)
+                if (isPrivate && !isOwner(player)) throw DefaultHomePrivateException(player)
             }.location
         } else {
             return PlayerDataManager.findNamedHome(player, homeName).apply {
-                if (isPrivate && !isOwner(player)) throw PrivateHomeException(player, homeName)
+                if (isPrivate && !isOwner(player)) throw NamedHomePrivateException(player, homeName)
             }.location
         }
     }

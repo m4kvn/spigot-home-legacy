@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
 
 class Homes : JavaPlugin {
-    val fee: FeeData = loadData(File(dataFolder, "fee.json").load(), FeeData::class.java)
+    val fee: FeeData = loadFeeData()
     var econ: Economy? = null
 
     constructor() : super()
@@ -31,19 +31,20 @@ class Homes : JavaPlugin {
         Strings.load(this)
         Messenger.load(this)
         PlayerDataManager.load(this)
-
-        getCommand("home").executor = HomeCommand(this)
-        PlayerRespawnListener(this).register()
-        PlayerJoinListener(this).register()
-        ChunkLoadListener(this).register()
-        ChunkUnLoadListener(this).register()
         UpdateChecker.checkUpdate(this)
+
+        registerCommands()
+        registerListeners()
 
         econ = loadEconomy()
     }
 
     override fun onDisable() {
         PlayerDataManager.save()
+    }
+
+    private fun loadFeeData() : FeeData {
+        return loadData(File(dataFolder, "fee.json").load(), FeeData::class.java)
     }
 
     private fun loadEconomy(): Economy? {
@@ -57,5 +58,16 @@ class Homes : JavaPlugin {
             }
             return it.provider
         }
+    }
+
+    private fun registerCommands() {
+        getCommand("home").executor = HomeCommand(this)
+    }
+
+    private fun registerListeners() {
+        PlayerRespawnListener(this).register()
+        PlayerJoinListener(this).register()
+        ChunkLoadListener(this).register()
+        ChunkUnLoadListener(this).register()
     }
 }

@@ -5,7 +5,8 @@ import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
-import org.bukkit.ChatColor
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
 import org.bukkit.entity.Player
 
 class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCommand), PlayerCommand {
@@ -26,12 +27,10 @@ class PrivateNameCommand(privateCommand: PrivateCommand) : SubCommand(privateCom
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
             PlayerDataManager.setNamedHomePrivate(player, args[1], true)
-            send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
-                    " ${ChatColor.YELLOW}PRIVATE${ChatColor.RESET}")
+            send(player, SET_NAMED_HOME_PRIVATE(args[1]))
         } else {
             PlayerDataManager.setNamedHomePrivate(player, args[1], false)
-            send(player, "Set your home named <${ChatColor.LIGHT_PURPLE}${args[1]}${ChatColor.RESET}>" +
-                    " ${ChatColor.AQUA}PUBLIC${ChatColor.RESET}")
+            send(player, SET_NAMED_HOME_PUBLIC(args[1]))
         }
     }
 }
