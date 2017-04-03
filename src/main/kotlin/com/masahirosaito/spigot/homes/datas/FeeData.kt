@@ -1,9 +1,6 @@
 package com.masahirosaito.spigot.homes.datas
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
-import java.io.File
 
 data class FeeData(
 
@@ -57,17 +54,4 @@ data class FeeData(
 
         @SerializedName("Invite Player Name Command Fee")
         var INVITE_PLAYER_NAME: Double = 0.0
-) {
-
-    private fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
-
-    fun save(file: File) = file.writeText(toJson())
-
-    companion object {
-        fun load(file: File): FeeData {
-            return Gson().fromJson(file.readText().let {
-                if (it.isNullOrBlank()) FeeData().toJson() else it
-            }, FeeData::class.java).apply { save(file) }
-        }
-    }
-}
+)
