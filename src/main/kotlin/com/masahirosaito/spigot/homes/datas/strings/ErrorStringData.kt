@@ -17,5 +17,5 @@ data class ErrorStringData(
         val ALREADY_HAS_INVITATION: String = "&c[player-name] already has another invitation&r",
         val NOT_ALLOW_BY_CONFIG: String = "&cNot allowed by the configuration of this server&r",
         val ARGUMENT_INCORRECT: String = "&cThe argument is incorrect\n[command-usage]&r",
-        val INVALID_COMMAND_SENDER: String = "CommandSender is invalid"
+        val INVALID_COMMAND_SENDER: String = "&cCommandSender is invalid&r"
 )

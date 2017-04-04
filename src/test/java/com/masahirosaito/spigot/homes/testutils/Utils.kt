@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.testutils
 
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.File
@@ -47,3 +48,5 @@ fun Player.acceptInvitation() {
 fun CommandSender.executeHomeCommand(vararg args: String?) {
     command.onCommand(this, pluginCommand, "home", args)
 }
+
+fun HomesConsoleCommandSender.lastMsg() = spyLogger.logs.lastOrNull()
