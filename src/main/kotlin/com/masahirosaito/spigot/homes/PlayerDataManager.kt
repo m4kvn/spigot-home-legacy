@@ -53,8 +53,7 @@ object PlayerDataManager {
     }
 
     fun findNamedHome(offlinePlayer: OfflinePlayer, homeName: String): HomesEntity {
-        return findPlayerData(offlinePlayer).namedHomes.find { it.homeName == homeName } ?:
-                throw NoNamedHomeException(offlinePlayer, homeName)
+        return findPlayerData(offlinePlayer).getNamedHome(homeName)
     }
 
     fun hasDefaultHome(offlinePlayer: OfflinePlayer): Boolean {
@@ -62,7 +61,7 @@ object PlayerDataManager {
     }
 
     fun hasNamedHome(offlinePlayer: OfflinePlayer, homeName: String): Boolean {
-        return findPlayerData(offlinePlayer).namedHomes.any { it.homeName == homeName }
+        return findPlayerData(offlinePlayer).hasNamedHome(homeName)
     }
 
     fun setDefaultHome(offlinePlayer: OfflinePlayer, location: Location) {
@@ -77,13 +76,13 @@ object PlayerDataManager {
     }
 
     fun setNamedHome(offlinePlayer: OfflinePlayer, location: Location, homeName: String) {
-        findPlayerData(offlinePlayer).let { playerData ->
+        findPlayerData(offlinePlayer).let { (_, _, namedHomes) ->
             if (hasNamedHome(offlinePlayer, homeName)) {
                 val limit = Configs.homeLimit
-                if (limit != -1 && playerData.namedHomes.size >= limit) throw LimitHomeException(limit)
+                if (limit != -1 && namedHomes.size >= limit) throw LimitHomeException(limit)
                 removeNamedHome(offlinePlayer, homeName)
             }
-            playerData.namedHomes.add(HomesEntity(offlinePlayer, location, homeName).apply {
+            namedHomes.add(HomesEntity(offlinePlayer, location, homeName).apply {
                 spawnEntities()
             })
         }
@@ -95,9 +94,7 @@ object PlayerDataManager {
     }
 
     fun removeNamedHome(offlinePlayer: OfflinePlayer, homeName: String) {
-        findNamedHome(offlinePlayer, homeName).apply { despawnEntities() }.apply {
-            findPlayerData(offlinePlayer).namedHomes.remove(this)
-        }
+        findPlayerData(offlinePlayer).removeNamedHome(homeName)
     }
 
     fun setDefaultHomePrivate(offlinePlayer: OfflinePlayer, isPrivate: Boolean) {
