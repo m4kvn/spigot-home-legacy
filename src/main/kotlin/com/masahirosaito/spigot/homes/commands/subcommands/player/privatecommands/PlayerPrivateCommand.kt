@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player.privatecommands
 
 import com.masahirosaito.spigot.homes.Configs.onPrivate
-import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_private
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
@@ -14,17 +14,16 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USA
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USAGE_PRIVATE_NAME
 import org.bukkit.entity.Player
 
-class PrivateCommand(override val homes: Homes) : PlayerCommand {
+class PlayerPrivateCommand : PlayerCommand {
     override val name: String = "private"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_private)
-    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
-    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home private (on/off)" to USAGE_PRIVATE(),
             "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME()
     ))
     override val commands: List<BaseCommand> = listOf(
-            PrivateNameCommand(this)
+            PlayerPrivateNameCommand(this)
     )
 
     override fun fee(): Double = homes.fee.PRIVATE

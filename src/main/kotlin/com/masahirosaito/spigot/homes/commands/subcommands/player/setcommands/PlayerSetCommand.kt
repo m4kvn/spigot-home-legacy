@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player.setcommands
 
-import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_set
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
@@ -12,17 +12,16 @@ import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_S
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_SET_NAME
 import org.bukkit.entity.Player
 
-class SetCommand(override val homes: Homes) : PlayerCommand {
+class PlayerSetCommand : PlayerCommand {
     override val name: String = "set"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_set)
-    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
-    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home set" to USAGE_SET(),
             "/home set <home_name>" to USAGE_SET_NAME()
     ))
     override val commands: List<BaseCommand> = listOf(
-            SetNameCommand(this)
+            PlayerSetNameCommand(this)
     )
 
     override fun fee(): Double = homes.fee.SET

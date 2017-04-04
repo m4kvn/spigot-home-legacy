@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player
 
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_admin
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException

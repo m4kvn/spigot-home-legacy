@@ -11,11 +11,8 @@ import com.masahirosaito.spigot.homes.strings.ErrorStrings.NOT_ALLOW_BY_CONFIG
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_HOME
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_PERMISSION
 import com.masahirosaito.spigot.homes.testutils.*
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.minene
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -42,7 +39,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
-class ListPlayerCommandTest {
+class PlayerListPlayerCommandTest {
 
     @Before
     fun setUp() {
@@ -80,14 +77,7 @@ class ListPlayerCommandTest {
     fun プレイヤーから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
         minene.executeHomeCommand("list", "Nepian", "Minene")
         assertThat(minene.lastMsg(),
-                `is`(ARGUMENT_INCORRECT(ListCommand(homes).playerCommandUsage.toString())))
-    }
-
-    @Test
-    fun コンソールから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
-        homeConsoleCommandSender.executeHomeCommand("list", "Nepian", "Minene")
-        assertThat(homeConsoleCommandSender.lastMsg(),
-                `is`(ARGUMENT_INCORRECT(ListCommand(homes).consoleCommandUsage.toString())))
+                `is`(ARGUMENT_INCORRECT(PlayerListCommand().usage.toString())))
     }
 
     @Test
@@ -112,15 +102,5 @@ class ListPlayerCommandTest {
         minene.setPermissions(home_admin)
         minene.executeHomeCommand("list", "Nepian")
         assertThat(minene.lastMsg(), `is`(not(NO_HOME(nepian.name))))
-    }
-
-    @Test
-    fun コンソールから実行した場合はプライベートホームも表示できる() {
-        PlayerDataManager.apply {
-            setDefaultHomePrivate(nepian, true)
-            setNamedHomePrivate(nepian, "home1", true)
-        }
-        homeConsoleCommandSender.executeHomeCommand("list", "Nepian")
-        assertThat(spyLogger.logs.lastOrNull(), `is`(not(NO_HOME(nepian.name))))
     }
 }

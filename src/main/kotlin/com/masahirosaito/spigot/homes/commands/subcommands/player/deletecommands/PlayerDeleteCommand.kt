@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player.deletecommands
 
-import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_delete
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
@@ -12,15 +12,14 @@ import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAG
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAGE_DELETE_NAME
 import org.bukkit.entity.Player
 
-class DeleteCommand(override val homes: Homes) : PlayerCommand {
+class PlayerDeleteCommand : PlayerCommand {
     override val name: String = "delete"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_delete)
     override val commands: List<BaseCommand> = listOf(
-            DeleteNameCommand(this)
+            PlayerDeleteNameCommand(this)
     )
-    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
-    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home delete" to USAGE_DELETE(),
             "/home delete <home_name>" to USAGE_DELETE_NAME()
     ))

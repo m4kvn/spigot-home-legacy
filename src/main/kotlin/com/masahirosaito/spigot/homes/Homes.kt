@@ -72,7 +72,7 @@ class Homes : JavaPlugin {
     }
 
     private fun registerCommands() {
-        getCommand("home").executor = HomeCommand(this)
+        getCommand("home").executor = HomeCommand()
     }
 
     private fun registerListeners() {

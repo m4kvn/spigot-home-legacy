@@ -17,8 +17,11 @@ object ListCommandStrings {
         data = loadData(File(folderPath, "list-command.json").load(), ListCommandStringData::class.java)
     }
 
-    fun DESCRIPTION() =
-            data.DESCRIPTION
+    fun DESCRIPTION_PLAYER_COMMAND() =
+            data.DESCRIPTION_PLAYER_COMMAND
+
+    fun DESCRIPTION_CONSOLE_COMMAND() =
+            data.DESCRIPTION_CONSOLE_COMMAND
 
     fun USAGE_CONSOLE_COMMAND_LIST() =
             data.USAGE_CONSOLE_COMMAND_LIST

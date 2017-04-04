@@ -1,10 +1,10 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.player.listcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.console.helpcommands
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.ARGUMENT_INCORRECT
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_COMMAND
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
 import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
 import com.masahirosaito.spigot.homes.testutils.lastMsg
 import org.bukkit.Bukkit
@@ -32,7 +32,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
-class ListCommandTest {
+class ConsoleHelpUsageCommandTest {
 
     @Before
     fun setUp() {
@@ -45,8 +45,22 @@ class ListCommandTest {
     }
 
     @Test
-    fun プレイヤーからコマンドを実行した場合はホームリストを表示する() {
-        nepian.executeHomeCommand("list")
-        assertThat(nepian.lastMsg(), `is`(HOME_LIST(PlayerDataManager.findPlayerData(nepian), false)))
+    fun コンソールからコマンドを実行した場合はコンソールコマンド以外の使い方は表示できない() {
+        homeConsoleCommandSender.executeHomeCommand("help", "home")
+        assertThat(homeConsoleCommandSender.lastMsg(), `is`(NO_COMMAND("home")))
+    }
+
+    @Test
+    fun コンソールからコマンドを実行した場合はコンソールコマンドの使い方を表示する() {
+        homeConsoleCommandSender.executeHomeCommand("help", "help")
+        assertThat(homeConsoleCommandSender.lastMsg(),
+                `is`(ConsoleHelpCommand().usage.toString()))
+    }
+
+    @Test
+    fun コンソールから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
+        homeConsoleCommandSender.executeHomeCommand("help", "home", "help")
+        assertThat(homeConsoleCommandSender.lastMsg(),
+                `is`(ARGUMENT_INCORRECT(ConsoleHelpCommand().usage.toString())))
     }
 }

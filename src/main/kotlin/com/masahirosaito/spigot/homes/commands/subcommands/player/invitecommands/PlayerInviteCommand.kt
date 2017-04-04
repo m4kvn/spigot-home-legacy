@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player.invitecommands
 
 import com.masahirosaito.spigot.homes.Configs.onInvite
-import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
@@ -21,20 +21,19 @@ import org.bukkit.entity.Player
 import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
-class InviteCommand(override val homes: Homes) : PlayerCommand {
+class PlayerInviteCommand : PlayerCommand {
     private val INVITE_META = "homes.invite"
     override val name: String = "invite"
     override val description: String = InviteCommandStrings.DESCRIPTION()
     override val permissions: List<String> = listOf()
-    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
-    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home invite" to USAGE_INVITE(),
             "/home invite <player_name>" to USAGE_INVITE_PLAYER(),
             "/home invite <player_name> <home_name>" to USAGE_INVITE_PLAYER_NAME()
     ))
     override val commands: List<BaseCommand> = listOf(
-            InvitePlayerCommand(this),
-            InvitePlayerNameCommand(this)
+            PlayerInvitePlayerCommand(this),
+            PlayerInvitePlayerNameCommand(this)
     )
 
     override fun fee(): Double = homes.fee.INVITE

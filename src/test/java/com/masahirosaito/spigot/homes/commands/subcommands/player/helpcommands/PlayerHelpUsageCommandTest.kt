@@ -5,13 +5,9 @@ import com.masahirosaito.spigot.homes.Permission.home_command_help
 import com.masahirosaito.spigot.homes.Permission.home_command_help_command
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.ARGUMENT_INCORRECT
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_COMMAND
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_PERMISSION
 import com.masahirosaito.spigot.homes.testutils.*
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -25,7 +21,8 @@ import org.bukkit.plugin.ServicesManager
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,13 +33,11 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
-class HelpUsageCommandTest {
-    lateinit private var helpCommand: HelpCommand
+class PlayerHelpUsageCommandTest {
 
     @Before
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
-        helpCommand = HelpCommand(HomeCommand(homes))
     }
 
     @After
@@ -66,36 +61,16 @@ class HelpUsageCommandTest {
     }
 
     @Test
-    fun コンソールからコマンドを実行した場合はコンソールコマンド以外の使い方は表示できない() {
-        homeConsoleCommandSender.executeHomeCommand("help", "home")
-        assertThat(homeConsoleCommandSender.lastMsg(), `is`(NO_COMMAND("home")))
-    }
-
-    @Test
-    fun コンソールからコマンドを実行した場合はコンソールコマンドの使い方を表示する() {
-        homeConsoleCommandSender.executeHomeCommand("help", "help")
-        assertThat(homeConsoleCommandSender.lastMsg(),
-                `is`(helpCommand.consoleCommandUsage.toString()))
-    }
-
-    @Test
     fun プレイヤーからコマンドを実行した場合はプレイヤーコマンドの使い方を表示する() {
         nepian.executeHomeCommand("help", "home")
         assertThat(nepian.lastMsg(),
-                `is`(HomeCommand(homes).playerCommandUsage.toString()))
+                `is`(HomeCommand().usage.toString()))
     }
 
     @Test
     fun プレイヤーから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
         nepian.executeHomeCommand("help", "home", "help")
         assertThat(nepian.lastMsg(),
-                `is`(ARGUMENT_INCORRECT(helpCommand.playerCommandUsage.toString())))
-    }
-
-    @Test
-    fun コンソールから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
-        homeConsoleCommandSender.executeHomeCommand("help", "home", "help")
-        assertThat(homeConsoleCommandSender.lastMsg(),
-                `is`(ARGUMENT_INCORRECT(helpCommand.consoleCommandUsage.toString())))
+                `is`(ARGUMENT_INCORRECT(PlayerHelpCommand().usage.toString())))
     }
 }

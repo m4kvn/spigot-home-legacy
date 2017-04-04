@@ -1,6 +1,5 @@
 package com.masahirosaito.spigot.homes.commands
 
-import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Messenger
 import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
@@ -12,7 +11,6 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
 interface BaseCommand {
-    val homes: Homes
     val name: String
     val description: String
     val usage: CommandUsage
