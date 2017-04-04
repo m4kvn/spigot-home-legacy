@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.exceptions.LimitHomeException
 import com.masahirosaito.spigot.homes.exceptions.NoDefaultHomeException
@@ -15,8 +16,7 @@ object PlayerDataManager {
     lateinit private var playerHomeDataFile: File
     private val playerDatas: MutableList<PlayerData> = mutableListOf()
 
-    fun load(homes: Homes) {
-        NMSManager.load(homes)
+    fun load() {
         playerHomeDataFile = File(homes.dataFolder, "playerhomes.json").load()
         playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDatas())
         playerDatas.forEach { it.load() }

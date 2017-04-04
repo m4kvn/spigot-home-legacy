@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
 
 class Homes : JavaPlugin {
+    companion object { lateinit var homes: Homes }
     val fee: FeeData = loadFeeData()
     var econ: Economy? = null
 
@@ -29,33 +30,28 @@ class Homes : JavaPlugin {
 
     override fun onLoad() {
         super.onLoad()
-        Configs.load(this)
-        Strings.load(this)
-        Messenger.load(this)
-        Messenger.debug("&bLoading is complete&r")
+        homes = this
+        Configs.load()
+        Strings.load()
     }
 
     override fun onEnable() {
-        Messenger.debug("&6Starting Homes onEnable&r")
-        PlayerDataManager.load(this)
-        UpdateChecker.checkUpdate(this)
+        NMSManager.load()
+        PlayerDataManager.load()
+        UpdateChecker.checkUpdate()
         registerCommands()
         registerListeners()
         econ = loadEconomy()
-        Messenger.debug("&bPlugin Homes onEnable&r")
     }
 
     override fun onDisable() {
-        Messenger.debug("&6Starting Homes onDisable&r")
         PlayerDataManager.save()
-        Messenger.debug("&bPlugin Homes onDisable&r")
     }
 
     fun reload() {
         onDisable()
         onLoad()
         onEnable()
-        Messenger.log("&bReloading is complete&r")
     }
 
     private fun loadFeeData() : FeeData {

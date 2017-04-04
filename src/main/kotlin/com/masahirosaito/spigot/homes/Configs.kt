@@ -1,10 +1,10 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.datas.ConfigData
 import java.io.File
 
 object Configs {
-    lateinit var homes: Homes
 
     var language: String = "en"
 
@@ -26,8 +26,7 @@ object Configs {
 
     var onHomeDisplay: Boolean = true
 
-    fun load(homes: Homes) {
-        this.homes = homes
+    fun load() {
 
         loadData(File(homes.dataFolder, "configs.json").load(), ConfigData::class.java).let {
             language = it.language

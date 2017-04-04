@@ -1,11 +1,10 @@
 package com.masahirosaito.spigot.homes.strings
 
 import com.masahirosaito.spigot.homes.Configs
-import com.masahirosaito.spigot.homes.Homes
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.strings.commands.*
 
 object Strings {
-    lateinit var homes: Homes
     val PLAYER_NAME = "[player-name]"
     val PERMISSION_NAME = "[permission-name]"
     val HOME_NAME = "[home-name]"
@@ -13,8 +12,7 @@ object Strings {
     val COMMAND_NAME = "[command-name]"
     val COMMAND_USAGE = "[command-usage]"
 
-    fun load(homes: Homes) {
-        this.homes = homes
+    fun load() {
 
         "${homes.dataFolder}/languages/${Configs.language}".apply {
             ErrorStrings.load(this)
