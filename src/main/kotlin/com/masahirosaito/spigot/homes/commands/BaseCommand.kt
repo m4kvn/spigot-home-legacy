@@ -2,6 +2,8 @@ package com.masahirosaito.spigot.homes.commands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Messenger
+import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.ArgumentIncorrectException
 import com.masahirosaito.spigot.homes.exceptions.InvalidCommandSenderException
 import com.masahirosaito.spigot.homes.exceptions.NotAllowByConfigException
@@ -13,9 +15,8 @@ interface BaseCommand {
     val homes: Homes
     val name: String
     val description: String
+    val usage: CommandUsage
     val commands: List<BaseCommand>
-    val playerCommandUsage: CommandUsage
-    val consoleCommandUsage: CommandUsage
 
     fun configs(): List<Boolean>
 
@@ -33,13 +34,8 @@ interface BaseCommand {
         if (configs().contains(false)) throw NotAllowByConfigException()
     }
 
-    fun checkArgs(sender: CommandSender, args: List<String>) {
-        if (!isValidArgs(args)) {
-            when (sender) {
-                is Player -> throw ArgumentIncorrectException(playerCommandUsage)
-                is ConsoleCommandSender -> throw ArgumentIncorrectException(consoleCommandUsage)
-            }
-        }
+    fun checkArgs(args: List<String>) {
+        if (!isValidArgs(args)) throw ArgumentIncorrectException(usage)
     }
 
     fun executeCommand(sender: CommandSender, args: List<String>) {

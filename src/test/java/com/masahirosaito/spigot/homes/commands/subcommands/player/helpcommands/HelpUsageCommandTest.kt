@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.helpcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.helpcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission.home_command_help

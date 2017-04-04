@@ -3,8 +3,8 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 import com.masahirosaito.spigot.homes.Configs.onFriendHome
 import com.masahirosaito.spigot.homes.Permission.home_command
 import com.masahirosaito.spigot.homes.Permission.home_command_player
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import org.bukkit.entity.Player
 

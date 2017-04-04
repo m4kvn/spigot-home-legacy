@@ -3,17 +3,17 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.BaseCommand
-import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.MainCommand
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.deletecommands.DeleteCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.helpcommands.HelpCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.invitecommands.InviteCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.listcommands.ListCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.privatecommands.PrivateCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.reloadcommands.ReloadCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.setcommands.SetCommand
+import com.masahirosaito.spigot.homes.commands.*
+import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.MainCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.deletecommands.DeleteCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.helpcommands.HelpCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.invitecommands.InviteCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.listcommands.ListCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.privatecommands.PrivateCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.reloadcommands.ReloadCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.setcommands.SetCommand
 import com.masahirosaito.spigot.homes.exceptions.DefaultHomePrivateException
 import com.masahirosaito.spigot.homes.exceptions.NamedHomePrivateException
 import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.DESCRIPTION
@@ -31,14 +31,13 @@ class HomeCommand(override val homes: Homes) : MainCommand, PlayerCommand {
     override val permissions: List<String> = listOf(
             Permission.home_command
     )
-    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
-    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+    override val usage: CommandUsage = CommandUsage(this, listOf(
             "/home" to USAGE_HOME(),
             "/home <home_name>" to USAGE_HOME_NAME(),
             "/home -p <player_name>" to USAGE_HOME_PLAYER(),
             "/home <home_name> -p <player_name>" to USAGE_HOME_NAME_PLAYER()
     ))
-    override val subCommands: List<BaseCommand> = listOf(
+    override val playerSubCommands: List<PlayerCommand> = listOf(
             SetCommand(homes),
             DeleteCommand(homes),
             PrivateCommand(homes),
@@ -47,7 +46,10 @@ class HomeCommand(override val homes: Homes) : MainCommand, PlayerCommand {
             HelpCommand(this),
             ReloadCommand(homes)
     )
-    override val commands: List<BaseCommand> = listOf(
+    override val consoleSubCommands: List<ConsoleCommand> = listOf(
+
+    )
+    override val commands: List<PlayerCommand> = listOf(
             HomeNameCommand(this),
             HomePlayerCommand(this),
             HomeNamePlayerCommand(this)

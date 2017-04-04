@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.listcommands
 
 import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
