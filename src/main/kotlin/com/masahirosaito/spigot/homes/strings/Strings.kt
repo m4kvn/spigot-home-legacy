@@ -11,6 +11,7 @@ object Strings {
     val HOME_NAME = "[home-name]"
     val HOME_LIMIT_NUM = "[home-limit-num]"
     val COMMAND_NAME = "[command-name]"
+    val COMMAND_USAGE = "[command-usage]"
 
     fun load(homes: Homes) {
         this.homes = homes

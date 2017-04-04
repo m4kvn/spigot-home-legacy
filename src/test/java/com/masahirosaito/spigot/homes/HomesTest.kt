@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
-import com.masahirosaito.spigot.homes.datas.ConfigData
 import com.masahirosaito.spigot.homes.datas.FeeData
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
 import com.masahirosaito.spigot.homes.strings.Strings
@@ -17,10 +16,8 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
-import com.masahirosaito.spigot.homes.testutils.*
-import com.masahirosaito.spigot.homes.testutils.Permission
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.configFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
@@ -30,6 +27,8 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.namedLocatio
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
+import com.masahirosaito.spigot.homes.testutils.acceptInvitation
+import com.masahirosaito.spigot.homes.testutils.lastMsg
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -146,13 +145,13 @@ class HomesTest {
 
     @Test
     fun ホームを設定するコマンドの実行ができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("setPermissions"))
         assertThat(nepian.lastMsg(), `is`(SET_DEFAULT_HOME()))
     }
 
     @Test
     fun 名前付きホームを設定するコマンドの実行ができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("setPermissions", "home1"))
         assertThat(nepian.lastMsg(), `is`(SET_NAMED_HOME("home1")))
     }
 
@@ -193,13 +192,18 @@ class HomesTest {
     }
 
     @Test
-    fun 設定されたホームの一覧を表示するコマンドの実行ができる() {
+    fun プレイヤーから設定されたホームの一覧を表示するコマンドの実行ができる() {
         assertTrue(command.onCommand(nepian, pluginCommand, "home", arrayOf("list")))
     }
 
     @Test
-    fun 他の人の設定されたホームの一覧を表示するコマンドの実行ができる() {
+    fun プレイヤーから他の人の設定されたホームの一覧を表示するコマンドの実行ができる() {
         assertTrue(command.onCommand(minene, pluginCommand, "home", arrayOf("list", "Nepian")))
+    }
+
+    @Test
+    fun コンソールから他の人の設定されたホームの一覧を表示するコマンドの実行ができる() {
+        assertTrue(command.onCommand(homeConsoleCommandSender, pluginCommand, "home", arrayOf("list", "Nepian")))
     }
 
     @Test

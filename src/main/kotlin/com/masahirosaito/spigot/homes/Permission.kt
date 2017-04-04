@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes
 
 object Permission {
+    val home_admin = "homes.admin"
     val home_update = "homes.update"
     val home_command = "homes.command"
     val home_command_name = home_command + ".name"

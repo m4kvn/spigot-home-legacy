@@ -8,7 +8,7 @@ import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.datas.PlayerData
-import com.masahirosaito.spigot.homes.exceptions.HomesException
+import com.masahirosaito.spigot.homes.exceptions.NoHomeException
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST
@@ -59,20 +59,21 @@ class ListCommand(override val homes: Homes) : PlayerCommand {
     }
 
     fun getResultMessage(playerData: PlayerData, isPlayerHomeList: Boolean) = buildString {
+        val offlinePlayer = playerData.offlinePlayer
         val defaultHome = playerData.defaultHome
         val namedHomes = playerData.namedHomes
 
         if (defaultHome == null && namedHomes.isEmpty()) {
-            throw HomesException("No homes")
+            throw NoHomeException(offlinePlayer)
         }
 
         if (isPlayerHomeList
                 .and(defaultHome != null && defaultHome.isPrivate)
                 .and(namedHomes.all { it.isPrivate })) {
-            throw HomesException("No homes")
+            throw NoHomeException(offlinePlayer)
         }
 
-        append("Home List")
+        append("${offlinePlayer.name}'s Home List")
 
         defaultHome?.let {
             if (!isPlayerHomeList || !it.isPrivate) {
