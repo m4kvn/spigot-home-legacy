@@ -22,6 +22,9 @@ object ErrorStrings {
             error.NO_COMMAND
                     .replace(COMMAND_NAME, commandName)
 
+    fun NO_CONSOLE_COMMAND() =
+            error.NO_CONSOLE_COMMAND
+
     fun NO_PERMISSION(permission: String) =
             error.NO_PERMISSION
                     .replace(PERMISSION_NAME, permission)

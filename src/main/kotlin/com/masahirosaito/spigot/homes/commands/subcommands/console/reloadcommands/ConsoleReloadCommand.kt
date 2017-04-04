@@ -13,7 +13,7 @@ class ConsoleReloadCommand : ConsoleCommand {
     override val description: String = DESCRIPTION()
     override val commands: List<BaseCommand> = listOf()
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home reload" to USAGE_RELOAD()
+            "home reload" to USAGE_RELOAD()
     ))
 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {

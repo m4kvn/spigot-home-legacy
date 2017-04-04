@@ -4,6 +4,7 @@ import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand.Companion.homeCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.CONSOLE_COMMAND_LIST
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.USAGE_HELP
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.USAGE_HELP_COMMAND
@@ -14,8 +15,8 @@ class ConsoleHelpCommand : ConsoleCommand {
     override val description: String = DESCRIPTION()
     override val commands: List<BaseCommand> = listOf(ConsoleHelpUsageCommand(this))
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home help" to USAGE_HELP(),
-            "/home help <command_name>" to USAGE_HELP_COMMAND()
+            "home help" to USAGE_HELP(),
+            "home help <command_name>" to USAGE_HELP_COMMAND()
     ))
 
     override fun configs(): List<Boolean> = listOf()
@@ -23,12 +24,6 @@ class ConsoleHelpCommand : ConsoleCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
-        send(consoleCommandSender, buildString {
-            append("&6Homes command list&r\n")
-            append("&d/home help <command_name> : ${USAGE_HELP_COMMAND()}&r\n")
-            homeCommand.consoleSubCommands.forEach {
-                append("  &b${it.name}&r : ${it.description}\n")
-            }
-        })
+        send(consoleCommandSender, CONSOLE_COMMAND_LIST())
     }
 }

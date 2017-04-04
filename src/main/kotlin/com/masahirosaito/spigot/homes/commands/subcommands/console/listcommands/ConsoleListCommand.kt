@@ -16,8 +16,8 @@ class ConsoleListCommand : ConsoleCommand {
             ConsoleListPlayerCommand(this)
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home list" to USAGE_CONSOLE_COMMAND_LIST(),
-            "/home list <player_name>" to USAGE_LIST_PLAYER()
+            "home list" to USAGE_CONSOLE_COMMAND_LIST(),
+            "home list <player_name>" to USAGE_LIST_PLAYER()
     ))
 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {

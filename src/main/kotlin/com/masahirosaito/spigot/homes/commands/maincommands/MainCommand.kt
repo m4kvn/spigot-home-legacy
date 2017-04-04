@@ -1,9 +1,10 @@
 package com.masahirosaito.spigot.homes.commands.maincommands
 
 import com.masahirosaito.spigot.homes.commands.BaseCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
+import com.masahirosaito.spigot.homes.exceptions.NoConsoleCommandException
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -19,9 +20,28 @@ interface MainCommand : CommandExecutor, BaseCommand {
         val argsList = args?.toList() ?: emptyList()
 
         try {
+            if (sender is Player) {
+                if (argsList.isNotEmpty() && playerSubCommands.any { it.name == argsList[0] }) {
+                    playerSubCommands.find { it.name == argsList[0] }!!.executeCommand(sender, argsList.drop(1))
+                } else {
+                    executeCommand(sender, argsList)
+                }
+            }
             when (sender) {
-                is Player -> executeCommand(sender, argsList, playerSubCommands)
-                is ConsoleCommandSender -> executeCommand(sender, argsList, consoleSubCommands)
+                is Player -> {
+                    if (argsList.isNotEmpty() && playerSubCommands.any { it.name == argsList[0] }) {
+                        playerSubCommands.find { it.name == argsList[0] }!!.executeCommand(sender, argsList.drop(1))
+                    } else {
+                        executeCommand(sender, argsList)
+                    }
+                }
+                is ConsoleCommandSender -> {
+                    if (argsList.isNotEmpty() && consoleSubCommands.any { it.name == argsList[0] }) {
+                        consoleSubCommands.find { it.name == argsList[0] }!!.executeCommand(sender, argsList.drop(1))
+                    } else {
+                        throw NoConsoleCommandException()
+                    }
+                }
             }
         } catch (e: HomesException) {
             send(sender!!, e.message)
@@ -30,13 +50,5 @@ interface MainCommand : CommandExecutor, BaseCommand {
         }
 
         return true
-    }
-
-    private fun <T : BaseCommand> executeCommand(sender: CommandSender, args: List<String>, commands: List<T>) {
-        if (args.isNotEmpty() && commands.any { it.name == args[0] }) {
-            commands.find { it.name == args[0] }!!.executeCommand(sender, args.drop(1))
-        } else {
-            executeCommand(sender, args)
-        }
     }
 }

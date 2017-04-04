@@ -4,6 +4,6 @@ class CommandUsage(val baseCommand: BaseCommand, val usage: List<Pair<String, St
 
     override fun toString(): String = buildString {
         append("&6${baseCommand.name} command usage:")
-        usage.forEach { append("\n&b${it.first}&r : ${it.second}") }
+        usage.forEach { append("\n  &b${it.first}&r : ${it.second}") }
     }
 }

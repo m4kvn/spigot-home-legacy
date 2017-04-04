@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.datas.strings
 
 data class ErrorStringData(
         val NO_COMMAND: String = "&cCommand <[command-name]> does not exist&r",
+        val NO_CONSOLE_COMMAND: String = "&cConsole command is not find&r",
         val NO_PERMISSION: String = "&cYou don't have permission <[permission-name]>&r",
         val NO_ONLINE_PLAYER: String = "&cPlayer <[player-name]> does not exist&r",
         val NO_OFFLINE_PLAYER: String = "&cPlayer <[player-name]> does not exist&r",
