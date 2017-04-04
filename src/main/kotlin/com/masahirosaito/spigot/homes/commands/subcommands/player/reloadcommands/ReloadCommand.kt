@@ -1,11 +1,11 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.reloadcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.reloadcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission.home_command_reload
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.ConsoleCommand
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.ReloadCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.ReloadCommandStrings.USAGE_RELOAD
 import org.bukkit.command.ConsoleCommandSender

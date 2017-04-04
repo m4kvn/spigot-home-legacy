@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.privatecommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.privatecommands
 
 import com.masahirosaito.spigot.homes.Configs.onPrivate
 import com.masahirosaito.spigot.homes.Homes
@@ -6,7 +6,7 @@ import com.masahirosaito.spigot.homes.Permission.home_command_private
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PRIVATE
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PUBLIC

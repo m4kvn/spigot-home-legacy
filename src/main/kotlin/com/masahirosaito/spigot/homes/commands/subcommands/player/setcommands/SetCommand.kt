@@ -1,11 +1,11 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.setcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.setcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission.home_command_set
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.USAGE_SET

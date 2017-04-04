@@ -1,11 +1,11 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.deletecommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.deletecommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission.home_command_delete
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAGE_DELETE

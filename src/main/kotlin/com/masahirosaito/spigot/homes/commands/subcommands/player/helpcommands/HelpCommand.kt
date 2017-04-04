@@ -1,9 +1,12 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.helpcommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.helpcommands
 
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.Permission.home_command_help
 import com.masahirosaito.spigot.homes.commands.*
+import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.maincommands.MainCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.USAGE_HELP
 import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.USAGE_HELP_COMMAND
@@ -37,7 +40,7 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand, ConsoleCommand 
         send(player, buildString {
             append("&6Homes command list&r\n")
             append("&d/home help <command_name> : ${USAGE_HELP_COMMAND()}&r\n")
-            mainCommand.subCommands.forEach {
+            mainCommand.playerSubCommands.forEach {
                 if (it is PlayerCommand && it.hasPermission(player))
                     append("  &b${it.name}&r : ${it.description}\n")
             }
@@ -50,7 +53,7 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand, ConsoleCommand 
         send(consoleCommandSender, buildString {
             append("&6Homes command list&r\n")
             append("&d/home help <command_name> : ${USAGE_HELP_COMMAND()}&r\n")
-            mainCommand.subCommands.forEach {
+            mainCommand.playerSubCommands.forEach {
                 if (it is ConsoleCommand)
                     append("  &b${it.name}&r : ${it.description}\n")
             }

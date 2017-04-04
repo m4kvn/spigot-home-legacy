@@ -1,12 +1,12 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.privatecommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.privatecommands
 
 import com.masahirosaito.spigot.homes.Configs.onNamedHome
 import com.masahirosaito.spigot.homes.Configs.onPrivate
 import com.masahirosaito.spigot.homes.Permission.home_command_private
 import com.masahirosaito.spigot.homes.Permission.home_command_private_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
 import org.bukkit.entity.Player

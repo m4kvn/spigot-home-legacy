@@ -1,4 +1,4 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.invitecommands
 
 import com.masahirosaito.spigot.homes.Configs.onFriendHome
 import com.masahirosaito.spigot.homes.Configs.onInvite
@@ -6,8 +6,8 @@ import com.masahirosaito.spigot.homes.Configs.onNamedHome
 import com.masahirosaito.spigot.homes.Permission.home_command_invite
 import com.masahirosaito.spigot.homes.Permission.home_command_invite_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.commands.SubCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_NAMED_HOME_INVITATION_FROM
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_NAMED_HOME_INVITATION_TO
 import org.bukkit.entity.Player

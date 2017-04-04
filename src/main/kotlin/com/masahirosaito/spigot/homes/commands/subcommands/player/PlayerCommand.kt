@@ -1,6 +1,7 @@
-package com.masahirosaito.spigot.homes.commands
+package com.masahirosaito.spigot.homes.commands.subcommands.player
 
 import com.masahirosaito.spigot.homes.Permission.home_admin
+import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.exceptions.NoPermissionException
 import org.bukkit.entity.Player
@@ -15,7 +16,7 @@ interface PlayerCommand : BaseCommand {
     fun onCommand(player: Player, args: List<String>) {
         checkConfig()
         checkPermission(player)
-        checkArgs(player, args)
+        checkArgs(args)
         checkBalance(player)
         execute(player, args)
         payFee(player)

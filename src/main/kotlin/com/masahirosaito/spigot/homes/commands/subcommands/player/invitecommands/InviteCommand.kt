@@ -1,10 +1,10 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.invitecommands
+package com.masahirosaito.spigot.homes.commands.subcommands.player.invitecommands
 
 import com.masahirosaito.spigot.homes.Configs.onInvite
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
-import com.masahirosaito.spigot.homes.commands.PlayerCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.AlreadyHasInvitationException
 import com.masahirosaito.spigot.homes.exceptions.NoReceivedInvitationException
 import com.masahirosaito.spigot.homes.findOnlinePlayer

@@ -1,5 +1,6 @@
-package com.masahirosaito.spigot.homes.commands
+package com.masahirosaito.spigot.homes.commands.subcommands.console
 
+import com.masahirosaito.spigot.homes.commands.BaseCommand
 import org.bukkit.command.ConsoleCommandSender
 
 interface ConsoleCommand : BaseCommand {
@@ -8,7 +9,7 @@ interface ConsoleCommand : BaseCommand {
 
     fun onCommand(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
         checkConfig()
-        checkArgs(consoleCommandSender, args)
+        checkArgs(args)
         execute(consoleCommandSender, args)
     }
 }
