@@ -9,6 +9,7 @@ import com.masahirosaito.spigot.homes.commands.ConsoleCommand
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.commands.SubCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
@@ -23,13 +24,13 @@ class ListPlayerCommand(val listCommand: ListCommand) : SubCommand(listCommand),
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.findPlayerData(findOfflinePlayer(args[0])).let {
-            send(player, listCommand.getResultMessage(it, !player.hasPermission(home_admin)))
+            send(player, HOME_LIST(it, !player.hasPermission(home_admin)))
         }
     }
 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
         PlayerDataManager.findPlayerData(findOfflinePlayer(args[0])).let {
-            send(consoleCommandSender, listCommand.getResultMessage(it, false))
+            send(consoleCommandSender, HOME_LIST(it, false))
         }
     }
 }

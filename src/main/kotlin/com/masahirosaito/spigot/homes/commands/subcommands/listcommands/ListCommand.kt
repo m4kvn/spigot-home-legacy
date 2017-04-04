@@ -1,22 +1,21 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.listcommands
 
-import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Permission.home_command_list
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
+import com.masahirosaito.spigot.homes.commands.ConsoleCommand
 import com.masahirosaito.spigot.homes.commands.PlayerCommand
-import com.masahirosaito.spigot.homes.datas.PlayerData
-import com.masahirosaito.spigot.homes.exceptions.NoHomeException
-import com.masahirosaito.spigot.homes.nms.HomesEntity
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.DESCRIPTION
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.PLAYER_LIST
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST_PLAYER
-import org.bukkit.ChatColor
+import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
-class ListCommand(override val homes: Homes) : PlayerCommand {
+class ListCommand(override val homes: Homes) : PlayerCommand, ConsoleCommand {
     override val name: String = "list"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_list)
@@ -38,59 +37,11 @@ class ListCommand(override val homes: Homes) : PlayerCommand {
         listHome(player)
     }
 
+    override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
+        send(consoleCommandSender, PLAYER_LIST())
+    }
+
     private fun listHome(player: Player) {
-        send(player, getResultMessage(PlayerDataManager.findPlayerData(player), false))
-    }
-
-    private fun getText(homesEntity: HomesEntity): String {
-        val r = ChatColor.RESET
-        val g = ChatColor.GREEN
-        val a = ChatColor.AQUA
-        val y = ChatColor.YELLOW
-        val b = ChatColor.BLUE
-
-        val loc = homesEntity.location
-
-        return buildString {
-            append("$g${loc.world.name}$r, ")
-            append("{$a${loc.x.toInt()}$r, $a${loc.y.toInt()}$r, $a${loc.z.toInt()}$r}, ")
-            append(if (homesEntity.isPrivate) "${y}PRIVATE$r" else "${b}PUBLIC$r")
-        }
-    }
-
-    fun getResultMessage(playerData: PlayerData, isPlayerHomeList: Boolean) = buildString {
-        val offlinePlayer = playerData.offlinePlayer
-        val defaultHome = playerData.defaultHome
-        val namedHomes = playerData.namedHomes
-
-        if (defaultHome == null && namedHomes.isEmpty()) {
-            throw NoHomeException(offlinePlayer)
-        }
-
-        if (isPlayerHomeList
-                .and(defaultHome != null && defaultHome.isPrivate)
-                .and(namedHomes.all { it.isPrivate })) {
-            throw NoHomeException(offlinePlayer)
-        }
-
-        append("${offlinePlayer.name}'s Home List")
-
-        defaultHome?.let {
-            if (!isPlayerHomeList || !it.isPrivate) {
-                append("\n  [${ChatColor.GOLD}Default${ChatColor.RESET}] ${getText(it)}")
-            }
-        }
-
-        if (Configs.onNamedHome) {
-            namedHomes.filter { !isPlayerHomeList || !it.isPrivate }.apply {
-                if (isNotEmpty()) {
-                    append("\n  [${ChatColor.GOLD}Named Home${ChatColor.RESET}]\n")
-                    this.forEach {
-                        append("    ${org.bukkit.ChatColor.LIGHT_PURPLE}${it.homeName}${org.bukkit.ChatColor.RESET}")
-                        append(" : ${getText(it)}\n")
-                    }
-                }
-            }
-        }
+        send(player, HOME_LIST(PlayerDataManager.findPlayerData(player), false))
     }
 }
