@@ -89,8 +89,7 @@ object PlayerDataManager {
     }
 
     fun removeDefaultHome(offlinePlayer: OfflinePlayer) {
-        findDefaultHome(offlinePlayer).despawnEntities()
-        findPlayerData(offlinePlayer).defaultHome = null
+        findPlayerData(offlinePlayer).removeDefaultHome()
     }
 
     fun removeNamedHome(offlinePlayer: OfflinePlayer, homeName: String) {

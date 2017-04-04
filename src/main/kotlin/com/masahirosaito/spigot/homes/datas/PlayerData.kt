@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.datas
 
+import com.masahirosaito.spigot.homes.exceptions.NoDefaultHomeException
 import com.masahirosaito.spigot.homes.exceptions.NoNamedHomeException
 import com.masahirosaito.spigot.homes.homedata.PlayerHome
 import com.masahirosaito.spigot.homes.nms.HomesEntity
@@ -40,6 +41,13 @@ data class PlayerData(
     fun getNamedHome(homeName: String): HomesEntity {
         return namedHomes.find { it.homeName == homeName } ?:
                 throw NoNamedHomeException(offlinePlayer, homeName)
+    }
+
+    fun removeDefaultHome() {
+        if (defaultHome != null) {
+            defaultHome!!.despawnEntities()
+            defaultHome = null
+        }
     }
 
     fun removeNamedHome(homeName: String) {
