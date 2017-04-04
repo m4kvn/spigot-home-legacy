@@ -77,9 +77,17 @@ class ListPlayerCommandTest {
     }
 
     @Test
-    fun コマンドの引数が間違っていた場合に使い方を表示する() {
+    fun プレイヤーから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
         minene.executeHomeCommand("list", "Nepian", "Minene")
-        assertThat(minene.lastMsg(), `is`(ARGUMENT_INCORRECT(ListCommand(homes).usage.toString())))
+        assertThat(minene.lastMsg(),
+                `is`(ARGUMENT_INCORRECT(ListCommand(homes).playerCommandUsage.toString())))
+    }
+
+    @Test
+    fun コンソールから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
+        homeConsoleCommandSender.executeHomeCommand("list", "Nepian", "Minene")
+        assertThat(homeConsoleCommandSender.lastMsg(),
+                `is`(ARGUMENT_INCORRECT(ListCommand(homes).consoleCommandUsage.toString())))
     }
 
     @Test

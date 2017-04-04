@@ -18,7 +18,8 @@ class PrivateCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "private"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_private)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home private (on/off)" to USAGE_PRIVATE(),
             "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME()
     ))

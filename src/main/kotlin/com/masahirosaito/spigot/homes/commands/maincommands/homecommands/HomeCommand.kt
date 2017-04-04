@@ -31,7 +31,8 @@ class HomeCommand(override val homes: Homes) : MainCommand, PlayerCommand {
     override val permissions: List<String> = listOf(
             Permission.home_command
     )
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home" to USAGE_HOME(),
             "/home <home_name>" to USAGE_HOME_NAME(),
             "/home -p <player_name>" to USAGE_HOME_PLAYER(),

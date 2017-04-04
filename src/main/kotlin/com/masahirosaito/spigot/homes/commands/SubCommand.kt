@@ -6,6 +6,7 @@ abstract class SubCommand(command: BaseCommand) : BaseCommand {
     override val homes: Homes = command.homes
     override val name: String = command.name
     override val description: String = command.description
-    override val usage: CommandUsage = command.usage
     override val commands: List<BaseCommand> = listOf()
+    override val playerCommandUsage: CommandUsage = command.playerCommandUsage
+    override val consoleCommandUsage: CommandUsage = command.consoleCommandUsage
 }

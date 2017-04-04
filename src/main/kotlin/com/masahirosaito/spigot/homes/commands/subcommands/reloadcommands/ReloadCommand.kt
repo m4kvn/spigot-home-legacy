@@ -16,7 +16,10 @@ class ReloadCommand(override val homes: Homes) : PlayerCommand, ConsoleCommand {
     override val description: String = DESCRIPTION()
     override val commands: List<BaseCommand> = listOf()
     override val permissions: List<String> = listOf(home_command_reload)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf(
+            "/home reload" to USAGE_RELOAD()
+    ))
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home reload" to USAGE_RELOAD()
     ))
 

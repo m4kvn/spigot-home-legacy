@@ -16,13 +16,14 @@ class DeleteCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "delete"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_delete)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home delete" to USAGE_DELETE(),
-            "/home delete <home_name>" to USAGE_DELETE_NAME()
-    ))
     override val commands: List<BaseCommand> = listOf(
             DeleteNameCommand(this)
     )
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+            "/home delete" to USAGE_DELETE(),
+            "/home delete <home_name>" to USAGE_DELETE_NAME()
+    ))
 
     override fun fee(): Double = homes.fee.DELETE
 

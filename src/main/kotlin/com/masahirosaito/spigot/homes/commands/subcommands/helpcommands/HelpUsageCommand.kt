@@ -24,11 +24,11 @@ class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), 
     override fun execute(player: Player, args: List<String>) {
         helpCommand.mainCommand.let {
             if (it.name == args[0] && it is PlayerCommand && it.hasPermission(player)) {
-                return send(player, it.usage)
+                return send(player, it.playerCommandUsage)
             } else {
                 it.subCommands.find { it.name == args[0] }.let {
                     if (it != null && it is PlayerCommand && it.hasPermission(player)) {
-                        return send(player, it.usage)
+                        return send(player, it.playerCommandUsage)
                     } else throw NoSuchCommandException(args[0])
                 }
             }
@@ -38,11 +38,11 @@ class HelpUsageCommand(val helpCommand: HelpCommand) : SubCommand(helpCommand), 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
         helpCommand.mainCommand.let {
             if (it.name == args[0] && it is ConsoleCommand) {
-                return send(consoleCommandSender, it.usage)
+                return send(consoleCommandSender, it.consoleCommandUsage)
             } else {
                 it.subCommands.find { it.name == args[0] }.let {
                     if (it != null && it is ConsoleCommand) {
-                        return send(consoleCommandSender, it.usage)
+                        return send(consoleCommandSender, it.consoleCommandUsage)
                     } else throw NoSuchCommandException(args[0])
                 }
             }

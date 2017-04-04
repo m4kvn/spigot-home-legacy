@@ -8,7 +8,7 @@ interface ConsoleCommand : BaseCommand {
 
     fun onCommand(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
         checkConfig()
-        checkArgs(args)
+        checkArgs(consoleCommandSender, args)
         execute(consoleCommandSender, args)
     }
 }

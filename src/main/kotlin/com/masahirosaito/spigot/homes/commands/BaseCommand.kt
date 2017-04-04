@@ -13,8 +13,9 @@ interface BaseCommand {
     val homes: Homes
     val name: String
     val description: String
-    val usage: CommandUsage
     val commands: List<BaseCommand>
+    val playerCommandUsage: CommandUsage
+    val consoleCommandUsage: CommandUsage
 
     fun configs(): List<Boolean>
 
@@ -32,8 +33,13 @@ interface BaseCommand {
         if (configs().contains(false)) throw NotAllowByConfigException()
     }
 
-    fun checkArgs(args: List<String>) {
-        if (!isValidArgs(args)) throw ArgumentIncorrectException(usage)
+    fun checkArgs(sender: CommandSender, args: List<String>) {
+        if (!isValidArgs(args)) {
+            when (sender) {
+                is Player -> throw ArgumentIncorrectException(playerCommandUsage)
+                is ConsoleCommandSender -> throw ArgumentIncorrectException(consoleCommandUsage)
+            }
+        }
     }
 
     fun executeCommand(sender: CommandSender, args: List<String>) {

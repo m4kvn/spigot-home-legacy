@@ -15,7 +15,7 @@ interface PlayerCommand : BaseCommand {
     fun onCommand(player: Player, args: List<String>) {
         checkConfig()
         checkPermission(player)
-        checkArgs(args)
+        checkArgs(player, args)
         checkBalance(player)
         execute(player, args)
         payFee(player)

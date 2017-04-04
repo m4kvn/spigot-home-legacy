@@ -16,7 +16,8 @@ class SetCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "set"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_set)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home set" to USAGE_SET(),
             "/home set <home_name>" to USAGE_SET_NAME()
     ))

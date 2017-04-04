@@ -145,13 +145,13 @@ class HomesTest {
 
     @Test
     fun ホームを設定するコマンドの実行ができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("setPermissions"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set"))
         assertThat(nepian.lastMsg(), `is`(SET_DEFAULT_HOME()))
     }
 
     @Test
     fun 名前付きホームを設定するコマンドの実行ができる() {
-        command.onCommand(nepian, pluginCommand, "home", arrayOf("setPermissions", "home1"))
+        command.onCommand(nepian, pluginCommand, "home", arrayOf("set", "home1"))
         assertThat(nepian.lastMsg(), `is`(SET_NAMED_HOME("home1")))
     }
 

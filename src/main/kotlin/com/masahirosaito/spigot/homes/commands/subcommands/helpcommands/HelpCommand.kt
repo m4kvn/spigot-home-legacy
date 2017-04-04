@@ -15,7 +15,11 @@ class HelpCommand(val mainCommand: MainCommand) : PlayerCommand, ConsoleCommand 
     override val name: String = "help"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_help)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf(
+            "/home help" to USAGE_HELP(),
+            "/home help <command_name>" to USAGE_HELP_COMMAND()
+    ))
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home help" to USAGE_HELP(),
             "/home help <command_name>" to USAGE_HELP_COMMAND()
     ))

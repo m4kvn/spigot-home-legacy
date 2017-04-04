@@ -10,8 +10,9 @@ import com.masahirosaito.spigot.homes.commands.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.DESCRIPTION
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.PLAYER_LIST
-import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_CONSOLE_COMMAND_LIST
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST_PLAYER
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_PLAYER_COMMAND_LIST
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
@@ -19,8 +20,12 @@ class ListCommand(override val homes: Homes) : PlayerCommand, ConsoleCommand {
     override val name: String = "list"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_list)
-    override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home list" to USAGE_LIST(),
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf(
+            "/home list" to USAGE_CONSOLE_COMMAND_LIST(),
+            "/home list <player_name>" to USAGE_LIST_PLAYER()
+    ))
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
+            "/home list" to USAGE_PLAYER_COMMAND_LIST(),
             "/home list <player_name>" to USAGE_LIST_PLAYER()
     ))
     override val commands: List<BaseCommand> = listOf(

@@ -37,10 +37,12 @@ import org.powermock.modules.junit4.PowerMockRunner
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
 class HelpUsageCommandTest {
+    lateinit private var helpCommand: HelpCommand
 
     @Before
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
+        helpCommand = HelpCommand(HomeCommand(homes))
     }
 
     @After
@@ -72,18 +74,28 @@ class HelpUsageCommandTest {
     @Test
     fun コンソールからコマンドを実行した場合はコンソールコマンドの使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("help", "help")
-        assertThat(homeConsoleCommandSender.lastMsg(), `is`(HelpCommand(HomeCommand(homes)).usage.toString()))
+        assertThat(homeConsoleCommandSender.lastMsg(),
+                `is`(helpCommand.consoleCommandUsage.toString()))
     }
 
     @Test
     fun プレイヤーからコマンドを実行した場合はプレイヤーコマンドの使い方を表示する() {
         nepian.executeHomeCommand("help", "home")
-        assertThat(nepian.lastMsg(), `is`(HomeCommand(homes).usage.toString()))
+        assertThat(nepian.lastMsg(),
+                `is`(HomeCommand(homes).playerCommandUsage.toString()))
     }
 
     @Test
-    fun 引数が間違っている場合は使い方を表示する() {
+    fun プレイヤーから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
         nepian.executeHomeCommand("help", "home", "help")
-        assertThat(nepian.lastMsg(), `is`(ARGUMENT_INCORRECT(HelpCommand(HomeCommand(homes)).usage.toString())))
+        assertThat(nepian.lastMsg(),
+                `is`(ARGUMENT_INCORRECT(helpCommand.playerCommandUsage.toString())))
+    }
+
+    @Test
+    fun コンソールから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
+        homeConsoleCommandSender.executeHomeCommand("help", "home", "help")
+        assertThat(homeConsoleCommandSender.lastMsg(),
+                `is`(ARGUMENT_INCORRECT(helpCommand.consoleCommandUsage.toString())))
     }
 }

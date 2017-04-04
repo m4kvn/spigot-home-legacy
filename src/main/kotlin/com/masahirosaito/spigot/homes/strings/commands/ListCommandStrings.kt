@@ -20,8 +20,11 @@ object ListCommandStrings {
     fun DESCRIPTION() =
             data.DESCRIPTION
 
-    fun USAGE_LIST() =
-            data.USAGE_LIST
+    fun USAGE_CONSOLE_COMMAND_LIST() =
+            data.USAGE_CONSOLE_COMMAND_LIST
+
+    fun USAGE_PLAYER_COMMAND_LIST() =
+            data.USAGE_PLAYER_COMMAND_LIST
 
     fun USAGE_LIST_PLAYER() =
             data.USAGE_LIST_PLAYER

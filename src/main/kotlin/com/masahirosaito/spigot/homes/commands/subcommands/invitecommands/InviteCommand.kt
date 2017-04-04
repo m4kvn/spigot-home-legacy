@@ -26,7 +26,8 @@ class InviteCommand(override val homes: Homes) : PlayerCommand {
     override val name: String = "invite"
     override val description: String = InviteCommandStrings.DESCRIPTION()
     override val permissions: List<String> = listOf()
-    override val usage: CommandUsage = CommandUsage(this, listOf(
+    override val consoleCommandUsage: CommandUsage = CommandUsage(this, listOf())
+    override val playerCommandUsage: CommandUsage = CommandUsage(this, listOf(
             "/home invite" to USAGE_INVITE(),
             "/home invite <player_name>" to USAGE_INVITE_PLAYER(),
             "/home invite <player_name> <home_name>" to USAGE_INVITE_PLAYER_NAME()
