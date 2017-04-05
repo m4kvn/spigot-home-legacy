@@ -2,8 +2,8 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.datas.FeeData
+import com.masahirosaito.spigot.homes.exceptions.NoConsoleCommandException
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
-import com.masahirosaito.spigot.homes.strings.Strings
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
@@ -28,6 +28,7 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
 import com.masahirosaito.spigot.homes.testutils.acceptInvitation
+import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
 import com.masahirosaito.spigot.homes.testutils.lastMsg
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -252,5 +253,11 @@ class HomesTest {
     @Test
     fun プレイヤーからプラグインをリロードするコマンドの実行ができる() {
         command.onCommand(nepian, pluginCommand, "home", arrayOf("reload"))
+    }
+
+    @Test
+    fun コンソールからホームコマンドを実行した場合にエラーを表示する() {
+        homeConsoleCommandSender.executeHomeCommand()
+        assertThat(homeConsoleCommandSender.lastMsg(), `is`(NoConsoleCommandException().message))
     }
 }
