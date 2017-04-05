@@ -11,12 +11,17 @@ object Strings {
     val HOME_LIMIT_NUM = "[home-limit-num]"
     val COMMAND_NAME = "[command-name]"
     val COMMAND_USAGE = "[command-usage]"
+    val PAY_AMOUNT = "[pay-amount]"
+    val BALANCE = "[balance]"
+    val ERROR_MESSAGE = "[error-message]"
+    val COMMAND_FEE = "[command-fee]"
 
     fun load() {
 
         "${homes.dataFolder}/languages/${Configs.language}".apply {
             ErrorStrings.load(this)
             HomeDisplayStrings.load(this)
+            EconomyStrings.load(this)
 
             "$this/commands".apply {
                 HomeCommandStrings.load(this)

@@ -136,6 +136,9 @@ object TestInstanceCreator {
                 minene.randomTeleport()
             }
 
+            homes.econ?.createPlayerAccount(nepian)
+            homes.econ?.depositPlayer(nepian, 5000.0)
+
             return true
 
         } catch (e: Exception) {
@@ -149,6 +152,8 @@ object TestInstanceCreator {
         nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
         minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
+
+        (economy as MyEconomy).clear()
 
         try {
             Bukkit::class.java.getDeclaredField("server").let {

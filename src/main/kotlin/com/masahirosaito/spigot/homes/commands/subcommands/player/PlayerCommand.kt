@@ -5,6 +5,10 @@ import com.masahirosaito.spigot.homes.Permission.home_admin
 import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.exceptions.NoPermissionException
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.ECONOMY_ERROR
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.NO_ACCOUNT_ERROR
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.PAY
 import org.bukkit.entity.Player
 
 interface PlayerCommand : BaseCommand {
@@ -28,12 +32,9 @@ interface PlayerCommand : BaseCommand {
         homes.econ?.let { economy ->
             val r = economy.withdrawPlayer(player, fee())
             if (r.transactionSuccess()) {
-                send(player, buildString {
-                    append("You paid ${economy.format(r.amount)}")
-                    append(" and now have ${economy.format(r.balance)}")
-                })
+                send(player, PAY(economy.format(r.amount), economy.format(r.balance)))
             } else {
-                throw HomesException("An error occurred: ${r.errorMessage}")
+                throw HomesException(ECONOMY_ERROR(r.errorMessage))
             }
         }
     }
@@ -42,10 +43,10 @@ interface PlayerCommand : BaseCommand {
         if (fee() <= 0) return
         homes.econ?.let {
             if (!it.hasAccount(player)) {
-                throw HomesException("You are not registered as Economy")
+                throw HomesException(NO_ACCOUNT_ERROR())
             }
             if (!it.has(player, fee())) {
-                throw HomesException("You have not enough money to execute this command (fee: ${fee()})")
+                throw HomesException(NOT_ENOUGH_MONEY_ERROR(fee()))
             }
         }
     }
