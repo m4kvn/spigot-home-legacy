@@ -1,10 +1,14 @@
 package com.masahirosaito.spigot.homes.testutils
 
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.spyLogger
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.io.File
 
-fun Player.set(vararg permissions: Permission) {
-    permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.add(it.permission) }
+fun Player.setPermissions(vararg permissions: String) {
+    permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.add(it) }
 }
 
 fun Player.setOps(boolean: Boolean = true) {
@@ -15,8 +19,8 @@ val Player.logger: SpyLogger get() = MockPlayerFactory.loggers[uniqueId]!!
 
 fun Player.lastMsg() = logger.logs.lastOrNull()
 
-fun Player.remove(vararg permissions: Permission) {
-    permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.remove(it.permission) }
+fun Player.removePermissions(vararg permissions: String) {
+    permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.remove(it) }
 }
 
 fun Player.randomTeleport() {
@@ -40,3 +44,9 @@ fun Player.acceptInvitation() {
         }
     }
 }
+
+fun CommandSender.executeHomeCommand(vararg args: String?) {
+    command.onCommand(this, pluginCommand, "home", args)
+}
+
+fun HomesConsoleCommandSender.lastMsg() = spyLogger.logs.lastOrNull()

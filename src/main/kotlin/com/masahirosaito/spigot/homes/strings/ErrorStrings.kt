@@ -8,6 +8,7 @@ import com.masahirosaito.spigot.homes.strings.Strings.PLAYER_NAME
 import com.masahirosaito.spigot.homes.datas.strings.ErrorStringData
 import com.masahirosaito.spigot.homes.load
 import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.strings.Strings.COMMAND_USAGE
 import java.io.File
 
 object ErrorStrings {
@@ -20,6 +21,9 @@ object ErrorStrings {
     fun NO_COMMAND(commandName: String) =
             error.NO_COMMAND
                     .replace(COMMAND_NAME, commandName)
+
+    fun NO_CONSOLE_COMMAND() =
+            error.NO_CONSOLE_COMMAND
 
     fun NO_PERMISSION(permission: String) =
             error.NO_PERMISSION
@@ -48,6 +52,10 @@ object ErrorStrings {
                     .replace(PLAYER_NAME, playerName)
                     .replace(HOME_NAME, homeName)
 
+    fun NO_HOME(playerName: String) =
+            error.NO_HOME
+                    .replace(PLAYER_NAME, playerName)
+
     fun HOME_LIMIT(limit: Int) =
             error.HOME_LIMIT
                     .replace(HOME_LIMIT_NUM, limit.toString())
@@ -67,4 +75,14 @@ object ErrorStrings {
     fun ALREADY_HAS_INVITATION(playerName: String) =
             error.ALREADY_HAS_INVITATION
                     .replace(PLAYER_NAME, playerName)
+
+    fun NOT_ALLOW_BY_CONFIG() =
+            error.NOT_ALLOW_BY_CONFIG
+
+    fun ARGUMENT_INCORRECT(commandUsage: String) =
+            error.ARGUMENT_INCORRECT
+                    .replace(COMMAND_USAGE, commandUsage)
+
+    fun INVALID_COMMAND_SENDER() =
+            error.INVALID_COMMAND_SENDER
 }

@@ -384,6 +384,11 @@ class MyEconomy : Economy {
 
     override fun hasBankSupport(): Boolean = false
 
+    fun clear() {
+        myBanks.clear()
+        myPlayers.clear()
+    }
+
     data class MyBank(
             var name: String,
             var owner: UUID,

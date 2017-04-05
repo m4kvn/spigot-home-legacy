@@ -1,14 +1,16 @@
 package com.masahirosaito.spigot.homes.commands
 
-import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.Messenger
-import com.masahirosaito.spigot.homes.exceptions.HomesException
+import com.masahirosaito.spigot.homes.commands.subcommands.console.ConsoleCommand
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.exceptions.ArgumentIncorrectException
+import com.masahirosaito.spigot.homes.exceptions.InvalidCommandSenderException
+import com.masahirosaito.spigot.homes.exceptions.NotAllowByConfigException
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
 interface BaseCommand {
-    val homes: Homes
     val name: String
     val description: String
     val usage: CommandUsage
@@ -27,11 +29,11 @@ interface BaseCommand {
     }
 
     fun checkConfig() {
-        if (configs().contains(false)) throw HomesException("Not allowed by the configuration of this server")
+        if (configs().contains(false)) throw NotAllowByConfigException()
     }
 
     fun checkArgs(args: List<String>) {
-        if (!isValidArgs(args)) throw HomesException("The argument is incorrect\n$usage")
+        if (!isValidArgs(args)) throw ArgumentIncorrectException(usage)
     }
 
     fun executeCommand(sender: CommandSender, args: List<String>) {
@@ -39,7 +41,7 @@ interface BaseCommand {
         when {
             cmd is PlayerCommand && sender is Player -> cmd.onCommand(sender, args)
             cmd is ConsoleCommand && sender is ConsoleCommandSender -> cmd.onCommand(sender, args)
-            else -> throw HomesException("CommandSender is invalid")
+            else -> throw InvalidCommandSenderException()
         }
     }
 

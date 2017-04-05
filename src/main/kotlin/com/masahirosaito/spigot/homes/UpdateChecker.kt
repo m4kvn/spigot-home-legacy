@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes
 
 import com.google.gson.Gson
+import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import java.net.URL
 import kotlin.concurrent.thread
 
@@ -9,7 +10,7 @@ object UpdateChecker {
     lateinit var updateMessage: String
     lateinit var urlMessage: String
 
-    fun checkUpdate(homes: Homes) {
+    fun checkUpdate() {
         if (!Configs.onUpdateCheck) return
         thread {
             try {
