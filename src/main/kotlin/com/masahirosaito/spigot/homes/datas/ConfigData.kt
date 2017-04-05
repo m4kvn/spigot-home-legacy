@@ -1,11 +1,11 @@
 package com.masahirosaito.spigot.homes.datas
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
-import java.io.File
 
 data class ConfigData(
+
+        @SerializedName("Language folder name")
+        var language: String = "en",
 
         @SerializedName("Allow showing debug messages")
         var onDebug: Boolean = false,
@@ -34,16 +34,4 @@ data class ConfigData(
         @SerializedName("Allow home display")
         var onHomeDisplay: Boolean = true
 
-) {
-    fun toJson(): String = GsonBuilder().setPrettyPrinting().create().toJson(this)
-
-    fun save(file: File) = file.writeText(toJson())
-
-    companion object {
-        fun load(file: File): ConfigData {
-            return Gson().fromJson(file.readText().let {
-                if (it.isNullOrBlank()) ConfigData().toJson() else it
-            }, ConfigData::class.java).apply { save(file) }
-        }
-    }
-}
+)

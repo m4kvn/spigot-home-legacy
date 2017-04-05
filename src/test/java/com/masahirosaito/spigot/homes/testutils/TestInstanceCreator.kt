@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.testutils
 
+import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import net.milkbowl.vault.economy.Economy
@@ -54,6 +55,7 @@ object TestInstanceCreator {
     val feeFile = File(pluginFolder, "fee.json")
 
     fun setUp(): Boolean {
+        refresh()
         economy = MyEconomy()
         spyLogger = SpyLogger(Logger.getLogger("Homes"))
 
@@ -105,6 +107,9 @@ object TestInstanceCreator {
             }
 
             homes.onLoad()
+
+            Configs.onUpdateCheck = false
+
             homes.onEnable()
 
             command = pluginCommand.executor
@@ -117,7 +122,6 @@ object TestInstanceCreator {
 
             PlayerDataManager.setDefaultHome(nepian, nepian.location)
             PlayerDataManager.setNamedHome(nepian, nepian.location, "home1")
-            println(PlayerDataManager.getPlayerDataList())
             defaultLocation = PlayerDataManager.findDefaultHome(nepian).location
             namedLocation = PlayerDataManager.findNamedHome(nepian, "home1").location
 
@@ -132,6 +136,9 @@ object TestInstanceCreator {
                 minene.randomTeleport()
             }
 
+            homes.econ?.createPlayerAccount(nepian)
+            homes.econ?.depositPlayer(nepian, 5000.0)
+
             return true
 
         } catch (e: Exception) {
@@ -145,8 +152,8 @@ object TestInstanceCreator {
         nepian.logger.logs.forEachIndexed { i, s -> println("[Nepian] $i -> $s") }
         minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
-        MockPlayerFactory.clear()
-        MockWorldFactory.clear()
+
+        (economy as MyEconomy).clear()
 
         try {
             Bukkit::class.java.getDeclaredField("server").let {
@@ -162,9 +169,15 @@ object TestInstanceCreator {
         }
 
         homes.onDisable()
-        FileUtil.delete(pluginFolder)
+        refresh()
 
         return true
+    }
+
+    private fun refresh() {
+        MockPlayerFactory.clear()
+        MockWorldFactory.clear()
+        FileUtil.delete(pluginFolder)
     }
 
     private fun createHomesDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(

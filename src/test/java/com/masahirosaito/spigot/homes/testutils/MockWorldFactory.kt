@@ -1,19 +1,30 @@
 package com.masahirosaito.spigot.homes.testutils
 
+import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
-import org.powermock.api.mockito.PowerMockito
+import org.mockito.Matchers.any
+import org.powermock.api.mockito.PowerMockito.mock
 import java.util.*
+import org.powermock.api.mockito.PowerMockito.`when` as pwhen
 
 object MockWorldFactory {
     val worlds: MutableMap<UUID, World> = mutableMapOf()
 
     fun makeNewMockWorld(name: String): World {
-        return PowerMockito.mock(World::class.java).apply {
+        return mock(World::class.java).apply {
             val uuid = UUID.randomUUID()
-            PowerMockito.`when`(uid).thenReturn(uuid)
-            PowerMockito.`when`(getName()).thenReturn(name)
+            pwhen(uid).thenReturn(uuid)
+            pwhen(getName()).thenReturn(name)
+            pwhen(getChunkAt(any(Location::class.java)))
+                    .then { makeNewChunk() }
             MockWorldFactory.register(this)
+        }
+    }
+
+    fun makeNewChunk(): Chunk {
+        return mock(Chunk::class.java).apply {
+            pwhen(isLoaded).thenReturn(false)
         }
     }
 
