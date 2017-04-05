@@ -20,13 +20,6 @@ interface MainCommand : CommandExecutor, BaseCommand {
         val argsList = args?.toList() ?: emptyList()
 
         try {
-            if (sender is Player) {
-                if (argsList.isNotEmpty() && playerSubCommands.any { it.name == argsList[0] }) {
-                    playerSubCommands.find { it.name == argsList[0] }!!.executeCommand(sender, argsList.drop(1))
-                } else {
-                    executeCommand(sender, argsList)
-                }
-            }
             when (sender) {
                 is Player -> {
                     if (argsList.isNotEmpty() && playerSubCommands.any { it.name == argsList[0] }) {
