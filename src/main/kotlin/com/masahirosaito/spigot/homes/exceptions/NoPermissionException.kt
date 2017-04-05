@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.Strings
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_PERMISSION
 
 class NoPermissionException(permission: String) :
-        HomesException(Strings.NO_PERMISSION(permission))
+        HomesException(NO_PERMISSION(permission))

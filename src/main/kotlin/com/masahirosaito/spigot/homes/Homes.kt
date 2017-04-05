@@ -6,6 +6,9 @@ import com.masahirosaito.spigot.homes.listeners.ChunkLoadListener
 import com.masahirosaito.spigot.homes.listeners.ChunkUnLoadListener
 import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
 import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_ECONOMY
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_VAULT
+import com.masahirosaito.spigot.homes.strings.Strings
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.java.JavaPlugin
@@ -13,7 +16,8 @@ import org.bukkit.plugin.java.JavaPluginLoader
 import java.io.File
 
 class Homes : JavaPlugin {
-    val fee: FeeData = FeeData.load(File(dataFolder, "fee.json").load())
+    companion object { lateinit var homes: Homes }
+    val fee: FeeData = loadFeeData()
     var econ: Economy? = null
 
     constructor() : super()
@@ -24,18 +28,19 @@ class Homes : JavaPlugin {
             dataFolder: File, file: File
     ) : super(loader, description, dataFolder, file)
 
+    override fun onLoad() {
+        super.onLoad()
+        homes = this
+        Configs.load()
+        Strings.load()
+    }
+
     override fun onEnable() {
-        Configs.load(this)
-        Messenger.load(this)
-        PlayerDataManager.load(this)
-
-        getCommand("home").executor = HomeCommand(this)
-        PlayerRespawnListener(this).register()
-        PlayerJoinListener(this).register()
-        ChunkLoadListener(this).register()
-        ChunkUnLoadListener(this).register()
-        UpdateChecker.checkUpdate(this)
-
+        NMSManager.load()
+        PlayerDataManager.load()
+        UpdateChecker.checkUpdate()
+        registerCommands()
+        registerListeners()
         econ = loadEconomy()
     }
 
@@ -43,16 +48,37 @@ class Homes : JavaPlugin {
         PlayerDataManager.save()
     }
 
+    fun reload() {
+        onDisable()
+        onLoad()
+        onEnable()
+    }
+
+    private fun loadFeeData() : FeeData {
+        return loadData(File(dataFolder, "fee.json").load(), FeeData::class.java)
+    }
+
     private fun loadEconomy(): Economy? {
         if (server.pluginManager.getPlugin("Vault") == null) {
-            Messenger.log("Fee function stopped because Vault can not be found.")
+            Messenger.log(NO_VAULT())
             return null
         }
         server.servicesManager.getRegistration(Economy::class.java).let {
             if (it == null) {
-                Messenger.log("Fee function stopped because the Economy plugin can not be found.")
+                Messenger.log(NO_ECONOMY())
             }
             return it.provider
         }
+    }
+
+    private fun registerCommands() {
+        getCommand("home").executor = HomeCommand()
+    }
+
+    private fun registerListeners() {
+        PlayerRespawnListener(this).register()
+        PlayerJoinListener(this).register()
+        ChunkLoadListener(this).register()
+        ChunkUnLoadListener(this).register()
     }
 }
