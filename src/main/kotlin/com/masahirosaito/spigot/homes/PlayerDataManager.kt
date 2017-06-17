@@ -13,11 +13,11 @@ import org.bukkit.OfflinePlayer
 import java.io.File
 
 object PlayerDataManager {
-    lateinit private var playerHomeDataFile: File
+    private val playerHomeDataFile = File(homes.dataFolder, "playerhomes.json")
     private val playerDatas: MutableList<PlayerData> = mutableListOf()
 
     fun load() {
-        playerHomeDataFile = File(homes.dataFolder, "playerhomes.json").load()
+        playerHomeDataFile.load()
         playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDatas())
         playerDatas.forEach { it.load() }
     }
@@ -78,11 +78,11 @@ object PlayerDataManager {
     fun setNamedHome(offlinePlayer: OfflinePlayer, location: Location, homeName: String) {
         findPlayerData(offlinePlayer).let { (_, _, namedHomes) ->
             if (hasNamedHome(offlinePlayer, homeName)) {
-                val limit = Configs.homeLimit
-                if (limit != -1 && namedHomes.size >= limit) throw LimitHomeException(limit)
                 removeNamedHome(offlinePlayer, homeName)
             }
             namedHomes.add(HomesEntity(offlinePlayer, location, homeName).apply {
+                if (Configs.homeLimit != -1 && namedHomes.size >= Configs.homeLimit)
+                    throw LimitHomeException(Configs.homeLimit)
                 spawnEntities()
             })
         }
