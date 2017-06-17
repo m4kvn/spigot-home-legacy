@@ -47,6 +47,8 @@ data class PlayerData(
         if (defaultHome != null) {
             defaultHome!!.despawnEntities()
             defaultHome = null
+        } else {
+            throw NoDefaultHomeException(offlinePlayer)
         }
     }
 
@@ -54,6 +56,8 @@ data class PlayerData(
         if (hasNamedHome(homeName)) {
             getNamedHome(homeName).despawnEntities()
             namedHomes.removeIf { it.homeName == homeName }
+        } else {
+            throw NoNamedHomeException(offlinePlayer, homeName)
         }
     }
 }
