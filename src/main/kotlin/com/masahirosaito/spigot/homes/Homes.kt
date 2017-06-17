@@ -66,6 +66,7 @@ class Homes : JavaPlugin {
         server.servicesManager.getRegistration(Economy::class.java).let {
             if (it == null) {
                 Messenger.log(NO_ECONOMY())
+                return null
             }
             return it.provider
         }
