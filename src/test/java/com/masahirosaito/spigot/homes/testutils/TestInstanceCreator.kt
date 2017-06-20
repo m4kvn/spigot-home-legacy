@@ -54,6 +54,8 @@ object TestInstanceCreator {
     val playerhomesFile = File(pluginFolder, "playerhomes.json")
     val feeFile = File(pluginFolder, "fee.json")
 
+    const val NAMED_HOME: String = "home1"
+
     fun setUp(): Boolean {
         refresh()
         economy = MyEconomy()
@@ -121,9 +123,9 @@ object TestInstanceCreator {
             minene.setOps()
 
             PlayerDataManager.setDefaultHome(nepian, nepian.location)
-            PlayerDataManager.setNamedHome(nepian, nepian.location, "home1")
+            PlayerDataManager.setNamedHome(nepian, nepian.location, NAMED_HOME)
             defaultLocation = PlayerDataManager.findDefaultHome(nepian).location
-            namedLocation = PlayerDataManager.findNamedHome(nepian, "home1").location
+            namedLocation = PlayerDataManager.findNamedHome(nepian, NAMED_HOME).location
 
             Assert.assertThat(defaultLocation, `is`(nepian.location))
             Assert.assertThat(namedLocation, `is`(nepian.location))
