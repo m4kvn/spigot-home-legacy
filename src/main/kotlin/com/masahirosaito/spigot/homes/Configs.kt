@@ -28,6 +28,10 @@ object Configs {
 
     var teleportDelay: Int = 3
 
+    var onMoveCancel: Boolean = true
+
+    var onDamageCancel: Boolean = true
+
     fun load() {
 
         loadData(File(homes.dataFolder, "configs.json").load(), ConfigData::class.java).let {
@@ -42,6 +46,8 @@ object Configs {
             homeLimit = it.homeLimit
             onHomeDisplay = it.onHomeDisplay
             teleportDelay = it.teleportDelay
+            onMoveCancel = it.onMoveCancel
+            onDamageCancel = it.onDamageCancel
         }
     }
 }

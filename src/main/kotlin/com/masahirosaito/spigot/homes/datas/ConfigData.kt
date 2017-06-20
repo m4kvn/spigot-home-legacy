@@ -36,7 +36,14 @@ data class ConfigData(
         var onHomeDisplay: Boolean = true,
 
         @SerializedName("Teleport delay seconds")
-        var teleportDelay: Int = 3
+        var teleportDelay: Int = 3,
+
+        @SerializedName("Cancel teleport when moved")
+        var onMoveCancel: Boolean = true,
+
+        @SerializedName("Cancel teleport when damaged")
+        var onDamageCancel: Boolean = true
+
 ) {
     init {
         require(homeLimit >= -1)
