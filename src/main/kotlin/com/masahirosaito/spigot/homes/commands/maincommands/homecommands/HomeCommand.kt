@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
+import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes.Companion.homes
-import com.masahirosaito.spigot.homes.Messenger
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.CommandUsage
@@ -28,8 +28,6 @@ import com.masahirosaito.spigot.homes.strings.commands.HomeCommandStrings.USAGE_
 import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
-import org.bukkit.metadata.FixedMetadataValue
-import kotlin.concurrent.thread
 
 class HomeCommand : MainCommand, PlayerCommand {
     override val name: String = "home"
@@ -68,7 +66,6 @@ class HomeCommand : MainCommand, PlayerCommand {
     }
 
     companion object {
-        val HOME_DELAY_META = "homes.delay"
         lateinit var homeCommand: HomeCommand
     }
 
@@ -79,21 +76,7 @@ class HomeCommand : MainCommand, PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        if (player.hasMetadata(HOME_DELAY_META)) {
-            Messenger.send(player, "既にホームを実行済みです")
-            return
-        }
-        val th = thread {
-            try {
-                Thread.sleep(5000)
-                player.teleport(getTeleportLocation(player))
-                player.removeMetadata(HOME_DELAY_META, homes)
-            } catch (e: InterruptedException) {
-                player.removeMetadata(HOME_DELAY_META, homes)
-                Messenger.send(player, "ホームの実行がキャンセルされました")
-            }
-        }
-        player.setMetadata(HOME_DELAY_META, FixedMetadataValue(homes, th))
+        DelayTeleporter.run(player, getTeleportLocation(player))
     }
 
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {

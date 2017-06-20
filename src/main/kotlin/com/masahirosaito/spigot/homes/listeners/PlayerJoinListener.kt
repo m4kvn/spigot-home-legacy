@@ -1,9 +1,6 @@
 package com.masahirosaito.spigot.homes.listeners
 
-import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.Messenger
-import com.masahirosaito.spigot.homes.Permission
-import com.masahirosaito.spigot.homes.UpdateChecker
+import com.masahirosaito.spigot.homes.*
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -17,6 +14,13 @@ class PlayerJoinListener(override val plugin: Homes) : HomesListener {
         if (UpdateChecker.isUpdate) {
             Messenger.send(event.player, "${ChatColor.YELLOW}${UpdateChecker.updateMessage}${ChatColor.RESET}")
             Messenger.send(event.player, "${ChatColor.YELLOW}${UpdateChecker.urlMessage}${ChatColor.RESET}")
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun checkTeleportMeta(event: PlayerJoinEvent) {
+        if (DelayTeleporter.isAlreadyRun(event.player)) {
+            DelayTeleporter.cancelTeleport(event.player)
         }
     }
 }

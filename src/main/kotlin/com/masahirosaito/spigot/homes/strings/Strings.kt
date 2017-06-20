@@ -15,6 +15,7 @@ object Strings {
     val BALANCE = "[balance]"
     val ERROR_MESSAGE = "[error-message]"
     val COMMAND_FEE = "[command-fee]"
+    val DELAY = "[delay]"
 
     fun load() {
 
@@ -22,6 +23,7 @@ object Strings {
             ErrorStrings.load(this)
             HomeDisplayStrings.load(this)
             EconomyStrings.load(this)
+            TeleportStrings.load(this)
 
             "$this/commands".apply {
                 HomeCommandStrings.load(this)

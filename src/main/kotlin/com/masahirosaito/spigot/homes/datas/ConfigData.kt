@@ -6,37 +6,37 @@ import com.masahirosaito.spigot.homes.Configs
 data class ConfigData(
 
         @SerializedName("Language folder name")
-        var language: String = Configs.language,
+        var language: String = "en",
 
         @SerializedName("Allow showing debug messages")
-        var onDebug: Boolean = Configs.onDebug,
+        var onDebug: Boolean = false,
 
         @SerializedName("Allow using named home")
-        var onNamedHome: Boolean = Configs.onNamedHome,
+        var onNamedHome: Boolean = true,
 
         @SerializedName("Allow using player home")
-        var onFriendHome: Boolean = Configs.onFriendHome,
+        var onFriendHome: Boolean = true,
 
         @SerializedName("Allow respawning default home")
-        var onDefaultHomeRespawn: Boolean = Configs.onDefaultHomeRespawn,
+        var onDefaultHomeRespawn: Boolean = true,
 
         @SerializedName("Allow checking update")
-        var onUpdateCheck: Boolean = Configs.onUpdateCheck,
+        var onUpdateCheck: Boolean = true,
 
         @SerializedName("Allow setting home private")
-        var onPrivate: Boolean = Configs.onPrivate,
+        var onPrivate: Boolean = true,
 
         @SerializedName("Allow invitation")
-        var onInvite: Boolean = Configs.onInvite,
+        var onInvite: Boolean = true,
 
         @SerializedName("The limit number of named home")
-        var homeLimit: Int = Configs.homeLimit,
+        var homeLimit: Int = -1,
 
         @SerializedName("Allow home display")
-        var onHomeDisplay: Boolean = Configs.onHomeDisplay,
+        var onHomeDisplay: Boolean = true,
 
         @SerializedName("Teleport delay seconds")
-        var teleportDelay: Int = Configs.teleportDelay
+        var teleportDelay: Int = 3
 ) {
     init {
         require(homeLimit >= -1)
