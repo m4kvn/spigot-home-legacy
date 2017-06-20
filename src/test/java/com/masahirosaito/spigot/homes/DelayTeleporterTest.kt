@@ -47,6 +47,7 @@ class DelayTeleporterTest {
         nepian.getDelayThread()?.let {
             assertTrue(nepian.hasMetadata("homes.delay"))
             assertTrue(it.isAlive)
+            it.join()
         }
         nepian.cancelTeleport()
     }

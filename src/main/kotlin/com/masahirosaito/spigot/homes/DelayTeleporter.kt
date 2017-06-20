@@ -27,8 +27,10 @@ object DelayTeleporter {
         val th = thread {
             try {
                 if (delay > 0) {
-                    Messenger.send(player, TeleportStrings.TELEPORT_WAIT(delay))
-                    Thread.sleep(delay * 1000L)
+                    repeat(delay) { i ->
+                        Messenger.send(player, TeleportStrings.TELEPORT_WAIT(delay - i))
+                        Thread.sleep(1000)
+                    }
                 }
                 findOnlinePlayer(uuid).run {
                     teleport(location)
