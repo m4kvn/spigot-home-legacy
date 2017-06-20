@@ -35,7 +35,7 @@ data class ConfigData(
         @SerializedName("Allow home display")
         var onHomeDisplay: Boolean = Configs.onHomeDisplay,
 
-        @SerializedName("Teleport Delay")
+        @SerializedName("Teleport delay seconds")
         var teleportDelay: Int = Configs.teleportDelay
 ) {
     init {
