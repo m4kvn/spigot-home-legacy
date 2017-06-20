@@ -81,9 +81,9 @@ object PlayerDataManager {
                 removeNamedHome(offlinePlayer, homeName)
             }
             namedHomes.add(HomesEntity(offlinePlayer, location, homeName).apply {
-                if (Configs.homeLimit != -1 && namedHomes.size >= Configs.homeLimit)
+                if (Configs.homeLimit > -1 && namedHomes.size >= Configs.homeLimit)
                     throw LimitHomeException(Configs.homeLimit)
-                spawnEntities()
+                else spawnEntities()
             })
         }
     }
