@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.testutils
 
 import com.masahirosaito.spigot.homes.Configs
+import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import net.milkbowl.vault.economy.Economy
@@ -155,6 +156,9 @@ object TestInstanceCreator {
         minene.logger.logs.forEachIndexed { i, s -> println("[Minene] $i -> $s") }
         spyLogger.logs.forEachIndexed { i, s -> println("[Server] $i -> $s") }
 
+        killThreads("homes.invite")
+        killThreads("homes.delay")
+
         (economy as MyEconomy).clear()
 
         try {
@@ -186,5 +190,21 @@ object TestInstanceCreator {
             "Homes", "test-version", "com.masahirosaito.spigot.homes.Homes")).apply {
         PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
         PowerMockito.`when`(authors).thenReturn(listOf())
+    }
+
+    private fun killThread(player: Player, meta: String) {
+        if (player.hasMetadata(meta)) {
+            (player.getMetadata(meta).first().value() as Thread).run {
+                if (isAlive) {
+                    interrupt()
+                    join()
+                }
+            }
+        }
+    }
+
+    private fun killThreads(meta: String) {
+        killThread(nepian, meta)
+        killThread(minene, meta)
     }
 }
