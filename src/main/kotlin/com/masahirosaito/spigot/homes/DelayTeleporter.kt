@@ -9,7 +9,7 @@ import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
 object DelayTeleporter {
-    const val DELAY_META: String = "homes.delay"
+    private const val DELAY_META: String = "homes.delay"
 
     fun run(player: Player, location: Location) {
         if (Configs.teleportDelay <= 0) {
