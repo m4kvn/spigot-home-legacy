@@ -79,5 +79,6 @@ class Homes : JavaPlugin {
         ChunkLoadListener(this).register()
         ChunkUnLoadListener(this).register()
         PlayerMoveListener(this).register()
+        EntityDamageListener(this).register()
     }
 }
