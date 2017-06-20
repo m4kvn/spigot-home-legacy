@@ -2,6 +2,7 @@ package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
 import com.masahirosaito.spigot.homes.Configs.onFriendHome
 import com.masahirosaito.spigot.homes.Configs.onNamedHome
+import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command
 import com.masahirosaito.spigot.homes.Permission.home_command_player_name
@@ -23,6 +24,6 @@ class HomeNamePlayerCommand(val homeCommand: HomeCommand) : SubCommand(homeComma
     override fun isValidArgs(args: List<String>): Boolean = args.size == 3 && args[1] == "-p"
 
     override fun execute(player: Player, args: List<String>) {
-        player.teleport(homeCommand.getTeleportLocation(findOfflinePlayer(args[2]), args[0]))
+        DelayTeleporter.run(player, homeCommand.getTeleportLocation(findOfflinePlayer(args[2]), args[0]))
     }
 }

@@ -37,7 +37,7 @@ object FileUtil {
 
 fun Player.acceptInvitation() {
     if (this.hasMetadata("homes.invite")) {
-        val th = (this.getMetadata("homes.invite")[0].value() as Thread)
+        val th = (this.getMetadata("homes.invite").first().value() as Thread)
         if (th.isAlive) {
             th.interrupt()
             th.join()
@@ -45,8 +45,23 @@ fun Player.acceptInvitation() {
     }
 }
 
-fun CommandSender.executeHomeCommand(vararg args: String?) {
-    command.onCommand(this, pluginCommand, "home", args)
+fun Player.cancelTeleport() {
+    getDelayThread()?.run {
+        if (isAlive) {
+            interrupt()
+            join()
+        }
+    }
+}
+
+fun Player.getDelayThread(): Thread? =
+        if (this.hasMetadata("homes.delay")) {
+            this.getMetadata("homes.delay").first().value() as Thread
+        } else null
+
+
+fun CommandSender.executeHomeCommand(vararg args: String?): Boolean {
+    return command.onCommand(this, pluginCommand, "home", args)
 }
 
 fun HomesConsoleCommandSender.lastMsg() = spyLogger.logs.lastOrNull()

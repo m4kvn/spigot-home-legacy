@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
+import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission
 import com.masahirosaito.spigot.homes.PlayerDataManager
@@ -60,9 +61,13 @@ class HomeCommand : MainCommand, PlayerCommand {
             HomeNamePlayerCommand(this)
     )
 
-    init { homeCommand = this }
+    init {
+        homeCommand = this
+    }
 
-    companion object { lateinit var homeCommand: HomeCommand }
+    companion object {
+        lateinit var homeCommand: HomeCommand
+    }
 
     override fun fee(): Double = homes.fee.HOME
 
@@ -71,7 +76,7 @@ class HomeCommand : MainCommand, PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        player.teleport(getTeleportLocation(player))
+        DelayTeleporter.run(player, getTeleportLocation(player))
     }
 
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {

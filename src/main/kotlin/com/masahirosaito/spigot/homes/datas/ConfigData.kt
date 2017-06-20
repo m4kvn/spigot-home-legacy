@@ -1,6 +1,7 @@
 package com.masahirosaito.spigot.homes.datas
 
 import com.google.gson.annotations.SerializedName
+import com.masahirosaito.spigot.homes.Configs
 
 data class ConfigData(
 
@@ -32,6 +33,20 @@ data class ConfigData(
         var homeLimit: Int = -1,
 
         @SerializedName("Allow home display")
-        var onHomeDisplay: Boolean = true
+        var onHomeDisplay: Boolean = true,
 
-)
+        @SerializedName("Teleport delay seconds")
+        var teleportDelay: Int = 3,
+
+        @SerializedName("Cancel teleport when moved")
+        var onMoveCancel: Boolean = true,
+
+        @SerializedName("Cancel teleport when damaged")
+        var onDamageCancel: Boolean = true
+
+) {
+    init {
+        require(homeLimit >= -1)
+        require(teleportDelay >= 0)
+    }
+}

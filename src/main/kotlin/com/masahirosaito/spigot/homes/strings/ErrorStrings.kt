@@ -85,4 +85,7 @@ object ErrorStrings {
 
     fun INVALID_COMMAND_SENDER() =
             error.INVALID_COMMAND_SENDER
+
+    fun ALREADY_EXECUTE_TELEPORT() =
+            error.ALREADY_EXECUTE_TELEPORT
 }

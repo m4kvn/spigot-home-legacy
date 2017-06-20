@@ -2,10 +2,7 @@ package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
 import com.masahirosaito.spigot.homes.datas.FeeData
-import com.masahirosaito.spigot.homes.listeners.ChunkLoadListener
-import com.masahirosaito.spigot.homes.listeners.ChunkUnLoadListener
-import com.masahirosaito.spigot.homes.listeners.PlayerJoinListener
-import com.masahirosaito.spigot.homes.listeners.PlayerRespawnListener
+import com.masahirosaito.spigot.homes.listeners.*
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_ECONOMY
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_VAULT
 import com.masahirosaito.spigot.homes.strings.Strings
@@ -81,5 +78,7 @@ class Homes : JavaPlugin {
         PlayerJoinListener(this).register()
         ChunkLoadListener(this).register()
         ChunkUnLoadListener(this).register()
+        PlayerMoveListener(this).register()
+        EntityDamageListener(this).register()
     }
 }

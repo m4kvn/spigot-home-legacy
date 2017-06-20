@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 group = 'com.MasahiroSaito.Spigot'
-version = '0.9.1'
+version = '0.10.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
