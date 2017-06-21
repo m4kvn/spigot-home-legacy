@@ -1,6 +1,5 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player.listcommands
 
-import com.masahirosaito.spigot.homes.Configs
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR

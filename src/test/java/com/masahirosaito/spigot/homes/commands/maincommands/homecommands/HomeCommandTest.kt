@@ -1,12 +1,11 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
+import com.masahirosaito.spigot.homes.testutils.*
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.economy
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import com.masahirosaito.spigot.homes.testutils.cancelTeleport
-import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
-import com.masahirosaito.spigot.homes.testutils.getDelayThread
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -20,9 +19,9 @@ import org.bukkit.plugin.ServicesManager
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Before
-
-import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -47,10 +46,29 @@ class HomeCommandTest {
     @Test
     fun テレポートがキャンセルされた場合はお金を消費しない() {
         homes.fee.HOME = 1000.0
-        val money: Double = homes.econ?.getBalance(nepian) ?: 0.0
+        val money: Double = economy.getBalance(nepian)
         nepian.executeHomeCommand()
         nepian.cancelTeleport()
         nepian.getDelayThread()?.join()
-        assertThat(money, `is`(homes.econ?.getBalance(nepian)))
+        assertThat(economy.getBalance(nepian), `is`(money))
+    }
+
+    @Test
+    fun テレポートが成功した場合はお金を消費する() {
+        homes.fee.HOME = 1000.0
+        val money: Double = economy.getBalance(nepian)
+        nepian.executeHomeCommand()
+        nepian.getDelayThread()?.join()
+        assertThat(economy.getBalance(nepian), `is`(money - 1000.0))
+    }
+
+    @Test
+    fun お金が足りなかった場合はテレポートに失敗する() {
+        homes.fee.HOME = 1000.0
+        homes.econ?.withdrawPlayer(nepian, 4500.0)
+        assertTrue(economy.getBalance(nepian) < 1000.0)
+        nepian.executeHomeCommand()
+        nepian.getDelayThread()?.join()
+        assertThat(nepian.lastMsg(), `is`(NOT_ENOUGH_MONEY_ERROR(homes.fee.HOME)))
     }
 }

@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand.Companion.homeCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
@@ -43,7 +44,7 @@ class DelayTeleporterTest {
 
     @Test
     fun run() {
-        DelayTeleporter.run(nepian, defaultLocation)
+        DelayTeleporter.run(nepian, defaultLocation, homeCommand)
         nepian.getDelayThread()?.let {
             assertTrue(nepian.hasMetadata("homes.delay"))
             assertTrue(it.isAlive)
@@ -54,14 +55,14 @@ class DelayTeleporterTest {
 
     @Test
     fun isAlreadyRun() {
-        DelayTeleporter.run(nepian, defaultLocation)
+        DelayTeleporter.run(nepian, defaultLocation, homeCommand)
         assertTrue(DelayTeleporter.isAlreadyRun(nepian))
         nepian.cancelTeleport()
     }
 
     @Test
     fun cancelTeleport() {
-        DelayTeleporter.run(nepian, defaultLocation)
+        DelayTeleporter.run(nepian, defaultLocation, homeCommand)
         nepian.getDelayThread()?.let {
             DelayTeleporter.cancelTeleport(nepian)
             it.join()
