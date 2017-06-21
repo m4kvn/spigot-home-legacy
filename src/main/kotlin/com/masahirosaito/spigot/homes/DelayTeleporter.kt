@@ -1,5 +1,6 @@
 package com.masahirosaito.spigot.homes
 
+import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.AlreadyExecutTeleportException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOnlinePlayerException
 import com.masahirosaito.spigot.homes.strings.TeleportStrings
@@ -11,7 +12,7 @@ import kotlin.concurrent.thread
 object DelayTeleporter {
     private const val DELAY_META: String = "homes.delay"
 
-    fun run(player: Player, location: Location) {
+    fun run(player: Player, location: Location, playerCommand: PlayerCommand) {
         if (Configs.teleportDelay <= 0) {
             player.teleport(location)
             return
@@ -33,8 +34,10 @@ object DelayTeleporter {
                     }
                 }
                 findOnlinePlayer(uuid).run {
+                    PayController.checkBalance(playerCommand, player)
+                    PayController.payFee(playerCommand, player)
                     teleport(location)
-                    removeTeleportMeta(player)
+                    removeTeleportMeta(this)
                 }
             } catch (e: InterruptedException) {
                 removeTeleportMeta(player)

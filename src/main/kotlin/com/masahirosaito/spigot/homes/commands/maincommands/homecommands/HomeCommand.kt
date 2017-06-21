@@ -30,6 +30,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 class HomeCommand : MainCommand, PlayerCommand {
+    override var payNow: Boolean = false
     override val name: String = "home"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(
@@ -76,7 +77,7 @@ class HomeCommand : MainCommand, PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        DelayTeleporter.run(player, getTeleportLocation(player))
+        DelayTeleporter.run(player, getTeleportLocation(player), this)
     }
 
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {

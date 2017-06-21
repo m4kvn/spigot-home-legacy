@@ -10,6 +10,7 @@ import com.masahirosaito.spigot.homes.strings.commands.ReloadCommandStrings.USAG
 import org.bukkit.entity.Player
 
 class PlayerReloadCommand : PlayerCommand {
+    override var payNow: Boolean = true
     override val name: String = "reload"
     override val description: String = DESCRIPTION()
     override val commands: List<BaseCommand> = listOf()

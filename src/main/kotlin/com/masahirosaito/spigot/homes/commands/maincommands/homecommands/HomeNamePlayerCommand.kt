@@ -6,12 +6,12 @@ import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command
 import com.masahirosaito.spigot.homes.Permission.home_command_player_name
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import org.bukkit.entity.Player
 
-class HomeNamePlayerCommand(val homeCommand: HomeCommand) : SubCommand(homeCommand), PlayerCommand {
+class HomeNamePlayerCommand(val homeCommand: HomeCommand) : PlayerSubCommand(homeCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
             home_command,
             home_command_player_name
@@ -24,6 +24,6 @@ class HomeNamePlayerCommand(val homeCommand: HomeCommand) : SubCommand(homeComma
     override fun isValidArgs(args: List<String>): Boolean = args.size == 3 && args[1] == "-p"
 
     override fun execute(player: Player, args: List<String>) {
-        DelayTeleporter.run(player, homeCommand.getTeleportLocation(findOfflinePlayer(args[2]), args[0]))
+        DelayTeleporter.run(player, homeCommand.getTeleportLocation(findOfflinePlayer(args[2]), args[0]), this)
     }
 }

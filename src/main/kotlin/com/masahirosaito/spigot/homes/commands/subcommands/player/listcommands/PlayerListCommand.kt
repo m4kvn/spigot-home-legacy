@@ -13,6 +13,7 @@ import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_
 import org.bukkit.entity.Player
 
 class PlayerListCommand : PlayerCommand {
+    override var payNow: Boolean = true
     override val name: String = "list"
     override val description: String = DESCRIPTION_PLAYER_COMMAND()
     override val permissions: List<String> = listOf(home_command_list)

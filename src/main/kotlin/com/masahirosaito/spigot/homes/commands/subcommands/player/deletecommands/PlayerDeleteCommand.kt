@@ -13,6 +13,7 @@ import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.USAG
 import org.bukkit.entity.Player
 
 class PlayerDeleteCommand : PlayerCommand {
+    override var payNow: Boolean = true
     override val name: String = "delete"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_delete)

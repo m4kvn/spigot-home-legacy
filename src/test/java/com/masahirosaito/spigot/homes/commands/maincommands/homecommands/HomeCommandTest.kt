@@ -1,15 +1,11 @@
-package com.masahirosaito.spigot.homes.commands.subcommands.player.listcommands
+package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
 import com.masahirosaito.spigot.homes.Homes
-import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.PAY
-import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
+import com.masahirosaito.spigot.homes.testutils.*
+import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.economy
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
-import com.masahirosaito.spigot.homes.testutils.lastMsg
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Server
@@ -35,7 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner
 @PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
         Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
         PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
-class ListCommandTest {
+class HomeCommandTest {
 
     @Before
     fun setUp() {
@@ -48,22 +44,31 @@ class ListCommandTest {
     }
 
     @Test
-    fun コマンドを実行した場合にホームリストを表示する() {
-        nepian.executeHomeCommand("list")
-        assertThat(nepian.lastMsg(), `is`(HOME_LIST(PlayerDataManager.findPlayerData(nepian), false)))
+    fun テレポートがキャンセルされた場合はお金を消費しない() {
+        homes.fee.HOME = 1000.0
+        val money: Double = economy.getBalance(nepian)
+        nepian.executeHomeCommand()
+        nepian.cancelTeleport()
+        nepian.getDelayThread()?.join()
+        assertThat(economy.getBalance(nepian), `is`(money))
     }
 
     @Test
-    fun 料金が設定されたコマンドの実行時に所持金が足りなかった場合はエラーを表示する() {
-        homes.fee.LIST = 10000.0
-        nepian.executeHomeCommand("list")
-        assertThat(nepian.lastMsg(), `is`(NOT_ENOUGH_MONEY_ERROR(homes.fee.LIST)))
+    fun テレポートが成功した場合はお金を消費する() {
+        homes.fee.HOME = 1000.0
+        val money: Double = economy.getBalance(nepian)
+        nepian.executeHomeCommand()
+        nepian.getDelayThread()?.join()
+        assertThat(economy.getBalance(nepian), `is`(money - 1000.0))
     }
 
     @Test
-    fun 料金が設定されたコマンドの実行時に所持金が足りている場合は所持金を消費しコマンドを実行する() {
-        homes.fee.LIST = 1000.0
-        nepian.executeHomeCommand("list")
-        assertThat(nepian.lastMsg(), `is`(PAY(1000.0.toString(), 4000.0.toString())))
+    fun お金が足りなかった場合はテレポートに失敗する() {
+        homes.fee.HOME = 1000.0
+        homes.econ?.withdrawPlayer(nepian, 4500.0)
+        assertTrue(economy.getBalance(nepian) < 1000.0)
+        nepian.executeHomeCommand()
+        nepian.getDelayThread()?.join()
+        assertThat(nepian.lastMsg(), `is`(NOT_ENOUGH_MONEY_ERROR(homes.fee.HOME)))
     }
 }

@@ -3,13 +3,13 @@ package com.masahirosaito.spigot.homes.commands.subcommands.player.helpcommands
 import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_help
 import com.masahirosaito.spigot.homes.Permission.home_command_help_command
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand.Companion.homeCommand
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.NoSuchCommandException
 import org.bukkit.entity.Player
 
-class PlayerHelpUsageCommand(playerHelpCommand: PlayerHelpCommand) : SubCommand(playerHelpCommand), PlayerCommand {
+class PlayerHelpUsageCommand(playerHelpCommand: PlayerHelpCommand) : PlayerSubCommand(playerHelpCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
             home_command_help,
             home_command_help_command

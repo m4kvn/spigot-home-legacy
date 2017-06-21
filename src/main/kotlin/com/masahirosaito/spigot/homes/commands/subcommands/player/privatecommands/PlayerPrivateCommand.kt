@@ -15,6 +15,7 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.USA
 import org.bukkit.entity.Player
 
 class PlayerPrivateCommand : PlayerCommand {
+    override var payNow: Boolean = true
     override val name: String = "private"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_private)

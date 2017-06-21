@@ -5,13 +5,13 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_delete
 import com.masahirosaito.spigot.homes.Permission.home_command_delete_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
 import org.bukkit.entity.Player
 
 class PlayerDeleteNameCommand(playerDeleteCommand: PlayerDeleteCommand) :
-        SubCommand(playerDeleteCommand), PlayerCommand {
+        PlayerSubCommand(playerDeleteCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(
             home_command_delete,

@@ -6,13 +6,13 @@ import com.masahirosaito.spigot.homes.Permission.home_admin
 import com.masahirosaito.spigot.homes.Permission.home_command_list
 import com.masahirosaito.spigot.homes.Permission.home_command_list_player
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
 import org.bukkit.entity.Player
 
-class PlayerListPlayerCommand(listCommand: PlayerListCommand) : SubCommand(listCommand), PlayerCommand {
+class PlayerListPlayerCommand(listCommand: PlayerListCommand) : PlayerSubCommand(listCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_list, home_command_list_player)
 
