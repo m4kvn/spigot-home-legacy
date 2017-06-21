@@ -5,13 +5,13 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_set
 import com.masahirosaito.spigot.homes.Permission.home_command_set_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
 import org.bukkit.entity.Player
 
 class PlayerSetNameCommand(playerSetCommand: PlayerSetCommand) :
-        SubCommand(playerSetCommand), PlayerCommand {
+        PlayerSubCommand(playerSetCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_set, home_command_set_name)
 

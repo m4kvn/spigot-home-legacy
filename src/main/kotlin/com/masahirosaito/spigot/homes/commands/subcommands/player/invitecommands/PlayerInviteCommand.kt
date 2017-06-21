@@ -22,6 +22,7 @@ import org.bukkit.metadata.FixedMetadataValue
 import kotlin.concurrent.thread
 
 class PlayerInviteCommand : PlayerCommand {
+    override var payNow: Boolean = true
     private val INVITE_META = "homes.invite"
     override val name: String = "invite"
     override val description: String = InviteCommandStrings.DESCRIPTION()

@@ -6,14 +6,14 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_private
 import com.masahirosaito.spigot.homes.Permission.home_command_private_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
 import org.bukkit.entity.Player
 
 class PlayerPrivateNameCommand(playerPrivateCommand: PlayerPrivateCommand) :
-        SubCommand(playerPrivateCommand), PlayerCommand {
+        PlayerSubCommand(playerPrivateCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_private, home_command_private_name)
 

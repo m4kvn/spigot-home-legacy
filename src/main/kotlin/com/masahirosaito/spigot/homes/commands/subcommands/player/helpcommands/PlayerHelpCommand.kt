@@ -12,6 +12,7 @@ import com.masahirosaito.spigot.homes.strings.commands.HelpCommandStrings.USAGE_
 import org.bukkit.entity.Player
 
 class PlayerHelpCommand : PlayerCommand {
+    override var payNow: Boolean = true
     override val name: String = "help"
     override val description: String = DESCRIPTION()
     override val permissions: List<String> = listOf(home_command_help)

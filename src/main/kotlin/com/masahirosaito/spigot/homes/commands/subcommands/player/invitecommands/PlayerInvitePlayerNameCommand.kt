@@ -7,14 +7,14 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.Permission.home_command_invite
 import com.masahirosaito.spigot.homes.Permission.home_command_invite_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.commands.subcommands.SubCommand
+import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_NAMED_HOME_INVITATION_FROM
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_NAMED_HOME_INVITATION_TO
 import org.bukkit.entity.Player
 
 class PlayerInvitePlayerNameCommand(val playerInviteCommand: PlayerInviteCommand) :
-        SubCommand(playerInviteCommand), PlayerCommand {
+        PlayerSubCommand(playerInviteCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_invite, home_command_invite_name)
 

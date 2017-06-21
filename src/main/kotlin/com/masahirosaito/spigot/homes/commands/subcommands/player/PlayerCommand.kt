@@ -1,18 +1,14 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.player
 
-import com.masahirosaito.spigot.homes.Homes.Companion.homes
+import com.masahirosaito.spigot.homes.PayController
 import com.masahirosaito.spigot.homes.Permission.home_admin
 import com.masahirosaito.spigot.homes.commands.BaseCommand
-import com.masahirosaito.spigot.homes.exceptions.HomesException
 import com.masahirosaito.spigot.homes.exceptions.NoPermissionException
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.ECONOMY_ERROR
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.NO_ACCOUNT_ERROR
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.PAY
 import org.bukkit.entity.Player
 
 interface PlayerCommand : BaseCommand {
     val permissions: List<String>
+    var payNow: Boolean
 
     fun fee(): Double
 
@@ -22,33 +18,9 @@ interface PlayerCommand : BaseCommand {
         checkConfig()
         checkPermission(player)
         checkArgs(args)
-        checkBalance(player)
+        PayController.checkBalance(this, player)
         execute(player, args)
-        payFee(player)
-    }
-
-    fun payFee(player: Player) {
-        if (fee() <= 0) return
-        homes.econ?.let { economy ->
-            val r = economy.withdrawPlayer(player, fee())
-            if (r.transactionSuccess()) {
-                send(player, PAY(economy.format(r.amount), economy.format(r.balance)))
-            } else {
-                throw HomesException(ECONOMY_ERROR(r.errorMessage))
-            }
-        }
-    }
-
-    fun checkBalance(player: Player) {
-        if (fee() <= 0) return
-        homes.econ?.let {
-            if (!it.hasAccount(player)) {
-                throw HomesException(NO_ACCOUNT_ERROR())
-            }
-            if (!it.has(player, fee())) {
-                throw HomesException(NOT_ENOUGH_MONEY_ERROR(fee()))
-            }
-        }
+        if (payNow) PayController.payFee(this, player)
     }
 
     fun checkPermission(player: Player) {
