@@ -1,44 +1,25 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
-import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
 import com.masahirosaito.spigot.homes.testutils.*
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.economy
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Server
-import org.bukkit.World
-import org.bukkit.command.PluginCommand
-import org.bukkit.entity.Player
-import org.bukkit.plugin.PluginDescriptionFile
-import org.bukkit.plugin.PluginManager
-import org.bukkit.plugin.RegisteredServiceProvider
-import org.bukkit.plugin.ServicesManager
-import org.bukkit.plugin.java.JavaPluginLoader
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.After
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
-        Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
-        PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
+@Suppress("NonAsciiCharacters", "TestFunctionName")
 class HomeCommandTest {
 
-    @Before
+    @BeforeEach
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         assertTrue(TestInstanceCreator.tearDown())
     }
@@ -50,7 +31,7 @@ class HomeCommandTest {
         nepian.executeHomeCommand()
         nepian.cancelTeleport()
         nepian.getDelayThread()?.join()
-        assertThat(economy.getBalance(nepian), `is`(money))
+        assertEquals(economy.getBalance(nepian), money, 0.0)
     }
 
     @Test
@@ -59,7 +40,7 @@ class HomeCommandTest {
         val money: Double = economy.getBalance(nepian)
         nepian.executeHomeCommand()
         nepian.getDelayThread()?.join()
-        assertThat(economy.getBalance(nepian), `is`(money - 1000.0))
+        assertEquals(economy.getBalance(nepian), money - 1000.0, 0.0)
     }
 
     @Test
@@ -69,6 +50,6 @@ class HomeCommandTest {
         assertTrue(economy.getBalance(nepian) < 1000.0)
         nepian.executeHomeCommand()
         nepian.getDelayThread()?.join()
-        assertThat(nepian.lastMsg(), `is`(NOT_ENOUGH_MONEY_ERROR(homes.fee.HOME)))
+        assertEquals(nepian.lastMsg(), NOT_ENOUGH_MONEY_ERROR(homes.fee.HOME))
     }
 }
