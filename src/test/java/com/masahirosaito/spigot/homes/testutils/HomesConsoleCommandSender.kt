@@ -9,9 +9,11 @@ import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
-import org.powermock.api.mockito.PowerMockito.mock
+import org.mockito.Mockito.mock
 
-class HomesConsoleCommandSender(val mockServer: Server) : ConsoleCommandSender {
+class HomesConsoleCommandSender(
+    private val mockServer: Server,
+) : ConsoleCommandSender {
 
     override fun sendMessage(message: String?) {
         mockServer.logger.info(message)
