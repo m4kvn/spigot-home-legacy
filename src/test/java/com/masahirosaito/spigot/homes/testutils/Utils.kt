@@ -60,4 +60,4 @@ fun CommandSender.executeHomeCommand(vararg args: String?): Boolean {
     return command.onCommand(this, pluginCommand, "home", args)
 }
 
-fun HomesConsoleCommandSender.lastMsg() = spyLogger.logs.lastOrNull()
+fun lastMsg() = spyLogger.logs.lastOrNull()

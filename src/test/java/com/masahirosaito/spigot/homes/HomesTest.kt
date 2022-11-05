@@ -236,6 +236,6 @@ class HomesTest {
     @Test
     fun コンソールからホームコマンドを実行した場合にエラーを表示する() {
         homeConsoleCommandSender.executeHomeCommand()
-        assertEquals(homeConsoleCommandSender.lastMsg(), NoConsoleCommandException().message)
+        assertEquals(lastMsg(), NoConsoleCommandException().message)
     }
 }

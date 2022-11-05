@@ -27,6 +27,6 @@ class ConsoleListCommandTest {
     @Test
     fun コンソールからコマンドを実行した場合はプレイヤーリストを表示する() {
         homeConsoleCommandSender.executeHomeCommand("list")
-        assertEquals(homeConsoleCommandSender.lastMsg(), PLAYER_LIST())
+        assertEquals(lastMsg(), PLAYER_LIST())
     }
 }

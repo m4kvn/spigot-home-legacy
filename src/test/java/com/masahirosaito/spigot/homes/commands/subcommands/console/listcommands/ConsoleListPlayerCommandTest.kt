@@ -29,7 +29,7 @@ class ConsoleListPlayerCommandTest {
     @Test
     fun コンソールから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("list", "Nepian", "Minene")
-        assertEquals(homeConsoleCommandSender.lastMsg(), ARGUMENT_INCORRECT(ConsoleListCommand().usage.toString()))
+        assertEquals(lastMsg(), ARGUMENT_INCORRECT(ConsoleListCommand().usage.toString()))
     }
 
     @Test
@@ -39,6 +39,6 @@ class ConsoleListPlayerCommandTest {
             setNamedHomePrivate(nepian, "home1", true)
         }
         homeConsoleCommandSender.executeHomeCommand("list", "Nepian")
-        assertNotEquals(homeConsoleCommandSender.lastMsg(), NO_HOME(nepian.name))
+        assertNotEquals(lastMsg(), NO_HOME(nepian.name))
     }
 }

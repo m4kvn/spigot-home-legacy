@@ -28,18 +28,18 @@ class ConsoleHelpUsageCommandTest {
     @Test
     fun コンソールからコマンドを実行した場合はコンソールコマンド以外の使い方は表示できない() {
         homeConsoleCommandSender.executeHomeCommand("help", "home")
-        assertEquals(homeConsoleCommandSender.lastMsg(), NO_COMMAND("home"))
+        assertEquals(lastMsg(), NO_COMMAND("home"))
     }
 
     @Test
     fun コンソールからコマンドを実行した場合はコンソールコマンドの使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("help", "help")
-        assertEquals(homeConsoleCommandSender.lastMsg(), ConsoleHelpCommand().usage.toString())
+        assertEquals(lastMsg(), ConsoleHelpCommand().usage.toString())
     }
 
     @Test
     fun コンソールから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("help", "home", "help")
-        assertEquals(homeConsoleCommandSender.lastMsg(), ARGUMENT_INCORRECT(ConsoleHelpCommand().usage.toString()))
+        assertEquals(lastMsg(), ARGUMENT_INCORRECT(ConsoleHelpCommand().usage.toString()))
     }
 }
