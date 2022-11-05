@@ -17,7 +17,6 @@ import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
 import com.masahirosaito.spigot.homes.testutils.*
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.command
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
@@ -25,45 +24,23 @@ import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.minene
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.namedLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginCommand
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.pluginFolder
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Server
-import org.bukkit.World
-import org.bukkit.command.PluginCommand
-import org.bukkit.entity.Player
-import org.bukkit.plugin.PluginDescriptionFile
-import org.bukkit.plugin.PluginManager
-import org.bukkit.plugin.RegisteredServiceProvider
-import org.bukkit.plugin.ServicesManager
-import org.bukkit.plugin.java.JavaPluginLoader
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.notNullValue
-import org.junit.After
-import org.junit.Assert.assertThat
-import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.io.File
 
-
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
-        Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
-        PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
+@Suppress("NonAsciiCharacters", "TestFunctionName")
 class HomesTest {
 
-    @Before
+    @BeforeEach
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         assertTrue(TestInstanceCreator.tearDown())
     }
@@ -90,7 +67,7 @@ class HomesTest {
 
     @Test
     fun 料金設定ファイルが読み込まれている() {
-        assertThat(homes.fee, `is`(loadData(feeFile, FeeData::class.java)))
+        assertEquals(homes.fee, loadData(feeFile, FeeData::class.java))
     }
 
     @Ignore
@@ -110,7 +87,7 @@ class HomesTest {
 
     @Test
     fun 経済プラグインが読み込まれている() {
-        assertThat(homes.econ, `is`(notNullValue()))
+        assertNotNull(homes.econ)
     }
 
     @Test
@@ -122,76 +99,76 @@ class HomesTest {
     fun ホームへ移動するコマンドの実行ができる() {
         nepian.executeHomeCommand()
         nepian.getDelayThread()?.join()
-        assertThat(nepian.location, `is`(defaultLocation))
+        assertEquals(nepian.location, defaultLocation)
     }
 
     @Test
     fun 名前付きホームへ移動するコマンドの実行ができる() {
         nepian.executeHomeCommand("home1")
         nepian.getDelayThread()?.join()
-        assertThat(nepian.location, `is`(namedLocation))
+        assertEquals(nepian.location, namedLocation)
     }
 
     @Test
     fun 他人のホームへ移動するコマンドの実行ができる() {
         minene.executeHomeCommand("-p", "Nepian")
         minene.getDelayThread()?.join()
-        assertThat(minene.location, `is`(defaultLocation))
+        assertEquals(minene.location, defaultLocation)
     }
 
     @Test
     fun 他人の名前付きホームへ移動するコマンドの実行ができる() {
         minene.executeHomeCommand("home1", "-p", "Nepian")
         minene.getDelayThread()?.join()
-        assertThat(minene.location, `is`(namedLocation))
+        assertEquals(minene.location, namedLocation)
     }
 
     @Test
     fun ホームを設定するコマンドの実行ができる() {
         nepian.executeHomeCommand("set")
-        assertThat(nepian.lastMsg(), `is`(SET_DEFAULT_HOME()))
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME())
     }
 
     @Test
     fun 名前付きホームを設定するコマンドの実行ができる() {
         nepian.executeHomeCommand("set", "home1")
-        assertThat(nepian.lastMsg(), `is`(SET_NAMED_HOME("home1")))
+        assertEquals(nepian.lastMsg(), SET_NAMED_HOME("home1"))
     }
 
     @Test
     fun 設定されたホームを削除するコマンドの実行ができる() {
         nepian.executeHomeCommand("delete")
-        assertThat(nepian.lastMsg(), `is`(DELETE_DEFAULT_HOME()))
+        assertEquals(nepian.lastMsg(), DELETE_DEFAULT_HOME())
     }
 
     @Test
     fun 設定された名前付きホームを削除するコマンドの実行ができる() {
         nepian.executeHomeCommand("delete", "home1")
-        assertThat(nepian.lastMsg(), `is`(DELETE_NAMED_HOME("home1")))
+        assertEquals(nepian.lastMsg(), DELETE_NAMED_HOME("home1"))
     }
 
     @Test
     fun 設定されたホームをプライベート化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "on")
-        assertThat(nepian.lastMsg(), `is`(SET_DEFAULT_HOME_PRIVATE()))
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PRIVATE())
     }
 
     @Test
     fun 設定された名前付きホームをプライベート化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "on", "home1")
-        assertThat(nepian.lastMsg(), `is`(SET_NAMED_HOME_PRIVATE("home1")))
+        assertEquals(nepian.lastMsg(), SET_NAMED_HOME_PRIVATE("home1"))
     }
 
     @Test
     fun 設定されたホームをパブリック化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "off")
-        assertThat(nepian.lastMsg(), `is`(SET_DEFAULT_HOME_PUBLIC()))
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PUBLIC())
     }
 
     @Test
     fun 設定された名前付きホームをパブリック化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "off", "home1")
-        assertThat(nepian.lastMsg(), `is`(SET_NAMED_HOME_PUBLIC("home1")))
+        assertEquals(nepian.lastMsg(), SET_NAMED_HOME_PUBLIC("home1"))
     }
 
     @Test
@@ -212,23 +189,23 @@ class HomesTest {
     @Test
     fun 他の人を自分のホームに招待するコマンドの実行ができる() {
         nepian.executeHomeCommand("invite", "Minene")
-        assertThat(nepian.lastMsg(), `is`(SEND_DEFAULT_HOME_INVITATION_TO("Minene")))
-        assertThat(minene.lastMsg(), `is`(RECEIVE_DEFAULT_HOME_INVITATION_FROM("Nepian")))
+        assertEquals(nepian.lastMsg(), SEND_DEFAULT_HOME_INVITATION_TO("Minene"))
+        assertEquals(minene.lastMsg(), RECEIVE_DEFAULT_HOME_INVITATION_FROM("Nepian"))
         minene.acceptInvitation()
     }
 
     @Test
     fun 他の人を自分の名前付きホームに招待するコマンドの実行ができる() {
         nepian.executeHomeCommand("invite", "Minene", "home1")
-        assertThat(nepian.lastMsg(), `is`(SEND_NAMED_HOME_INVITATION_TO("Minene", "home1")))
-        assertThat(minene.lastMsg(), `is`(RECEIVE_NAMED_HOME_INVITATION_FROM("Nepian", "home1")))
+        assertEquals(nepian.lastMsg(), SEND_NAMED_HOME_INVITATION_TO("Minene", "home1"))
+        assertEquals(minene.lastMsg(), RECEIVE_NAMED_HOME_INVITATION_FROM("Nepian", "home1"))
         minene.acceptInvitation()
     }
 
     @Test
     fun 他の人からの招待を受けるコマンドの実行ができる() {
         nepian.executeHomeCommand("invite")
-        assertThat(nepian.lastMsg(), `is`(NO_RECEIVED_INVITATION()))
+        assertEquals(nepian.lastMsg(), NO_RECEIVED_INVITATION())
     }
 
     @Test
@@ -259,6 +236,6 @@ class HomesTest {
     @Test
     fun コンソールからホームコマンドを実行した場合にエラーを表示する() {
         homeConsoleCommandSender.executeHomeCommand()
-        assertThat(homeConsoleCommandSender.lastMsg(), `is`(NoConsoleCommandException().message))
+        assertEquals(homeConsoleCommandSender.lastMsg(), NoConsoleCommandException().message)
     }
 }
