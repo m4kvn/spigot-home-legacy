@@ -4,33 +4,21 @@ import com.masahirosaito.spigot.homes.exceptions.NoNamedHomeException
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.NAMED_HOME
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
-import org.bukkit.*
-import org.bukkit.command.PluginCommand
-import org.bukkit.entity.Player
-import org.bukkit.plugin.PluginDescriptionFile
-import org.bukkit.plugin.PluginManager
-import org.bukkit.plugin.RegisteredServiceProvider
-import org.bukkit.plugin.ServicesManager
-import org.bukkit.plugin.java.JavaPluginLoader
-import org.junit.After
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
+import org.bukkit.OfflinePlayer
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(Homes::class, JavaPluginLoader::class, PluginDescriptionFile::class,
-        Server::class, PluginCommand::class, Player::class, Location::class, World::class, Bukkit::class,
-        PluginManager::class, ServicesManager::class, RegisteredServiceProvider::class)
+@Suppress("NonAsciiCharacters", "TestFunctionName")
 class PlayerDataManagerTest {
-    @Before
+
+    @BeforeEach
     fun setUp() {
         assertTrue(TestInstanceCreator.setUp())
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         assertTrue(TestInstanceCreator.tearDown())
     }
