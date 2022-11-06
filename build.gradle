@@ -9,8 +9,8 @@ apply from: 'gradle/properties.gradle'
 group = info.group
 version = "${info.version}-${version_spigot}"
 
-sourceCompatibility = 8
-targetCompatibility = 8
+sourceCompatibility = 18
+targetCompatibility = 18
 
 test {
     useJUnitPlatform()
