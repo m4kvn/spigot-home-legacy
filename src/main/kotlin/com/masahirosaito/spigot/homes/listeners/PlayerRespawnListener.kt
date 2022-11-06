@@ -16,7 +16,7 @@ class PlayerRespawnListener(override val plugin: Homes) : HomesListener {
 
         try {
             event.respawnLocation = PlayerDataManager.findDefaultHome(event.player).location
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
     }
 }

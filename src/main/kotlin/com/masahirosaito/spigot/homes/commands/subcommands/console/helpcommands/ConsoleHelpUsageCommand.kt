@@ -10,8 +10,8 @@ class ConsoleHelpUsageCommand(consoleHelpCommand: ConsoleHelpCommand) :
         SubCommand(consoleHelpCommand), ConsoleCommand {
 
     override fun execute(consoleCommandSender: ConsoleCommandSender, args: List<String>) {
-        homeCommand.let {
-            it.consoleSubCommands.find { it.name == args[0] }.let {
+        homeCommand.let { command ->
+            command.consoleSubCommands.find { it.name == args[0] }.let {
                 if (it != null) {
                     return send(consoleCommandSender, it.usage)
                 } else throw NoSuchCommandException(args[0])

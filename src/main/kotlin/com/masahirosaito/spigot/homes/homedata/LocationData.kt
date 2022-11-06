@@ -18,7 +18,14 @@ data class LocationData(
 
     companion object {
         fun new(location: Location): LocationData {
-            return LocationData(location.world.uid, location.x, location.y, location.z, location.yaw, location.pitch)
+            return LocationData(
+                worldUid = location.world?.uid ?: throw NullPointerException(),
+                x = location.x,
+                y = location.y,
+                z = location.z,
+                yaw = location.yaw,
+                pitch = location.pitch,
+            )
         }
     }
 }

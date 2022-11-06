@@ -1,0 +1,49 @@
+name: Build
+on: push
+env:
+  SPIGOT_VERSION: 1.19
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'adopt'
+      - name: Cache BuildTools.jar
+        id: cache-buildtools
+        uses: actions/cache@v3
+        with:
+          path: ./server/BuildTools.jar
+          key: buildtools
+      - name: Download BuildTools.jar
+        if: steps.cache-buildtools.outputs.cache-hit != 'true'
+        run: wget -O ./server/BuildTools.jar https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+      - name: Cache Spiogt
+        id: cache-spigot
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: spigot-${{ env.SPIGOT_VERSION }}
+      - name: Initialize repositories
+        if: steps.cache-spigot.outputs.cache-hit != 'true'
+        run: java -jar BuildTools.jar --rev ${{ env.SPIGOT_VERSION }}
+        working-directory: ./server
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Run Tests
+        run: ./gradlew test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always()
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'

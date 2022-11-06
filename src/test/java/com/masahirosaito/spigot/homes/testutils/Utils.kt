@@ -12,16 +12,12 @@ fun Player.setPermissions(vararg permissions: String) {
 }
 
 fun Player.setOps(boolean: Boolean = true) {
-    MockPlayerFactory.ops.put(uniqueId, boolean)
+    MockPlayerFactory.ops[uniqueId] = boolean
 }
 
 val Player.logger: SpyLogger get() = MockPlayerFactory.loggers[uniqueId]!!
 
 fun Player.lastMsg() = logger.logs.lastOrNull()
-
-fun Player.removePermissions(vararg permissions: String) {
-    permissions.forEach { MockPlayerFactory.permissions[uniqueId]?.remove(it) }
-}
 
 fun Player.randomTeleport() {
     teleport(MockWorldFactory.makeRandomLocation())
@@ -30,7 +26,7 @@ fun Player.randomTeleport() {
 object FileUtil {
     fun delete(file: File) {
         if (!file.exists()) return
-        if (file.isDirectory) file.listFiles().forEach { FileUtil.delete(it) }
+        if (file.isDirectory) file.listFiles()?.forEach { delete(it) }
         file.delete()
     }
 }
@@ -64,4 +60,4 @@ fun CommandSender.executeHomeCommand(vararg args: String?): Boolean {
     return command.onCommand(this, pluginCommand, "home", args)
 }
 
-fun HomesConsoleCommandSender.lastMsg() = spyLogger.logs.lastOrNull()
+fun lastMsg() = spyLogger.logs.lastOrNull()

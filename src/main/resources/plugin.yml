@@ -1,9 +1,11 @@
 name: Homes
-version: 0.10.1
+version: @version@
 main: com.masahirosaito.spigot.homes.Homes
-authors: [MasahiroSaito]
+#main: com.github.m4kvn.spigot.Homes
+api-version: @api-version@
+authors: [m4kvn]
 description: This plugin allows each player to set their home point.
-website: https://github.com/MasahiroSaito/Homes
+website: https://github.com/m4kvn/spigot-home
 load: POSTWORLD
 commands:
   home:
@@ -19,7 +21,7 @@ permissions:
       homes.general: true
   homes.general:
     description: Grant general permissions of Homes.
-    default: off
+    default: false
     children:
       homes.command: true
       homes.command.name: true

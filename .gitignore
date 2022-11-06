@@ -5,3 +5,4 @@ gradle.properties
 build/
 bin/
 out/
+local.properties

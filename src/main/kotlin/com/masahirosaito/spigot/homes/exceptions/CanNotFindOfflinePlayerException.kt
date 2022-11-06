@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_OFFLINE_PLAYER
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoOfflinePlayerMessage
 
 class CanNotFindOfflinePlayerException(playerName: String) :
-        HomesException(NO_OFFLINE_PLAYER(playerName))
+    HomesException(createNoOfflinePlayerMessage(playerName))

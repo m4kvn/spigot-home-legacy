@@ -14,17 +14,15 @@ import java.io.File
 import java.util.*
 
 fun findOfflinePlayer(name: String): OfflinePlayer {
-    return Bukkit.getOfflinePlayers().find { it.name == name } ?:
-            throw CanNotFindOfflinePlayerException(name)
+    return Bukkit.getOfflinePlayers().find { it.name == name } ?: throw CanNotFindOfflinePlayerException(name)
 }
 
 fun findOnlinePlayer(name: String): Player {
-    return Bukkit.getOnlinePlayers().find { it.name == name } ?:
-            throw CanNotFindOnlinePlayerException(name)
+    return Bukkit.getOnlinePlayers().find { it.name == name } ?: throw CanNotFindOnlinePlayerException(name)
 }
 
 fun findOfflinePlayer(uuid: UUID): OfflinePlayer {
-    return Bukkit.getOfflinePlayer(uuid) ?: throw  HomesException("Player is not exist")
+    return Bukkit.getOfflinePlayer(uuid)
 }
 
 fun findOnlinePlayer(uuid: UUID): Player {
@@ -32,13 +30,13 @@ fun findOnlinePlayer(uuid: UUID): Player {
 }
 
 fun getPrivateStatic(clazz: Class<*>, f: String): Any? {
-    try {
+    return try {
         val field = clazz.getDeclaredField(f)
         field.isAccessible = true
-        return field.get(null)
+        field.get(null)
     } catch (e: Exception) {
         e.printStackTrace()
-        return null
+        null
     }
 }
 
@@ -49,10 +47,17 @@ fun File.load(): File = this.apply {
 
 fun Location.toData(): LocationData = LocationData.new(this)
 
-fun <T> loadData(file: File, clazz: Class<T>): T {
-    return Gson().fromJson(file.readText().let {
-        if (it.isNullOrBlank()) toJson(clazz.newInstance()) else it
-    }, clazz).apply { saveData(file, this) }
+inline fun <reified T> loadDataAndSave(
+    file: File,
+    crossinline createNewData: () -> T,
+): T {
+    val dataString = file.readText()
+    if (dataString.isBlank()) {
+        val newData = createNewData()
+        saveData(file, newData)
+        return newData
+    }
+    return Gson().fromJson(dataString, T::class.java)
 }
 
 fun <T> toJson(data: T): String {
@@ -62,3 +67,6 @@ fun <T> toJson(data: T): String {
 fun <T> saveData(file: File, data: T) {
     file.writeText(toJson(data), Charsets.UTF_8)
 }
+
+val OfflinePlayer.nameOrUnknown: String
+    get() = name ?: "Unknown"

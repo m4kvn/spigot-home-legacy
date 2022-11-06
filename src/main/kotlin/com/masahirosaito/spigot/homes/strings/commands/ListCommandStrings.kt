@@ -6,33 +6,26 @@ import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.datas.strings.commands.ListCommandStringData
 import com.masahirosaito.spigot.homes.exceptions.NoHomeException
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import java.io.File
 
 object ListCommandStrings {
-    lateinit private var data: ListCommandStringData
+    private const val FILE_NAME = "list-command.json"
+    private lateinit var data: ListCommandStringData
+
+    val DESCRIPTION_PLAYER_COMMAND: String get() = data.DESCRIPTION_PLAYER_COMMAND
+    val DESCRIPTION_CONSOLE_COMMAND: String get() = data.DESCRIPTION_CONSOLE_COMMAND
+    val USAGE_CONSOLE_COMMAND_LIST: String get() = data.USAGE_CONSOLE_COMMAND_LIST
+    val USAGE_PLAYER_COMMAND_LIST: String get() = data.USAGE_PLAYER_COMMAND_LIST
+    val USAGE_LIST_PLAYER: String get() = data.USAGE_LIST_PLAYER
 
     fun load(folderPath: String) {
-        data = loadData(File(folderPath, "list-command.json").load(), ListCommandStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        data = loadDataAndSave(file) { ListCommandStringData() }
     }
 
-    fun DESCRIPTION_PLAYER_COMMAND() =
-            data.DESCRIPTION_PLAYER_COMMAND
-
-    fun DESCRIPTION_CONSOLE_COMMAND() =
-            data.DESCRIPTION_CONSOLE_COMMAND
-
-    fun USAGE_CONSOLE_COMMAND_LIST() =
-            data.USAGE_CONSOLE_COMMAND_LIST
-
-    fun USAGE_PLAYER_COMMAND_LIST() =
-            data.USAGE_PLAYER_COMMAND_LIST
-
-    fun USAGE_LIST_PLAYER() =
-            data.USAGE_LIST_PLAYER
-
-    fun PLAYER_LIST() = buildString {
+    fun createPlayerListMessage() = buildString {
         append("Player List")
         PlayerDataManager.getPlayerDataList().forEach { (offlinePlayer, defaultHome, namedHomes) ->
             append("\n  &d${offlinePlayer.name}&r : ")
@@ -41,7 +34,7 @@ object ListCommandStrings {
         }
     }
 
-    fun HOME_LIST(playerData: PlayerData, isPlayerHomeList: Boolean) = buildString {
+    fun createHomeListMessage(playerData: PlayerData, isPlayerHomeList: Boolean) = buildString {
         val offlinePlayer = playerData.offlinePlayer
         val defaultHome = playerData.defaultHome
         val namedHomes = playerData.namedHomes
@@ -52,7 +45,8 @@ object ListCommandStrings {
 
         if (isPlayerHomeList
                 .and(defaultHome != null && defaultHome.isPrivate)
-                .and(namedHomes.all { it.isPrivate })) {
+                .and(namedHomes.all { it.isPrivate })
+        ) {
             throw NoHomeException(offlinePlayer)
         }
 
@@ -80,7 +74,7 @@ object ListCommandStrings {
     private fun getText(homesEntity: HomesEntity): String {
         val loc = homesEntity.location
         return buildString {
-            append("&a${loc.world.name}&r, ")
+            append("&a${loc.world?.name}&r, ")
             append("{&b${loc.x.toInt()}&r, &b${loc.y.toInt()}&r, &b${loc.z.toInt()}&r}, ")
             append(if (homesEntity.isPrivate) "&ePRIVATE&r" else "&9PUBLIC&r")
         }

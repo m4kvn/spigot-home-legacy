@@ -15,14 +15,14 @@ import org.bukkit.entity.Player
 class PlayerDeleteCommand : PlayerCommand {
     override var payNow: Boolean = true
     override val name: String = "delete"
-    override val description: String = DESCRIPTION()
+    override val description: String = DESCRIPTION
     override val permissions: List<String> = listOf(home_command_delete)
     override val commands: List<BaseCommand> = listOf(
             PlayerDeleteNameCommand(this)
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home delete" to USAGE_DELETE(),
-            "/home delete <home_name>" to USAGE_DELETE_NAME()
+        "/home delete" to USAGE_DELETE,
+        "/home delete <home_name>" to USAGE_DELETE_NAME
     ))
 
     override fun fee(): Double = homes.fee.DELETE
@@ -33,6 +33,6 @@ class PlayerDeleteCommand : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.removeDefaultHome(player)
-        send(player, DELETE_DEFAULT_HOME())
+        send(player, DELETE_DEFAULT_HOME)
     }
 }

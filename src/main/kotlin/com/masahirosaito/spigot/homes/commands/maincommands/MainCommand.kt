@@ -15,9 +15,11 @@ interface MainCommand : CommandExecutor, BaseCommand {
     val playerSubCommands: List<PlayerCommand>
     val consoleSubCommands: List<ConsoleCommand>
 
-    override fun onCommand(sender: CommandSender?, command: Command?,
-                           label: String?, args: Array<out String>?): Boolean {
-        val argsList = args?.toList() ?: emptyList()
+    override fun onCommand(
+        sender: CommandSender, command: Command,
+        label: String, args: Array<out String>
+    ): Boolean {
+        val argsList = args.toList()
 
         try {
             when (sender) {
@@ -37,7 +39,7 @@ interface MainCommand : CommandExecutor, BaseCommand {
                 }
             }
         } catch (e: HomesException) {
-            send(sender!!, e.message)
+            send(sender, e.message)
         } catch (e: Exception) {
             e.printStackTrace()
         }

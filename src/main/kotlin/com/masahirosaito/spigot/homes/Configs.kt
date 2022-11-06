@@ -33,8 +33,8 @@ object Configs {
     var onDamageCancel: Boolean = true
 
     fun load() {
-
-        loadData(File(homes.dataFolder, "configs.json").load(), ConfigData::class.java).let {
+        val file = File(homes.dataFolder, "configs.json").load()
+        loadDataAndSave(file) { ConfigData() }.let {
             language = it.language
             onDebug = it.onDebug
             onNamedHome = it.onNamedHome

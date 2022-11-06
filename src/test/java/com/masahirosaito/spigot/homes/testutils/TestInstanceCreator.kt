@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes.testutils
 
 import com.masahirosaito.spigot.homes.Configs
-import com.masahirosaito.spigot.homes.DelayTeleporter
 import com.masahirosaito.spigot.homes.Homes
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import net.milkbowl.vault.economy.Economy
@@ -14,31 +13,27 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.JavaPluginLoader
-import org.easymock.ConstructorArgs
-import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert
-import org.mockito.Matchers.any
-import org.powermock.api.easymock.PowerMock
-import org.powermock.api.easymock.PowerMock.createMock
-import org.powermock.api.mockito.PowerMockito
-import org.powermock.api.mockito.PowerMockito.*
-import org.powermock.api.support.membermodification.MemberMatcher.constructor
-import org.powermock.reflect.Whitebox
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.*
+import org.mockito.internal.util.MockUtil.createMock
 import java.io.File
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
-import org.powermock.api.mockito.PowerMockito.`when` as pwhen
+import org.mockito.Mockito.`when` as pwhen
 
 object TestInstanceCreator {
-    lateinit var mockServer: Server
+    private lateinit var mockServer: Server
     lateinit var homes: Homes
-    lateinit var javaPluginLoader: JavaPluginLoader
-    lateinit var vault: JavaPlugin
-    lateinit var mockServicesManager: ServicesManager
-    lateinit var mockPluginManager: PluginManager
+    private lateinit var javaPluginLoader: JavaPluginLoader
+    private lateinit var vault: JavaPlugin
+    private lateinit var mockServicesManager: ServicesManager
+    private lateinit var mockPluginManager: PluginManager
     lateinit var homeConsoleCommandSender: HomesConsoleCommandSender
-    lateinit var registeredServiceProvider: RegisteredServiceProvider<Economy>
+    private lateinit var registeredServiceProvider: RegisteredServiceProvider<Economy>
     lateinit var pluginCommand: PluginCommand
 
     lateinit var economy: Economy
@@ -50,9 +45,8 @@ object TestInstanceCreator {
     lateinit var command: CommandExecutor
 
     val pluginFolder = File("bin/test/server/plugins/homestest")
-    val pluginFile = File(pluginFolder, "testPluginFile")
-    val configFile = File(pluginFolder, "configs.json")
-    val playerhomesFile = File(pluginFolder, "playerhomes.json")
+    private val pluginFile = File(pluginFolder, "testPluginFile")
+
     val feeFile = File(pluginFolder, "fee.json")
 
     const val NAMED_HOME: String = "home1"
@@ -72,26 +66,32 @@ object TestInstanceCreator {
                 pwhen(consoleSender).thenReturn(homeConsoleCommandSender)
                 pwhen(servicesManager).thenReturn(mockServicesManager)
             }
-            javaPluginLoader = PowerMock.createMock(JavaPluginLoader::class.java).apply {
-                Whitebox.setInternalState(this, "server", mockServer)
+            javaPluginLoader = createMock(withSettings().build(JavaPluginLoader::class.java)).apply {
+                val serverField = javaClass.getDeclaredField("server")
+                serverField.isAccessible = true
+                serverField.set(this, mockServer)
             }
             vault = mock(JavaPlugin::class.java)
             homes = spy(Homes(javaPluginLoader, createHomesDescriptionFile(), pluginFolder, pluginFile)).apply {
-                pluginCommand = createMock(PluginCommand::class.java, ConstructorArgs(
-                        constructor(PluginCommand::class.java, String::class.java, Plugin::class.java), "home", this))
+                val pluginCommandConstructor = PluginCommand::class.java
+                    .getDeclaredConstructor(String::class.java, Plugin::class.java)
+                pluginCommandConstructor.isAccessible = true
+                pluginCommand = spy(pluginCommandConstructor.newInstance("home", this))
                 pwhen(name).thenReturn("Homes")
                 pwhen(dataFolder).thenReturn(pluginFolder)
                 pwhen(getCommand("home")).thenReturn(pluginCommand)
                 pwhen(server).thenReturn(mockServer)
             }
-            registeredServiceProvider = spy(RegisteredServiceProvider<Economy>(
-                    economy.javaClass, economy, ServicePriority.Normal, vault)
+            registeredServiceProvider = spy(
+                RegisteredServiceProvider<Economy>(
+                    economy.javaClass, economy, ServicePriority.Normal, vault
+                )
             )
 
             doReturn(registeredServiceProvider).`when`(mockServicesManager).getRegistration(Economy::class.java)
             doReturn(vault).`when`(mockPluginManager).getPlugin("Vault")
 
-            Bukkit.setServer(mockServer)
+            resetBukkitServer()
 
             pwhen(Bukkit.getOfflinePlayers()).thenAnswer {
                 MockPlayerFactory.offlinePlayers.values.toTypedArray()
@@ -100,13 +100,13 @@ object TestInstanceCreator {
                 MockPlayerFactory.players.values
             }
             pwhen(Bukkit.getOfflinePlayer(any(UUID::class.java))).thenAnswer { invocation ->
-                MockPlayerFactory.offlinePlayers[invocation.getArgumentAt(0, UUID::class.java)]
+                MockPlayerFactory.offlinePlayers[invocation.getArgument(0)]
             }
             pwhen(Bukkit.getPlayer(any(UUID::class.java))).thenAnswer { invocation ->
-                MockPlayerFactory.players[invocation.getArgumentAt(0, UUID::class.java)]
+                MockPlayerFactory.players[invocation.getArgument(0)]
             }
             pwhen(Bukkit.getWorld(any(UUID::class.java))).thenAnswer { invocation ->
-                MockWorldFactory.worlds[invocation.getArgumentAt(0, UUID::class.java)]
+                MockWorldFactory.worlds[invocation.getArgument(0)]
             }
 
             homes.onLoad()
@@ -128,8 +128,8 @@ object TestInstanceCreator {
             defaultLocation = PlayerDataManager.findDefaultHome(nepian).location
             namedLocation = PlayerDataManager.findNamedHome(nepian, NAMED_HOME).location
 
-            Assert.assertThat(defaultLocation, `is`(nepian.location))
-            Assert.assertThat(namedLocation, `is`(nepian.location))
+            Assert.assertEquals(defaultLocation, nepian.location)
+            Assert.assertEquals(namedLocation, nepian.location)
 
             while (defaultLocation == nepian.location || namedLocation == nepian.location) {
                 nepian.randomTeleport()
@@ -167,8 +167,10 @@ object TestInstanceCreator {
                 it.set(Class.forName("org.bukkit.Bukkit"), null)
             }
         } catch (e: Exception) {
-            Logger.getLogger("Homes").log(Level.SEVERE,
-                    "Error while trying to unregister the server from Bukkit. Has Bukkit changed?")
+            Logger.getLogger("Homes").log(
+                Level.SEVERE,
+                "Error while trying to unregister the server from Bukkit. Has Bukkit changed?"
+            )
             e.printStackTrace()
             Assert.fail(e.message)
             return false
@@ -186,10 +188,13 @@ object TestInstanceCreator {
         FileUtil.delete(pluginFolder)
     }
 
-    private fun createHomesDescriptionFile() = PowerMockito.spy(PluginDescriptionFile(
-            "Homes", "test-version", "com.masahirosaito.spigot.homes.Homes")).apply {
-        PowerMockito.`when`(commands).thenReturn(mapOf("home" to mapOf()))
-        PowerMockito.`when`(authors).thenReturn(listOf())
+    private fun createHomesDescriptionFile() = spy(
+        PluginDescriptionFile(
+            "Homes", "test-version", "com.masahirosaito.spigot.homes.Homes"
+        )
+    ).apply {
+        pwhen(commands).thenReturn(mapOf("home" to mapOf()))
+        pwhen(authors).thenReturn(listOf())
     }
 
     private fun killThread(player: Player, meta: String) {
@@ -206,5 +211,17 @@ object TestInstanceCreator {
     private fun killThreads(meta: String) {
         killThread(nepian, meta)
         killThread(minene, meta)
+    }
+
+    private fun resetBukkitServer() {
+        val serverField = Bukkit::class.java.getDeclaredField("server")
+        val modifiersField = Field::class.java.getDeclaredField("modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.set(
+            serverField,
+            serverField.modifiers and Modifier.PRIVATE.inv()
+        )
+        serverField.isAccessible = true
+        serverField.set(null, mockServer)
     }
 }

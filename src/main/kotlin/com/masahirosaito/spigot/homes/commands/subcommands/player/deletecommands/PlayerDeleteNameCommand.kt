@@ -7,6 +7,7 @@ import com.masahirosaito.spigot.homes.Permission.home_command_delete_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
 import org.bukkit.entity.Player
 
@@ -25,7 +26,9 @@ class PlayerDeleteNameCommand(playerDeleteCommand: PlayerDeleteCommand) :
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 
     override fun execute(player: Player, args: List<String>) {
-        PlayerDataManager.removeNamedHome(player, args[0])
-        send(player, DELETE_NAMED_HOME(args[0]))
+        val homeName = args[0]
+        PlayerDataManager.removeNamedHome(player, homeName)
+        val message = DELETE_NAMED_HOME.replace(HOME_NAME, homeName)
+        send(player, message)
     }
 }

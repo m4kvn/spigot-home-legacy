@@ -22,12 +22,12 @@ class PlayerHelpUsageCommand(playerHelpCommand: PlayerHelpCommand) : PlayerSubCo
     override fun isValidArgs(args: List<String>): Boolean = args.size == 1
 
     override fun execute(player: Player, args: List<String>) {
-        homeCommand.let {
-            if (it.name == args[0] && it is PlayerCommand && it.hasPermission(player)) {
-                return send(player, it.usage)
+        homeCommand.let { command ->
+            if (command.name == args[0] && command.hasPermission(player)) {
+                return send(player, command.usage)
             } else {
-                it.playerSubCommands.find { it.name == args[0] }.let {
-                    if (it != null && it is PlayerCommand && it.hasPermission(player)) {
+                command.playerSubCommands.find { it.name == args[0] }.let {
+                    if (it != null && it.hasPermission(player)) {
                         return send(player, it.usage)
                     } else throw NoSuchCommandException(args[0])
                 }

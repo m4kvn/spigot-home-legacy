@@ -1,31 +1,22 @@
 package com.masahirosaito.spigot.homes.strings.commands
 
-import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
 import com.masahirosaito.spigot.homes.datas.strings.commands.DeleteCommandStringData
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
 import java.io.File
 
 object DeleteCommandStrings {
-    lateinit private var data: DeleteCommandStringData
+    private const val FILE_NAME = "delete-command.json"
+    private lateinit var data: DeleteCommandStringData
+
+    val DESCRIPTION: String get() = data.DESCRIPTION
+    val USAGE_DELETE: String get() = data.USAGE_DELETE
+    val USAGE_DELETE_NAME: String get() = data.USAGE_DELETE_NAME
+    val DELETE_DEFAULT_HOME: String get() = data.DELETE_DEFAULT_HOME
+    val DELETE_NAMED_HOME: String get() = data.DELETE_NAMED_HOME
 
     fun load(folderPath: String) {
-        data = loadData(File(folderPath, "delete-command.json").load(), DeleteCommandStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        data = loadDataAndSave(file) { DeleteCommandStringData() }
     }
-
-    fun DESCRIPTION() =
-            data.DESCRIPTION
-
-    fun USAGE_DELETE() =
-            data.USAGE_DELETE
-
-    fun USAGE_DELETE_NAME() =
-            data.USAGE_DELETE_NAME
-
-    fun DELETE_DEFAULT_HOME() =
-            data.DELETE_DEFAULT_HOME
-
-    fun DELETE_NAMED_HOME(homeName: String) =
-            data.DELETE_NAMED_HOME
-                    .replace(HOME_NAME, homeName)
 }

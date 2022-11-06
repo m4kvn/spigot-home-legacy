@@ -7,10 +7,11 @@ import org.bukkit.command.CommandSender
 
 object Messenger {
 
-    fun prefix(obj: Any): String = ChatColor.translateAlternateColorCodes('&', "[${homes.name}] $obj")
+    private fun prefix(obj: Any): String = ChatColor.translateAlternateColorCodes('&', "[${homes.name}] $obj")
 
     fun log(obj: Any) = Bukkit.getServer().consoleSender.sendMessage(prefix(obj))
 
+    @Suppress("unused")
     fun debug(obj: Any) {
         if (Configs.onDebug) log("&b[DEBUG]&r $obj")
     }

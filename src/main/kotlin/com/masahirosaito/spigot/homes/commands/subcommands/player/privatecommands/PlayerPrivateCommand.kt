@@ -17,11 +17,11 @@ import org.bukkit.entity.Player
 class PlayerPrivateCommand : PlayerCommand {
     override var payNow: Boolean = true
     override val name: String = "private"
-    override val description: String = DESCRIPTION()
+    override val description: String = DESCRIPTION
     override val permissions: List<String> = listOf(home_command_private)
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home private (on/off)" to USAGE_PRIVATE(),
-            "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME()
+        "/home private (on/off)" to USAGE_PRIVATE,
+        "/home private (on/off) <home_name>" to USAGE_PRIVATE_NAME
     ))
     override val commands: List<BaseCommand> = listOf(
             PlayerPrivateNameCommand(this)
@@ -36,10 +36,10 @@ class PlayerPrivateCommand : PlayerCommand {
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
             PlayerDataManager.setDefaultHomePrivate(player, true)
-            send(player, SET_DEFAULT_HOME_PRIVATE())
+            send(player, SET_DEFAULT_HOME_PRIVATE)
         } else {
             PlayerDataManager.setDefaultHomePrivate(player, false)
-            send(player, SET_DEFAULT_HOME_PUBLIC())
+            send(player, SET_DEFAULT_HOME_PUBLIC)
         }
     }
 }

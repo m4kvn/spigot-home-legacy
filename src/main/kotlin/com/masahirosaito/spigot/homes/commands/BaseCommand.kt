@@ -21,7 +21,7 @@ interface BaseCommand {
     fun isValidArgs(args: List<String>): Boolean
 
     fun send(sender: CommandSender, message: String) {
-        if (!message.isNullOrBlank()) Messenger.send(sender, message)
+        if (message.isNotBlank()) Messenger.send(sender, message)
     }
 
     fun send(sender: CommandSender, obj: Any?) {

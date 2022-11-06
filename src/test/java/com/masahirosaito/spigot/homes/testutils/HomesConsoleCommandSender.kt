@@ -1,56 +1,80 @@
 package com.masahirosaito.spigot.homes.testutils
 
 import org.bukkit.Server
+import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.conversations.Conversation
 import org.bukkit.conversations.ConversationAbandonedEvent
+import org.bukkit.entity.Player
 import org.bukkit.permissions.Permissible
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
-import org.powermock.api.mockito.PowerMockito.mock
+import org.mockito.Mockito.mock
+import java.util.*
 
-class HomesConsoleCommandSender(val mockServer: Server) : ConsoleCommandSender {
+class HomesConsoleCommandSender(
+    private val mockServer: Server,
+) : ConsoleCommandSender {
 
-    override fun sendMessage(message: String?) {
+    override fun sendMessage(message: String) {
         mockServer.logger.info(message)
     }
 
-    override fun sendMessage(messages: Array<out String>?) {
-        messages?.forEach { mockServer.logger.info(it) }
+    override fun sendMessage(messages: Array<out String>) {
+        messages.forEach { mockServer.logger.info(it) }
     }
 
-    override fun beginConversation(conversation: Conversation?): Boolean = true
+    override fun sendMessage(uuid: UUID?, message: String) {
+        if (uuid == null) return
+        MockPlayerFactory.loggers[uuid]?.info(message)
+    }
 
-    override fun isPermissionSet(name: String?): Boolean = true
+    override fun sendMessage(uuid: UUID?, vararg messages: String?) {
+        messages
+            .filterNotNull()
+            .forEach { sendMessage(uuid, it) }
+    }
 
-    override fun isPermissionSet(perm: Permission?): Boolean = true
+    override fun beginConversation(conversation: Conversation): Boolean = true
 
-    override fun addAttachment(plugin: Plugin?, name: String?, value: Boolean): PermissionAttachment {
+    override fun isPermissionSet(name: String): Boolean = true
+
+    override fun isPermissionSet(perm: Permission): Boolean = true
+
+    override fun addAttachment(plugin: Plugin, name: String, value: Boolean): PermissionAttachment {
         return PermissionAttachment(plugin, mock(Permissible::class.java))
     }
 
-    override fun addAttachment(plugin: Plugin?): PermissionAttachment {
+    override fun addAttachment(plugin: Plugin): PermissionAttachment {
         return PermissionAttachment(plugin, mock(Permissible::class.java))
     }
 
-    override fun addAttachment(plugin: Plugin?, name: String?, value: Boolean, ticks: Int): PermissionAttachment {
+    override fun addAttachment(plugin: Plugin, name: String, value: Boolean, ticks: Int): PermissionAttachment {
         return PermissionAttachment(plugin, mock(Permissible::class.java))
     }
 
-    override fun addAttachment(plugin: Plugin?, ticks: Int): PermissionAttachment {
+    override fun addAttachment(plugin: Plugin, ticks: Int): PermissionAttachment {
         return PermissionAttachment(plugin, mock(Permissible::class.java))
     }
 
     override fun getName(): String = "HomesConsoleSender"
 
+    override fun spigot(): CommandSender.Spigot {
+        return mock(Player.Spigot::class.java)
+    }
+
     override fun isOp(): Boolean = true
 
-    override fun acceptConversationInput(input: String?) { }
+    override fun acceptConversationInput(input: String) {}
 
-    override fun sendRawMessage(message: String?) {
+    override fun sendRawMessage(message: String) {
         mockServer.logger.info(message)
+    }
+
+    override fun sendRawMessage(uuid: UUID?, message: String) {
+        sendMessage(uuid, message)
     }
 
     override fun getEffectivePermissions(): MutableSet<PermissionAttachmentInfo> = mutableSetOf()
@@ -59,17 +83,17 @@ class HomesConsoleCommandSender(val mockServer: Server) : ConsoleCommandSender {
 
     override fun getServer(): Server = mockServer
 
-    override fun removeAttachment(attachment: PermissionAttachment?) { }
+    override fun removeAttachment(attachment: PermissionAttachment) {}
 
-    override fun recalculatePermissions() { }
+    override fun recalculatePermissions() {}
 
-    override fun hasPermission(name: String?): Boolean = true
+    override fun hasPermission(name: String): Boolean = true
 
-    override fun hasPermission(perm: Permission?): Boolean = true
+    override fun hasPermission(perm: Permission): Boolean = true
 
-    override fun abandonConversation(conversation: Conversation?) { }
+    override fun abandonConversation(conversation: Conversation) {}
 
-    override fun abandonConversation(conversation: Conversation?, details: ConversationAbandonedEvent?) { }
+    override fun abandonConversation(conversation: Conversation, details: ConversationAbandonedEvent) {}
 
-    override fun setOp(value: Boolean) { }
+    override fun setOp(value: Boolean) {}
 }

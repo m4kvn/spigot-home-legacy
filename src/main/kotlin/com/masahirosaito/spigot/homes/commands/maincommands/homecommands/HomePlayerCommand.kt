@@ -10,10 +10,12 @@ import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.findOfflinePlayer
 import org.bukkit.entity.Player
 
-class HomePlayerCommand(val homeCommand: HomeCommand) : PlayerSubCommand(homeCommand), PlayerCommand {
+class HomePlayerCommand(
+    private val homeCommand: HomeCommand,
+) : PlayerSubCommand(homeCommand), PlayerCommand {
     override val permissions: List<String> = listOf(
-            home_command,
-            home_command_player
+        home_command,
+        home_command_player
     )
 
     override fun fee(): Double = homes.fee.HOME_PLAYER

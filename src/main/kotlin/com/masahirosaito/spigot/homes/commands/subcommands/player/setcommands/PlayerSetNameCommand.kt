@@ -7,7 +7,7 @@ import com.masahirosaito.spigot.homes.Permission.home_command_set_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
-import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.createSetNamedHomeMessage
 import org.bukkit.entity.Player
 
 class PlayerSetNameCommand(playerSetCommand: PlayerSetCommand) :
@@ -23,6 +23,6 @@ class PlayerSetNameCommand(playerSetCommand: PlayerSetCommand) :
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.setNamedHome(player, player.location, args[0])
-        send(player, SET_NAMED_HOME(args[0]))
+        send(player, createSetNamedHomeMessage(args[0]))
     }
 }

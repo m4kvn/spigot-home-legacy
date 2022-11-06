@@ -2,19 +2,18 @@ package com.masahirosaito.spigot.homes.strings.commands
 
 import com.masahirosaito.spigot.homes.datas.strings.commands.ReloadCommandStringData
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
 import java.io.File
 
 object ReloadCommandStrings {
-    lateinit private var data: ReloadCommandStringData
+    private const val FILE_NAME = "reload-command.json"
+    private lateinit var data: ReloadCommandStringData
+
+    val DESCRIPTION: String get() = data.DESCRIPTION
+    val USAGE_RELOAD: String get() = data.USAGE_RELOAD
 
     fun load(folderPath: String) {
-        data = loadData(File(folderPath, "reload-command.json").load(), ReloadCommandStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        data = loadDataAndSave(file) { ReloadCommandStringData() }
     }
-
-    fun DESCRIPTION() =
-            data.DESCRIPTION
-
-    fun USAGE_RELOAD() =
-            data.USAGE_RELOAD
 }

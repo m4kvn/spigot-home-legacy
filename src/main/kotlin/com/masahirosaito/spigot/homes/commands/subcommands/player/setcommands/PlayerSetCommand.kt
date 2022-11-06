@@ -15,11 +15,11 @@ import org.bukkit.entity.Player
 class PlayerSetCommand : PlayerCommand {
     override var payNow: Boolean = true
     override val name: String = "set"
-    override val description: String = DESCRIPTION()
+    override val description: String = DESCRIPTION
     override val permissions: List<String> = listOf(home_command_set)
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home set" to USAGE_SET(),
-            "/home set <home_name>" to USAGE_SET_NAME()
+        "/home set" to USAGE_SET,
+        "/home set <home_name>" to USAGE_SET_NAME
     ))
     override val commands: List<BaseCommand> = listOf(
             PlayerSetNameCommand(this)
@@ -33,6 +33,6 @@ class PlayerSetCommand : PlayerCommand {
 
     override fun execute(player: Player, args: List<String>) {
         PlayerDataManager.setDefaultHome(player, player.location)
-        send(player, SET_DEFAULT_HOME())
+        send(player, SET_DEFAULT_HOME)
     }
 }

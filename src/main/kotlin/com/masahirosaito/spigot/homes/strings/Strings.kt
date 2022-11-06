@@ -5,17 +5,17 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.strings.commands.*
 
 object Strings {
-    val PLAYER_NAME = "[player-name]"
-    val PERMISSION_NAME = "[permission-name]"
-    val HOME_NAME = "[home-name]"
-    val HOME_LIMIT_NUM = "[home-limit-num]"
-    val COMMAND_NAME = "[command-name]"
-    val COMMAND_USAGE = "[command-usage]"
-    val PAY_AMOUNT = "[pay-amount]"
-    val BALANCE = "[balance]"
-    val ERROR_MESSAGE = "[error-message]"
-    val COMMAND_FEE = "[command-fee]"
-    val DELAY = "[delay]"
+    const val PLAYER_NAME = "[player-name]"
+    const val PERMISSION_NAME = "[permission-name]"
+    const val HOME_NAME = "[home-name]"
+    const val HOME_LIMIT_NUM = "[home-limit-num]"
+    const val COMMAND_NAME = "[command-name]"
+    const val COMMAND_USAGE = "[command-usage]"
+    const val PAY_AMOUNT = "[pay-amount]"
+    const val BALANCE = "[balance]"
+    const val ERROR_MESSAGE = "[error-message]"
+    const val COMMAND_FEE = "[command-fee]"
+    const val DELAY = "[delay]"
 
     fun load() {
 

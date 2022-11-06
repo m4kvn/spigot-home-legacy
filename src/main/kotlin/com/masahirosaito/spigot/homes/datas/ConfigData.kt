@@ -1,7 +1,6 @@
 package com.masahirosaito.spigot.homes.datas
 
 import com.google.gson.annotations.SerializedName
-import com.masahirosaito.spigot.homes.Configs
 
 data class ConfigData(
 

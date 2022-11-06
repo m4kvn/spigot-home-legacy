@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_COMMAND
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoCommandMessage
 
 class NoSuchCommandException(commandName: String) :
-        HomesException(NO_COMMAND(commandName))
+    HomesException(createNoCommandMessage(commandName))
