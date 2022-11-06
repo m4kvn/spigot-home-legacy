@@ -3,8 +3,7 @@ package com.masahirosaito.spigot.homes.testutils
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 import java.util.*
 import org.mockito.Mockito.`when` as pwhen
 
@@ -28,11 +27,21 @@ object MockWorldFactory {
         }
     }
 
-    fun makeRandomLocation() = Location(
-        makeNewMockWorld(),
-        randomDouble(), randomDouble(), randomDouble(),
-        randomFloat(), randomFloat()
-    )
+    fun makeRandomLocation(): Location {
+        val newWorld = makeNewMockWorld()
+        val location = Location(
+            newWorld,
+            randomDouble(),
+            randomDouble(),
+            randomDouble(),
+            randomFloat(),
+            randomFloat()
+        )
+        val mockLocation = spy(location).apply {
+            pwhen(world).thenReturn(newWorld)
+        }
+        return mockLocation
+    }
 
     private fun register(world: World) {
         worlds[world.uid] = world

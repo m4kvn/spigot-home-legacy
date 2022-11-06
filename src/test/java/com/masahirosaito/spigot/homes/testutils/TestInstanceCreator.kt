@@ -18,6 +18,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import org.mockito.internal.util.MockUtil.createMock
 import java.io.File
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.util.*
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -89,7 +91,7 @@ object TestInstanceCreator {
             doReturn(registeredServiceProvider).`when`(mockServicesManager).getRegistration(Economy::class.java)
             doReturn(vault).`when`(mockPluginManager).getPlugin("Vault")
 
-            Bukkit.setServer(mockServer)
+            resetBukkitServer()
 
             pwhen(Bukkit.getOfflinePlayers()).thenAnswer {
                 MockPlayerFactory.offlinePlayers.values.toTypedArray()
@@ -209,5 +211,17 @@ object TestInstanceCreator {
     private fun killThreads(meta: String) {
         killThread(nepian, meta)
         killThread(minene, meta)
+    }
+
+    private fun resetBukkitServer() {
+        val serverField = Bukkit::class.java.getDeclaredField("server")
+        val modifiersField = Field::class.java.getDeclaredField("modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.set(
+            serverField,
+            serverField.modifiers and Modifier.PRIVATE.inv()
+        )
+        serverField.isAccessible = true
+        serverField.set(null, mockServer)
     }
 }

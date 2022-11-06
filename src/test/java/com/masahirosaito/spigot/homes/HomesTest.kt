@@ -93,7 +93,8 @@ class HomesTest {
 
     @Test
     fun ホームコマンドが登録されている() {
-        assertTrue(homes.getCommand("home").executor is HomeCommand)
+        val actual = homes.getCommand("home")?.executor is HomeCommand
+        assertTrue(actual)
     }
 
     @Test
