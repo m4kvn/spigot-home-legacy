@@ -22,7 +22,7 @@ fun findOnlinePlayer(name: String): Player {
 }
 
 fun findOfflinePlayer(uuid: UUID): OfflinePlayer {
-    return Bukkit.getOfflinePlayer(uuid) ?: throw HomesException("Player is not exist")
+    return Bukkit.getOfflinePlayer(uuid)
 }
 
 fun findOnlinePlayer(uuid: UUID): Player {
@@ -67,3 +67,6 @@ fun <T> toJson(data: T): String {
 fun <T> saveData(file: File, data: T) {
     file.writeText(toJson(data), Charsets.UTF_8)
 }
+
+val OfflinePlayer.nameOrUnknown: String
+    get() = name ?: "Unknown"

@@ -71,7 +71,7 @@ class Homes : JavaPlugin {
     }
 
     private fun registerCommands() {
-        getCommand("home").executor = HomeCommand()
+        getCommand("home")?.setExecutor(HomeCommand())
     }
 
     private fun registerListeners() {

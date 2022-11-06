@@ -8,6 +8,7 @@ import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.exceptions.AlreadyHasInvitationException
 import com.masahirosaito.spigot.homes.exceptions.NoReceivedInvitationException
 import com.masahirosaito.spigot.homes.findOnlinePlayer
+import com.masahirosaito.spigot.homes.nameOrUnknown
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings
 import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.USAGE_INVITE
@@ -75,7 +76,7 @@ class PlayerInviteCommand : PlayerCommand {
                     val target = findOnlinePlayer(playerName)
                     target.teleport(homesEntity.location)
                     target.removeMetadata(INVITE_META, homes)
-                    send(target, createAcceptInvitationFrom(homesEntity.offlinePlayer.name))
+                    send(target, createAcceptInvitationFrom(homesEntity.offlinePlayer.nameOrUnknown))
                     try {
                         val owner = findOnlinePlayer(homesEntity.offlinePlayer.uniqueId)
                         send(owner, createAcceptInvitationTo(target.name))

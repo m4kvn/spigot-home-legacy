@@ -74,7 +74,7 @@ object ListCommandStrings {
     private fun getText(homesEntity: HomesEntity): String {
         val loc = homesEntity.location
         return buildString {
-            append("&a${loc.world.name}&r, ")
+            append("&a${loc.world?.name}&r, ")
             append("{&b${loc.x.toInt()}&r, &b${loc.y.toInt()}&r, &b${loc.z.toInt()}&r}, ")
             append(if (homesEntity.isPrivate) "&ePRIVATE&r" else "&9PUBLIC&r")
         }
