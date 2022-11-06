@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.console.helpcommands
 
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.ARGUMENT_INCORRECT
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_COMMAND
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createArgumentIncorrect
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoCommandMessage
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
 import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
@@ -28,7 +28,7 @@ class ConsoleHelpUsageCommandTest {
     @Test
     fun コンソールからコマンドを実行した場合はコンソールコマンド以外の使い方は表示できない() {
         homeConsoleCommandSender.executeHomeCommand("help", "home")
-        assertEquals(lastMsg(), NO_COMMAND("home"))
+        assertEquals(lastMsg(), createNoCommandMessage("home"))
     }
 
     @Test
@@ -40,6 +40,6 @@ class ConsoleHelpUsageCommandTest {
     @Test
     fun コンソールから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("help", "home", "help")
-        assertEquals(lastMsg(), ARGUMENT_INCORRECT(ConsoleHelpCommand().usage.toString()))
+        assertEquals(lastMsg(), createArgumentIncorrect(ConsoleHelpCommand().usage.toString()))
     }
 }

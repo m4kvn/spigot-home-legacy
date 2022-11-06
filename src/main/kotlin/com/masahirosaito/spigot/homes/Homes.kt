@@ -52,17 +52,18 @@ class Homes : JavaPlugin {
     }
 
     private fun loadFeeData() : FeeData {
-        return loadData(File(dataFolder, "fee.json").load(), FeeData::class.java)
+        val file = File(dataFolder, "fee.json").load()
+        return loadDataAndSave(file) { FeeData() }
     }
 
     private fun loadEconomy(): Economy? {
         if (server.pluginManager.getPlugin("Vault") == null) {
-            Messenger.log(NO_VAULT())
+            Messenger.log(NO_VAULT)
             return null
         }
         server.servicesManager.getRegistration(Economy::class.java).let {
             if (it == null) {
-                Messenger.log(NO_ECONOMY())
+                Messenger.log(NO_ECONOMY)
                 return null
             }
             return it.provider

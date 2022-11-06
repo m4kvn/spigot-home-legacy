@@ -9,12 +9,13 @@ import com.masahirosaito.spigot.homes.Permission.home_command_invite_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_NAMED_HOME_INVITATION_FROM
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_NAMED_HOME_INVITATION_TO
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createReceiveNamedHomeInvitationFrom
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createSendNamedHomeInvitationTo
 import org.bukkit.entity.Player
 
-class PlayerInvitePlayerNameCommand(val playerInviteCommand: PlayerInviteCommand) :
-        PlayerSubCommand(playerInviteCommand), PlayerCommand {
+class PlayerInvitePlayerNameCommand(
+    private val playerInviteCommand: PlayerInviteCommand,
+) : PlayerSubCommand(playerInviteCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_invite, home_command_invite_name)
 
@@ -30,8 +31,10 @@ class PlayerInvitePlayerNameCommand(val playerInviteCommand: PlayerInviteCommand
 
     private fun inviteNamedHome(player: Player, playerName: String, homeName: String) {
         val entity = PlayerDataManager.findNamedHome(player, homeName)
-        playerInviteCommand.inviteHome(entity, player, playerName,
-                RECEIVE_NAMED_HOME_INVITATION_FROM(player.name, homeName))
-        send(player, SEND_NAMED_HOME_INVITATION_TO(playerName, homeName))
+        playerInviteCommand.inviteHome(
+            entity, player, playerName,
+            createReceiveNamedHomeInvitationFrom(player.name, homeName)
+        )
+        send(player, createSendNamedHomeInvitationTo(playerName, homeName))
     }
 }

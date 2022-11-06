@@ -32,15 +32,15 @@ import org.bukkit.entity.Player
 class HomeCommand : MainCommand, PlayerCommand {
     override var payNow: Boolean = false
     override val name: String = "home"
-    override val description: String = DESCRIPTION()
+    override val description: String = DESCRIPTION
     override val permissions: List<String> = listOf(
-            Permission.home_command
+        Permission.home_command
     )
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home" to USAGE_HOME(),
-            "/home <home_name>" to USAGE_HOME_NAME(),
-            "/home -p <player_name>" to USAGE_HOME_PLAYER(),
-            "/home <home_name> -p <player_name>" to USAGE_HOME_NAME_PLAYER()
+        "/home" to USAGE_HOME,
+        "/home <home_name>" to USAGE_HOME_NAME,
+        "/home -p <player_name>" to USAGE_HOME_PLAYER,
+        "/home <home_name> -p <player_name>" to USAGE_HOME_NAME_PLAYER
     ))
     override val playerSubCommands: List<PlayerCommand> = listOf(
             PlayerSetCommand(),
@@ -81,12 +81,12 @@ class HomeCommand : MainCommand, PlayerCommand {
     }
 
     fun getTeleportLocation(player: OfflinePlayer, homeName: String? = null): Location {
-        if (homeName == null) {
-            return PlayerDataManager.findDefaultHome(player).apply {
+        return if (homeName == null) {
+            PlayerDataManager.findDefaultHome(player).apply {
                 if (isPrivate && !isOwner(player)) throw DefaultHomePrivateException(player)
             }.location
         } else {
-            return PlayerDataManager.findNamedHome(player, homeName).apply {
+            PlayerDataManager.findNamedHome(player, homeName).apply {
                 if (isPrivate && !isOwner(player)) throw NamedHomePrivateException(player, homeName)
             }.location
         }

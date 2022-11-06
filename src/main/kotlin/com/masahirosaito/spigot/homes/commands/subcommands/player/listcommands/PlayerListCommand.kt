@@ -7,19 +7,19 @@ import com.masahirosaito.spigot.homes.commands.BaseCommand
 import com.masahirosaito.spigot.homes.commands.CommandUsage
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.DESCRIPTION_PLAYER_COMMAND
-import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.HOME_LIST
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_LIST_PLAYER
 import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.USAGE_PLAYER_COMMAND_LIST
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.createHomeListMessage
 import org.bukkit.entity.Player
 
 class PlayerListCommand : PlayerCommand {
     override var payNow: Boolean = true
     override val name: String = "list"
-    override val description: String = DESCRIPTION_PLAYER_COMMAND()
+    override val description: String = DESCRIPTION_PLAYER_COMMAND
     override val permissions: List<String> = listOf(home_command_list)
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home list" to USAGE_PLAYER_COMMAND_LIST(),
-            "/home list <player_name>" to USAGE_LIST_PLAYER()
+        "/home list" to USAGE_PLAYER_COMMAND_LIST,
+        "/home list <player_name>" to USAGE_LIST_PLAYER
     ))
     override val commands: List<BaseCommand> = listOf(
             PlayerListPlayerCommand(this)
@@ -32,6 +32,6 @@ class PlayerListCommand : PlayerCommand {
     override fun isValidArgs(args: List<String>): Boolean = args.isEmpty()
 
     override fun execute(player: Player, args: List<String>) {
-        send(player, HOME_LIST(PlayerDataManager.findPlayerData(player), false))
+        send(player, createHomeListMessage(PlayerDataManager.findPlayerData(player), false))
     }
 }

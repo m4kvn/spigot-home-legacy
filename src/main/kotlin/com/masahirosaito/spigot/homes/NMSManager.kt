@@ -5,7 +5,7 @@ import com.masahirosaito.spigot.homes.nms.NMSController
 import com.masahirosaito.spigot.homes.nms.NMSEntityArmorStand
 
 object NMSManager {
-    lateinit private var nmsController: NMSController
+    private lateinit var nmsController: NMSController
 
     fun load() {
         nmsController = NMSController.load()

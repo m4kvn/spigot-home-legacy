@@ -1,8 +1,8 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.console.listcommands
 
 import com.masahirosaito.spigot.homes.PlayerDataManager
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.ARGUMENT_INCORRECT
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_HOME
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createArgumentIncorrect
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoHome
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
@@ -29,7 +29,7 @@ class ConsoleListPlayerCommandTest {
     @Test
     fun コンソールから実行したコマンドの引数が間違っていた場合に使い方を表示する() {
         homeConsoleCommandSender.executeHomeCommand("list", "Nepian", "Minene")
-        assertEquals(lastMsg(), ARGUMENT_INCORRECT(ConsoleListCommand().usage.toString()))
+        assertEquals(lastMsg(), createArgumentIncorrect(ConsoleListCommand().usage.toString()))
     }
 
     @Test
@@ -39,6 +39,6 @@ class ConsoleListPlayerCommandTest {
             setNamedHomePrivate(nepian, "home1", true)
         }
         homeConsoleCommandSender.executeHomeCommand("list", "Nepian")
-        assertNotEquals(lastMsg(), NO_HOME(nepian.name))
+        assertNotEquals(lastMsg(), createNoHome(nepian.name))
     }
 }

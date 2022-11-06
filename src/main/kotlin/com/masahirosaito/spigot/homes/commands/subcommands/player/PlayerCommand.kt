@@ -25,7 +25,7 @@ interface PlayerCommand : BaseCommand {
 
     fun checkPermission(player: Player) {
         if (player.hasPermission(home_admin)) return
-        if (!permissions.isEmpty()) {
+        if (permissions.isNotEmpty()) {
             permissions.forEach {
                 if (!player.hasPermission(it)) throw NoPermissionException(it)
             }

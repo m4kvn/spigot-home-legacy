@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.maincommands.homecommands
 
-import com.masahirosaito.spigot.homes.strings.EconomyStrings.NOT_ENOUGH_MONEY_ERROR
+import com.masahirosaito.spigot.homes.strings.EconomyStrings.createNotEnoughMoneyErrorMessage
 import com.masahirosaito.spigot.homes.testutils.*
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.economy
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homes
@@ -50,6 +50,6 @@ class HomeCommandTest {
         assertTrue(economy.getBalance(nepian) < 1000.0)
         nepian.executeHomeCommand()
         nepian.getDelayThread()?.join()
-        assertEquals(nepian.lastMsg(), NOT_ENOUGH_MONEY_ERROR(homes.fee.HOME))
+        assertEquals(nepian.lastMsg(), createNotEnoughMoneyErrorMessage(homes.fee.HOME))
     }
 }

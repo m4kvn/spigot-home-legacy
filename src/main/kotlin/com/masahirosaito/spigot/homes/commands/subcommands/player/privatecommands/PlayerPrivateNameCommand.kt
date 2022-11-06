@@ -8,8 +8,8 @@ import com.masahirosaito.spigot.homes.Permission.home_command_private_name
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
-import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
-import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.createSetNamedHomePrivateMessage
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.createSetNamedHomePublicMessage
 import org.bukkit.entity.Player
 
 class PlayerPrivateNameCommand(playerPrivateCommand: PlayerPrivateCommand) :
@@ -26,10 +26,10 @@ class PlayerPrivateNameCommand(playerPrivateCommand: PlayerPrivateCommand) :
     override fun execute(player: Player, args: List<String>) {
         if (args[0] == "on") {
             PlayerDataManager.setNamedHomePrivate(player, args[1], true)
-            send(player, SET_NAMED_HOME_PRIVATE(args[1]))
+            send(player, createSetNamedHomePrivateMessage(args[1]))
         } else {
             PlayerDataManager.setNamedHomePrivate(player, args[1], false)
-            send(player, SET_NAMED_HOME_PUBLIC(args[1]))
+            send(player, createSetNamedHomePublicMessage(args[1]))
         }
     }
 }

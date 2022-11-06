@@ -4,18 +4,19 @@ import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCom
 import com.masahirosaito.spigot.homes.datas.FeeData
 import com.masahirosaito.spigot.homes.exceptions.NoConsoleCommandException
 import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_RECEIVED_INVITATION
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_DEFAULT_HOME
 import com.masahirosaito.spigot.homes.strings.commands.DeleteCommandStrings.DELETE_NAMED_HOME
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_NAMED_HOME_INVITATION_FROM
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_DEFAULT_HOME_INVITATION_TO
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_NAMED_HOME_INVITATION_TO
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createReceiveDefaultHomeInvitationFrom
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createReceiveNamedHomeInvitationFrom
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createSendDefaultHomeInvitationTo
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createSendNamedHomeInvitationTo
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PRIVATE
 import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_DEFAULT_HOME_PUBLIC
-import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PRIVATE
-import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.SET_NAMED_HOME_PUBLIC
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.createSetNamedHomePrivateMessage
+import com.masahirosaito.spigot.homes.strings.commands.PrivateCommandStrings.createSetNamedHomePublicMessage
 import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_DEFAULT_HOME
-import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.SET_NAMED_HOME
+import com.masahirosaito.spigot.homes.strings.commands.SetCommandStrings.createSetNamedHomeMessage
 import com.masahirosaito.spigot.homes.testutils.*
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.defaultLocation
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.feeFile
@@ -67,7 +68,7 @@ class HomesTest {
 
     @Test
     fun 料金設定ファイルが読み込まれている() {
-        assertEquals(homes.fee, loadData(feeFile, FeeData::class.java))
+        assertEquals(homes.fee, loadDataAndSave(feeFile) { FeeData() })
     }
 
     @Ignore
@@ -126,49 +127,51 @@ class HomesTest {
     @Test
     fun ホームを設定するコマンドの実行ができる() {
         nepian.executeHomeCommand("set")
-        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME())
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME)
     }
 
     @Test
     fun 名前付きホームを設定するコマンドの実行ができる() {
         nepian.executeHomeCommand("set", "home1")
-        assertEquals(nepian.lastMsg(), SET_NAMED_HOME("home1"))
+        assertEquals(nepian.lastMsg(), createSetNamedHomeMessage("home1"))
     }
 
     @Test
     fun 設定されたホームを削除するコマンドの実行ができる() {
         nepian.executeHomeCommand("delete")
-        assertEquals(nepian.lastMsg(), DELETE_DEFAULT_HOME())
+        assertEquals(nepian.lastMsg(), DELETE_DEFAULT_HOME)
     }
 
     @Test
     fun 設定された名前付きホームを削除するコマンドの実行ができる() {
         nepian.executeHomeCommand("delete", "home1")
-        assertEquals(nepian.lastMsg(), DELETE_NAMED_HOME("home1"))
+        val expected = DELETE_NAMED_HOME.replace(HOME_NAME, "home1")
+        val actual = nepian.lastMsg()
+        assertEquals(actual, expected)
     }
 
     @Test
     fun 設定されたホームをプライベート化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "on")
-        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PRIVATE())
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PRIVATE)
     }
 
     @Test
     fun 設定された名前付きホームをプライベート化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "on", "home1")
-        assertEquals(nepian.lastMsg(), SET_NAMED_HOME_PRIVATE("home1"))
+        assertEquals(nepian.lastMsg(), createSetNamedHomePrivateMessage("home1"))
     }
 
     @Test
     fun 設定されたホームをパブリック化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "off")
-        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PUBLIC())
+        assertEquals(nepian.lastMsg(), SET_DEFAULT_HOME_PUBLIC)
     }
 
     @Test
     fun 設定された名前付きホームをパブリック化するコマンドの実行ができる() {
         nepian.executeHomeCommand("private", "off", "home1")
-        assertEquals(nepian.lastMsg(), SET_NAMED_HOME_PUBLIC("home1"))
+        assertEquals(nepian.lastMsg(), createSetNamedHomePublicMessage("home1"))
     }
 
     @Test
@@ -189,23 +192,23 @@ class HomesTest {
     @Test
     fun 他の人を自分のホームに招待するコマンドの実行ができる() {
         nepian.executeHomeCommand("invite", "Minene")
-        assertEquals(nepian.lastMsg(), SEND_DEFAULT_HOME_INVITATION_TO("Minene"))
-        assertEquals(minene.lastMsg(), RECEIVE_DEFAULT_HOME_INVITATION_FROM("Nepian"))
+        assertEquals(nepian.lastMsg(), createSendDefaultHomeInvitationTo("Minene"))
+        assertEquals(minene.lastMsg(), createReceiveDefaultHomeInvitationFrom("Nepian"))
         minene.acceptInvitation()
     }
 
     @Test
     fun 他の人を自分の名前付きホームに招待するコマンドの実行ができる() {
         nepian.executeHomeCommand("invite", "Minene", "home1")
-        assertEquals(nepian.lastMsg(), SEND_NAMED_HOME_INVITATION_TO("Minene", "home1"))
-        assertEquals(minene.lastMsg(), RECEIVE_NAMED_HOME_INVITATION_FROM("Nepian", "home1"))
+        assertEquals(nepian.lastMsg(), createSendNamedHomeInvitationTo("Minene", "home1"))
+        assertEquals(minene.lastMsg(), createReceiveNamedHomeInvitationFrom("Nepian", "home1"))
         minene.acceptInvitation()
     }
 
     @Test
     fun 他の人からの招待を受けるコマンドの実行ができる() {
         nepian.executeHomeCommand("invite")
-        assertEquals(nepian.lastMsg(), NO_RECEIVED_INVITATION())
+        assertEquals(nepian.lastMsg(), NO_RECEIVED_INVITATION)
     }
 
     @Test

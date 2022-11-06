@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes
 
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
-import com.masahirosaito.spigot.homes.exceptions.AlreadyExecutTeleportException
+import com.masahirosaito.spigot.homes.exceptions.AlreadyExecuteTeleportException
 import com.masahirosaito.spigot.homes.exceptions.CanNotFindOnlinePlayerException
 import com.masahirosaito.spigot.homes.strings.TeleportStrings
 import org.bukkit.Location
@@ -22,16 +22,14 @@ object DelayTeleporter {
         val uuid = player.uniqueId
 
         if (isAlreadyRun(player)) {
-            throw AlreadyExecutTeleportException()
+            throw AlreadyExecuteTeleportException()
         }
 
         val th = thread {
             try {
-                if (delay > 0) {
-                    repeat(delay) { i ->
-                        Messenger.send(player, TeleportStrings.TELEPORT_WAIT(delay - i))
-                        Thread.sleep(1000)
-                    }
+                repeat(delay) { i ->
+                    Messenger.send(player, TeleportStrings.createTeleportWait(delay - i))
+                    Thread.sleep(1000)
                 }
                 findOnlinePlayer(uuid).run {
                     PayController.checkBalance(playerCommand, player)
@@ -41,9 +39,9 @@ object DelayTeleporter {
                 }
             } catch (e: InterruptedException) {
                 removeTeleportMeta(player)
-                Messenger.send(player, TeleportStrings.TELEPORT_CANCEL())
-                Messenger.send(player, TeleportStrings.TELEPORT_CANCEL_DELAY(delay))
-            } catch (e: CanNotFindOnlinePlayerException) {
+                Messenger.send(player, TeleportStrings.TELEPORT_CANCEL)
+                Messenger.send(player, TeleportStrings.createTeleportCancelDelay(delay))
+            } catch (_: CanNotFindOnlinePlayerException) {
 
             }
         }

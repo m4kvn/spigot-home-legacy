@@ -4,7 +4,6 @@ import com.masahirosaito.spigot.homes.Homes.Companion.homes
 import com.masahirosaito.spigot.homes.datas.PlayerData
 import com.masahirosaito.spigot.homes.exceptions.LimitHomeException
 import com.masahirosaito.spigot.homes.exceptions.NoDefaultHomeException
-import com.masahirosaito.spigot.homes.exceptions.NoNamedHomeException
 import com.masahirosaito.spigot.homes.homedata.HomeManager
 import com.masahirosaito.spigot.homes.nms.HomesEntity
 import org.bukkit.Chunk
@@ -18,7 +17,7 @@ object PlayerDataManager {
 
     fun load() {
         playerHomeDataFile.load()
-        playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDatas())
+        playerDatas.addAll(HomeManager.load(playerHomeDataFile).toPlayerDataList())
         playerDatas.forEach { it.load() }
     }
 
@@ -28,7 +27,7 @@ object PlayerDataManager {
 
     private fun toHomeManager(): HomeManager {
         return HomeManager().apply {
-            playerDatas.forEach { playerHomes.put(it.offlinePlayer.uniqueId, it.toPlayerHome()) }
+            playerDatas.forEach { playerHomes[it.offlinePlayer.uniqueId] = it.toPlayerHome() }
         }
     }
 
@@ -56,6 +55,7 @@ object PlayerDataManager {
         return findPlayerData(offlinePlayer).getNamedHome(homeName)
     }
 
+    @Suppress("unused")
     fun hasDefaultHome(offlinePlayer: OfflinePlayer): Boolean {
         return findPlayerData(offlinePlayer).defaultHome != null
     }

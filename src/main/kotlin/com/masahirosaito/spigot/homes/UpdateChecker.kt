@@ -32,7 +32,7 @@ object UpdateChecker {
                     Messenger.log(updateMessage)
                     Messenger.log(urlMessage)
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }

@@ -2,7 +2,7 @@ package com.masahirosaito.spigot.homes.strings
 
 import com.masahirosaito.spigot.homes.datas.strings.EconomyStringData
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
 import com.masahirosaito.spigot.homes.strings.Strings.BALANCE
 import com.masahirosaito.spigot.homes.strings.Strings.COMMAND_FEE
 import com.masahirosaito.spigot.homes.strings.Strings.ERROR_MESSAGE
@@ -10,25 +10,26 @@ import com.masahirosaito.spigot.homes.strings.Strings.PAY_AMOUNT
 import java.io.File
 
 object EconomyStrings {
-    lateinit private var data: EconomyStringData
+    private const val FILE_NAME = "economy.json"
+    private lateinit var data: EconomyStringData
+
+    val NO_ACCOUNT_ERROR: String get() = data.NO_ACCOUNT_ERROR
 
     fun load(folderPath: String) {
-        data = loadData(File(folderPath, "economy.json").load(), EconomyStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        data = loadDataAndSave(file) { EconomyStringData() }
     }
 
-    fun PAY(payAmount: String, balance: String) =
-            data.PAY
-                    .replace(PAY_AMOUNT, payAmount)
-                    .replace(BALANCE, balance)
+    fun createPayMessage(payAmount: String, balance: String) =
+        data.PAY
+            .replace(PAY_AMOUNT, payAmount)
+            .replace(BALANCE, balance)
 
-    fun ECONOMY_ERROR(errorMessage: String) =
-            data.ECONOMY_ERROR
-                    .replace(ERROR_MESSAGE, errorMessage)
+    fun createEconomyErrorMessage(errorMessage: String) =
+        data.ECONOMY_ERROR
+            .replace(ERROR_MESSAGE, errorMessage)
 
-    fun NO_ACCOUNT_ERROR() =
-            data.NO_ACCOUNT_ERROR
-
-    fun NOT_ENOUGH_MONEY_ERROR(commandFee: Double) =
-            data.NOT_ENOUGH_MONEY_ERROR
-                    .replace(COMMAND_FEE, commandFee.toString())
+    fun createNotEnoughMoneyErrorMessage(commandFee: Double) =
+        data.NOT_ENOUGH_MONEY_ERROR
+            .replace(COMMAND_FEE, commandFee.toString())
 }

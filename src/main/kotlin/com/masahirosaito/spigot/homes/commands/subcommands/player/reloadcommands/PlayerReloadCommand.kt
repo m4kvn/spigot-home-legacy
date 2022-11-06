@@ -12,11 +12,11 @@ import org.bukkit.entity.Player
 class PlayerReloadCommand : PlayerCommand {
     override var payNow: Boolean = true
     override val name: String = "reload"
-    override val description: String = DESCRIPTION()
+    override val description: String = DESCRIPTION
     override val commands: List<BaseCommand> = listOf()
     override val permissions: List<String> = listOf(home_command_reload)
     override val usage: CommandUsage = CommandUsage(this, listOf(
-            "/home reload" to USAGE_RELOAD()
+        "/home reload" to USAGE_RELOAD
     ))
 
     override fun configs(): List<Boolean> = listOf()

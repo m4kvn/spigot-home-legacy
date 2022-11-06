@@ -1,62 +1,57 @@
 package com.masahirosaito.spigot.homes.strings.commands
 
-import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
-import com.masahirosaito.spigot.homes.strings.Strings.PLAYER_NAME
 import com.masahirosaito.spigot.homes.datas.strings.commands.InviteCommandStringData
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
+import com.masahirosaito.spigot.homes.strings.Strings.HOME_NAME
+import com.masahirosaito.spigot.homes.strings.Strings.PLAYER_NAME
 import java.io.File
 
 object InviteCommandStrings {
-    lateinit private var data: InviteCommandStringData
+    private const val FILE_NAME = "invite-command.json"
+    private lateinit var data: InviteCommandStringData
+
+    val DESCRIPTION: String get() = data.DESCRIPTION
+    val USAGE_INVITE: String get() = data.USAGE_INVITE
+    val USAGE_INVITE_PLAYER: String get() = data.USAGE_INVITE_PLAYER
+    val USAGE_INVITE_PLAYER_NAME: String get() = data.USAGE_INVITE_PLAYER_NAME
 
     fun load(folderPath: String) {
-        data = loadData(File(folderPath, "invite-command.json").load(), InviteCommandStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        data = loadDataAndSave(file) { InviteCommandStringData() }
     }
 
-    fun DESCRIPTION() =
-            data.DESCRIPTION
+    fun createCancelInvitationFrom(playerName: String) =
+        data.CANCEL_INVITATION_FROM
+            .replace(PLAYER_NAME, playerName)
 
-    fun USAGE_INVITE() =
-            data.USAGE_INVITE
+    fun createCancelInvitationTo(playerName: String) =
+        data.CANCEL_INVITATION_TO
+            .replace(PLAYER_NAME, playerName)
 
-    fun USAGE_INVITE_PLAYER() =
-            data.USAGE_INVITE_PLAYER
+    fun createAcceptInvitationFrom(playerName: String) =
+        data.ACCEPT_INVITATION_FROM
+            .replace(PLAYER_NAME, playerName)
 
-    fun USAGE_INVITE_PLAYER_NAME() =
-            data.USAGE_INVITE_PLAYER_NAME
+    fun createAcceptInvitationTo(playerName: String) =
+        data.ACCEPT_INVITATION_TO
+            .replace(PLAYER_NAME, playerName)
 
-    fun CANCEL_INVITATION_FROM(playerName: String) =
-            data.CANCEL_INVITATION_FROM
-                    .replace(PLAYER_NAME, playerName)
+    fun createReceiveDefaultHomeInvitationFrom(playerName: String) =
+        data.RECEIVE_DEFAULT_HOME_INVITATION_FROM
+            .replace(PLAYER_NAME, playerName)
 
-    fun CANCEL_INVITATION_TO(playerName: String) =
-            data.CANCEL_INVITATION_TO
-                    .replace(PLAYER_NAME, playerName)
+    fun createSendDefaultHomeInvitationTo(playerName: String) =
+        data.SEND_DEFAULT_HOME_INVITATION_TO
+            .replace(PLAYER_NAME, playerName)
 
-    fun ACCEPT_INVITATION_FROM(playerName: String) =
-            data.ACCEPT_INVITATION_FROM
-                    .replace(PLAYER_NAME, playerName)
+    fun createReceiveNamedHomeInvitationFrom(playerName: String, homeName: String) =
+        data.RECEIVE_NAMED_HOME_INVITATION_FROM
+            .replace(PLAYER_NAME, playerName)
+            .replace(HOME_NAME, homeName)
 
-    fun ACCEPT_INVITATION_TO(playerName: String) =
-            data.ACCEPT_INVITATION_TO
-                    .replace(PLAYER_NAME, playerName)
-
-    fun RECEIVE_DEFAULT_HOME_INVITATION_FROM(playerName: String) =
-            data.RECEIVE_DEFAULT_HOME_INVITATION_FROM
-                    .replace(PLAYER_NAME, playerName)
-
-    fun SEND_DEFAULT_HOME_INVITATION_TO(playerName: String) =
-            data.SEND_DEFAULT_HOME_INVITATION_TO
-                    .replace(PLAYER_NAME, playerName)
-
-    fun RECEIVE_NAMED_HOME_INVITATION_FROM(playerName: String, homeName: String) =
-            data.RECEIVE_NAMED_HOME_INVITATION_FROM
-                    .replace(PLAYER_NAME, playerName)
-                    .replace(HOME_NAME, homeName)
-
-    fun SEND_NAMED_HOME_INVITATION_TO(playerName: String, homeName: String) =
-            data.SEND_NAMED_HOME_INVITATION_TO
-                    .replace(PLAYER_NAME, playerName)
-                    .replace(HOME_NAME, homeName)
+    fun createSendNamedHomeInvitationTo(playerName: String, homeName: String) =
+        data.SEND_NAMED_HOME_INVITATION_TO
+            .replace(PLAYER_NAME, playerName)
+            .replace(HOME_NAME, homeName)
 }

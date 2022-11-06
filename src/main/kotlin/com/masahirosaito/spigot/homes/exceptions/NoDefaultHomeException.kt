@@ -1,7 +1,7 @@
 package com.masahirosaito.spigot.homes.exceptions
 
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_DEFAULT_HOME
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoDefaultHomeMessage
 import org.bukkit.OfflinePlayer
 
 class NoDefaultHomeException(offlinePlayer: OfflinePlayer) :
-        HomesException(NO_DEFAULT_HOME(offlinePlayer.name))
+    HomesException(createNoDefaultHomeMessage(offlinePlayer.name))

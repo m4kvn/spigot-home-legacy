@@ -14,7 +14,7 @@ data class HomesEntity(
         var homeName: String? = null,
         var isPrivate: Boolean = false
 ) {
-    var entities: List<NMSEntityArmorStand> = emptyList()
+    private var entities: List<NMSEntityArmorStand> = emptyList()
 
     fun isOwner(offlinePlayer: OfflinePlayer): Boolean {
         return this.offlinePlayer.uniqueId == offlinePlayer.uniqueId

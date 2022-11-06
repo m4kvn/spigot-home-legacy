@@ -2,25 +2,26 @@ package com.masahirosaito.spigot.homes.strings
 
 import com.masahirosaito.spigot.homes.datas.strings.TeleportStringData
 import com.masahirosaito.spigot.homes.load
-import com.masahirosaito.spigot.homes.loadData
+import com.masahirosaito.spigot.homes.loadDataAndSave
 import com.masahirosaito.spigot.homes.strings.Strings.DELAY
 import java.io.File
 
 object TeleportStrings {
-    lateinit private var teleport: TeleportStringData
+    private const val FILE_NAME = "teleport.json"
+    private lateinit var teleport: TeleportStringData
+
+    val TELEPORT_CANCEL: String get() = teleport.TELEPORT_CANCEL
 
     fun load(folderPath: String) {
-        teleport = loadData(File(folderPath, "teleport.json").load(), TeleportStringData::class.java)
+        val file = File(folderPath, FILE_NAME).load()
+        teleport = loadDataAndSave(file) { TeleportStringData() }
     }
 
-    fun TELEPORT_WAIT(delay: Int) =
-            teleport.TELEPORT_WAIT
-                    .replace(DELAY, delay.toString())
+    fun createTeleportWait(delay: Int) =
+        teleport.TELEPORT_WAIT
+            .replace(DELAY, delay.toString())
 
-    fun TELEPORT_CANCEL() =
-            teleport.TELEPORT_CANCEL
-
-    fun TELEPORT_CANCEL_DELAY(delay: Int) =
-            teleport.TELEPORT_CANCEL_DELAY
-                    .replace(DELAY, delay.toString())
+    fun createTeleportCancelDelay(delay: Int) =
+        teleport.TELEPORT_CANCEL_DELAY
+            .replace(DELAY, delay.toString())
 }

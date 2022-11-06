@@ -1,6 +1,6 @@
 package com.masahirosaito.spigot.homes.commands.subcommands.console.listcommands
 
-import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.PLAYER_LIST
+import com.masahirosaito.spigot.homes.strings.commands.ListCommandStrings.createPlayerListMessage
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.homeConsoleCommandSender
 import com.masahirosaito.spigot.homes.testutils.executeHomeCommand
@@ -27,6 +27,6 @@ class ConsoleListCommandTest {
     @Test
     fun コンソールからコマンドを実行した場合はプレイヤーリストを表示する() {
         homeConsoleCommandSender.executeHomeCommand("list")
-        assertEquals(lastMsg(), PLAYER_LIST())
+        assertEquals(lastMsg(), createPlayerListMessage())
     }
 }

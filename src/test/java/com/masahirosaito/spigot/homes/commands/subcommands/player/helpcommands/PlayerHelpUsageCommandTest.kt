@@ -3,8 +3,8 @@ package com.masahirosaito.spigot.homes.commands.subcommands.player.helpcommands
 import com.masahirosaito.spigot.homes.Permission.home_command_help
 import com.masahirosaito.spigot.homes.Permission.home_command_help_command
 import com.masahirosaito.spigot.homes.commands.maincommands.homecommands.HomeCommand
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.ARGUMENT_INCORRECT
-import com.masahirosaito.spigot.homes.strings.ErrorStrings.NO_PERMISSION
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createArgumentIncorrect
+import com.masahirosaito.spigot.homes.strings.ErrorStrings.createNoPermissionMessage
 import com.masahirosaito.spigot.homes.testutils.*
 import com.masahirosaito.spigot.homes.testutils.TestInstanceCreator.nepian
 import org.junit.jupiter.api.AfterEach
@@ -30,7 +30,7 @@ class PlayerHelpUsageCommandTest {
     fun ヘルプコマンド権限を持っていない場合はコマンドを実行できない() {
         nepian.setOps(false)
         nepian.executeHomeCommand("help", "help")
-        assertEquals(nepian.lastMsg(), NO_PERMISSION(home_command_help))
+        assertEquals(nepian.lastMsg(), createNoPermissionMessage(home_command_help))
     }
 
     @Test
@@ -38,7 +38,7 @@ class PlayerHelpUsageCommandTest {
         nepian.setOps(false)
         nepian.setPermissions(home_command_help)
         nepian.executeHomeCommand("help", "help")
-        assertEquals(nepian.lastMsg(), NO_PERMISSION(home_command_help_command))
+        assertEquals(nepian.lastMsg(), createNoPermissionMessage(home_command_help_command))
     }
 
     @Test
@@ -50,6 +50,6 @@ class PlayerHelpUsageCommandTest {
     @Test
     fun プレイヤーから実行されたコマンドの引数が間違っている場合は使い方を表示する() {
         nepian.executeHomeCommand("help", "home", "help")
-        assertEquals(nepian.lastMsg(), ARGUMENT_INCORRECT(PlayerHelpCommand().usage.toString()))
+        assertEquals(nepian.lastMsg(), createArgumentIncorrect(PlayerHelpCommand().usage.toString()))
     }
 }

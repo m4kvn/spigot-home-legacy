@@ -7,12 +7,13 @@ import com.masahirosaito.spigot.homes.Permission.home_command_invite
 import com.masahirosaito.spigot.homes.PlayerDataManager
 import com.masahirosaito.spigot.homes.commands.PlayerSubCommand
 import com.masahirosaito.spigot.homes.commands.subcommands.player.PlayerCommand
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.RECEIVE_DEFAULT_HOME_INVITATION_FROM
-import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.SEND_DEFAULT_HOME_INVITATION_TO
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createReceiveDefaultHomeInvitationFrom
+import com.masahirosaito.spigot.homes.strings.commands.InviteCommandStrings.createSendDefaultHomeInvitationTo
 import org.bukkit.entity.Player
 
-class PlayerInvitePlayerCommand(val playerInviteCommand: PlayerInviteCommand) :
-        PlayerSubCommand(playerInviteCommand), PlayerCommand {
+class PlayerInvitePlayerCommand(
+    private val playerInviteCommand: PlayerInviteCommand,
+) : PlayerSubCommand(playerInviteCommand), PlayerCommand {
 
     override val permissions: List<String> = listOf(home_command_invite)
 
@@ -28,8 +29,10 @@ class PlayerInvitePlayerCommand(val playerInviteCommand: PlayerInviteCommand) :
 
     private fun inviteDefaultHome(player: Player, playerName: String) {
         val entity = PlayerDataManager.findDefaultHome(player)
-        playerInviteCommand.inviteHome(entity, player, playerName,
-                RECEIVE_DEFAULT_HOME_INVITATION_FROM(player.name))
-        send(player, SEND_DEFAULT_HOME_INVITATION_TO(playerName))
+        playerInviteCommand.inviteHome(
+            entity, player, playerName,
+            createReceiveDefaultHomeInvitationFrom(player.name)
+        )
+        send(player, createSendDefaultHomeInvitationTo(playerName))
     }
 }
